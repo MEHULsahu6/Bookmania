@@ -9,21 +9,24 @@
    <title>Book Mania - Login & Signup</title>
    <style>
     /*=============== LOGIN & SIGNUP ===============*/
+/*=============== LOGIN & SIGNUP ===============*/
 .login-signup__container {
    display: flex;
    justify-content: center;
    align-items: center;
    min-height: 100vh;
    padding: 2rem;
+  
 }
 
 .login-signup__content {
    background-color: var(--container-color);
-   padding: 2rem;
-   border: 2px solid var(--border-color);
-   border-radius: 0.5rem;
+   padding: 3rem;
+   border: 3px solid var(--border-color);
+   border-radius: 1rem;
+   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
    width: 100%;
-   max-width: 400px;
+   max-width: 420px;
    transition: background-color 0.4s, border 0.4s;
 }
 
@@ -35,19 +38,21 @@
 
 .login-signup__btn {
    flex: 1;
-   padding: 0.75rem;
+   padding: 1rem;
    background: none;
    border: none;
+   border-bottom: 2px solid transparent;
    font-size: var(--h3-font-size);
    font-family: var(--second-font);
    color: var(--text-color);
    cursor: pointer;
-   transition: color 0.4s;
+   transition: color 0.4s, border-bottom 0.4s;
 }
 
 .login-signup__btn.active,
 .login-signup__btn:hover {
    color: var(--first-color);
+   border-bottom: 2px solid var(--first-color);
 }
 
 .login-signup__form {
@@ -61,19 +66,19 @@
 
 .login-signup__title {
    font-size: var(--h2-font-size);
-   margin-bottom: 1.5rem;
+   margin-bottom: 2rem;
 }
 
 .login-signup__group {
-   margin-bottom: 1.25rem;
+   margin-bottom: 1.5rem;
 }
 
 .login-signup__input {
    width: 100%;
    padding: 1rem;
    background-color: var(--body-color);
-   border: 1px solid var(--border-color);
-   border-radius: 0.25rem;
+   border: 2px solid var(--border-color);
+   border-radius: 0.5rem;
    color: var(--text-color);
    transition: background-color 0.4s, border 0.4s;
 }
@@ -84,25 +89,17 @@
 
 .login-signup__input:focus {
    border-color: var(--first-color);
+   outline: none;
 }
 
 .login-signup__text {
    font-size: var(--small-font-size);
-   margin: 1rem 0;
+   margin: 1.5rem 0;
 }
 
 .login-signup__text a {
    color: var(--first-color);
    font-weight: var(--font-medium);
-}
-
-.login-signup__social {
-   margin-top: 1.5rem;
-}
-
-.login-signup__social p {
-   font-size: var(--small-font-size);
-   margin-bottom: 0.75rem;
 }
 
 .login-signup__google {
@@ -111,22 +108,18 @@
    justify-content: center;
    gap: 0.5rem;
    width: 100%;
-   padding: 0.75rem;
+   padding: 1rem;
    background-color: var(--white-color);
-   border: 1px solid var(--border-color);
-   border-radius: 0.25rem;
+   border: 2px solid var(--border-color);
+   border-radius: 0.5rem;
    font-size: var(--normal-font-size);
    color: var(--title-color);
    cursor: pointer;
    transition: box-shadow 0.4s, background-color 0.4s;
 }
 
-.login-signup__google i {
-   font-size: 1.25rem;
-}
-
 .login-signup__google:hover {
-   box-shadow: 0 4px 16px hsla(230, 72%, 32%, 0.2);
+   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Dark theme adjustments */
@@ -143,6 +136,7 @@
    background-color: hsla(230, 12%, 18%, 0.9);
    color: var(--white-color);
 }
+
    </style>
 </head>
 <body>
