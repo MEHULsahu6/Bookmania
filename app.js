@@ -15,6 +15,10 @@ app.set(express())
 app.get('/', (req, res) => {
   res.render('./user/home')
 })
+app.get('/login', (req, res) => {
+  res.render('login')
+})
+
 
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+   <link rel="stylesheet" href="../../stylesheets/User/home.css">
+   <title>Book Mania - Login & Signup</title>
+   <style>
+    /*=============== LOGIN & SIGNUP ===============*/
+.login-signup__container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 100vh;
+   padding: 2rem;
+}
+
+.login-signup__content {
+   background-color: var(--container-color);
+   padding: 2rem;
+   border: 2px solid var(--border-color);
+   border-radius: 0.5rem;
+   width: 100%;
+   max-width: 400px;
+   transition: background-color 0.4s, border 0.4s;
+}
+
+.login-signup__toggle {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 2rem;
+}
+
+.login-signup__btn {
+   flex: 1;
+   padding: 0.75rem;
+   background: none;
+   border: none;
+   font-size: var(--h3-font-size);
+   font-family: var(--second-font);
+   color: var(--text-color);
+   cursor: pointer;
+   transition: color 0.4s;
+}
+
+.login-signup__btn.active,
+.login-signup__btn:hover {
+   color: var(--first-color);
+}
+
+.login-signup__form {
+   display: none;
+   text-align: center;
+}
+
+.login-signup__form.active {
+   display: block;
+}
+
+.login-signup__title {
+   font-size: var(--h2-font-size);
+   margin-bottom: 1.5rem;
+}
+
+.login-signup__group {
+   margin-bottom: 1.25rem;
+}
+
+.login-signup__input {
+   width: 100%;
+   padding: 1rem;
+   background-color: var(--body-color);
+   border: 1px solid var(--border-color);
+   border-radius: 0.25rem;
+   color: var(--text-color);
+   transition: background-color 0.4s, border 0.4s;
+}
+
+.login-signup__input::placeholder {
+   color: var(--text-color);
+}
+
+.login-signup__input:focus {
+   border-color: var(--first-color);
+}
+
+.login-signup__text {
+   font-size: var(--small-font-size);
+   margin: 1rem 0;
+}
+
+.login-signup__text a {
+   color: var(--first-color);
+   font-weight: var(--font-medium);
+}
+
+.login-signup__social {
+   margin-top: 1.5rem;
+}
+
+.login-signup__social p {
+   font-size: var(--small-font-size);
+   margin-bottom: 0.75rem;
+}
+
+.login-signup__google {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 0.5rem;
+   width: 100%;
+   padding: 0.75rem;
+   background-color: var(--white-color);
+   border: 1px solid var(--border-color);
+   border-radius: 0.25rem;
+   font-size: var(--normal-font-size);
+   color: var(--title-color);
+   cursor: pointer;
+   transition: box-shadow 0.4s, background-color 0.4s;
+}
+
+.login-signup__google i {
+   font-size: 1.25rem;
+}
+
+.login-signup__google:hover {
+   box-shadow: 0 4px 16px hsla(230, 72%, 32%, 0.2);
+}
+
+/* Dark theme adjustments */
+.dark-theme .login-signup__content {
+   background-color: hsla(230, 12%, 12%, 0.9);
+}
+
+.dark-theme .login-signup__input {
+   background-color: hsla(230, 12%, 8%, 0.6);
+   color: var(--white-color);
+}
+
+.dark-theme .login-signup__google {
+   background-color: hsla(230, 12%, 18%, 0.9);
+   color: var(--white-color);
+}
+   </style>
+</head>
+<body>
+   <!--==================== LOGIN & SIGNUP ====================-->
+   <section class="login-signup section">
+      <div class="login-signup__container container">
+         <div class="login-signup__content">
+            <div class="login-signup__toggle">
+               <button class="login-signup__btn active" id="login-btn">Login</button>
+               <button class="login-signup__btn" id="signup-btn">Signup</button>
+            </div>
+
+            <!-- Login Form -->
+            <form action="#" class="login-signup__form login-form active" id="login-form">
+               <h2 class="login-signup__title">Welcome Back</h2>
+               <div class="login-signup__group">
+                  <input type="email" placeholder="Email" class="login-signup__input" required>
+               </div>
+               <div class="login-signup__group">
+                  <input type="password" placeholder="Password" class="login-signup__input" required>
+               </div>
+               <button type="submit" class="button">Login</button>
+               <p class="login-signup__text">
+                  Don’t have an account? <a href="#" id="switch-to-signup">Sign up</a>
+               </p>
+               <div class="login-signup__social">
+                  <p>Or continue with</p>
+                  <button type="button" class="login-signup__google">
+                     <i class="ri-google-fill"></i> Google
+                  </button>
+               </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form action="#" class="login-signup__form signup-form" id="signup-form">
+               <h2 class="login-signup__title">Create Account</h2>
+               <div class="login-signup__group">
+                  <input type="text" placeholder="Full Name" class="login-signup__input" required>
+               </div>
+               <div class="login-signup__group">
+                  <input type="email" placeholder="Email" class="login-signup__input" required>
+               </div>
+               <div class="login-signup__group">
+                  <input type="password" placeholder="Password" class="login-signup__input" required>
+               </div>
+               <button type="submit" class="button">Signup</button>
+               <p class="login-signup__text">
+                  Already have an account? <a href="#" id="switch-to-login">Login</a>
+               </p>
+               <div class="login-signup__social">
+                  <p>Or continue with</p>
+                  <button type="button" class="login-signup__google">
+                     <i class="ri-google-fill"></i> Google
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </section>
+
+   <!--=============== MAIN JS ===============-->
+   <script>
+      const loginBtn = document.getElementById('login-btn');
+      const signupBtn = document.getElementById('signup-btn');
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const switchToSignup = document.getElementById('switch-to-signup');
+      const switchToLogin = document.getElementById('switch-to-login');
+
+      loginBtn.addEventListener('click', () => {
+         loginBtn.classList.add('active');
+         signupBtn.classList.remove('active');
+         loginForm.classList.add('active');
+         signupForm.classList.remove('active');
+      });
+
+      signupBtn.addEventListener('click', () => {
+         signupBtn.classList.add('active');
+         loginBtn.classList.remove('active');
+         signupForm.classList.add('active');
+         loginForm.classList.remove('active');
+      });
+
+      switchToSignup.addEventListener('click', (e) => {
+         e.preventDefault();
+         signupBtn.click();
+      });
+
+      switchToLogin.addEventListener('click', (e) => {
+         e.preventDefault();
+         loginBtn.click();
+      });
+   </script>
+</body>
+</html>
