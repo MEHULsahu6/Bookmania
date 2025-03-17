@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="../../stylesheets/User/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../stylesheets/User/home.css">
+    <title>Book Mania - User Profile</title>
+    <style>
+        /*=============== PROFILE ===============*/
+.profile__container {
+    padding-top: 2rem;
+    row-gap: 3rem;
+}
+
+.profile__header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background-color: var(--container-color);
+    padding: 2rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.profile__avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    object-fit: cover;
+}
+
+.profile__info {
+    flex: 1;
+}
+
+.profile__name {
+    font-size: var(--h1-font-size);
+    margin-bottom: 0.5rem;
+}
+
+.profile__email,
+.profile__location {
+    font-size: var(--normal-font-size);
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+}
+
+.profile__edit-btn {
+    padding: 0.75rem 1.5rem;
+}
+
+.profile__stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    text-align: center;
+}
+
+.profile__stat {
+    background-color: var(--container-color);
+    padding: 1.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.stat__number {
+    font-size: var(--h2-font-size);
+    color: var(--first-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat__label {
+    font-size: var(--small-font-size);
+}
+
+.profile__section {
+    margin-top: 2rem;
+}
+
+.purchase__card,
+.wishlist__card,
+.progress__card {
+    background-color: var(--container-color);
+    padding: 1.5rem;
+    border: 2px solid var(--border-color);
+    text-align: center;
+    border-radius: 0.5rem;
+}
+
+.purchase__img,
+.wishlist__img,
+.progress__img {
+    width: 120px;
+    margin: 0 auto 1rem;
+}
+
+.purchase__title,
+.wishlist__title,
+.progress__title {
+    font-size: var(--h3-font-size);
+    margin-bottom: 0.75rem;
+}
+
+.purchase__date {
+    font-size: var(--small-font-size);
+    color: var(--text-color);
+}
+
+.rating__stars {
+    color: #ffd700;
+    margin: 0.5rem 0;
+}
+
+.progress__bar {
+    width: 100%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 0.75rem 0;
+    overflow: hidden;
+}
+
+.progress__fill {
+    height: 100%;
+    background-color: var(--first-color);
+    border-radius: 5px;
+}
+
+.wishlist__btn {
+    padding: 0.75rem 1.25rem;
+    margin-top: 0.75rem;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+    .profile__header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile__stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (min-width: 1150px) {
+    .profile__container {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+    }
+
+    .profile__header {
+        grid-column: 1 / 3;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Include the navbar partial -->
+    <%- include('partials/navbar') %>
+
+    <!--==================== MAIN ====================-->
+    <main class="main">
+        <!--==================== PROFILE ====================-->
+        <section class="profile section" id="profile">
+            <div class="profile__container container grid">
+                <!-- Profile Header -->
+                <div class="profile__header">
+                    <img src="../../img/profile_default.avif" alt="User Avatar" class="profile__avatar">
+                    <div class="profile__info">
+                        <h1 class="profile__name">John Doe</h1>
+                        <p class="profile__email">john.doe@email.com</p>
+                        <p class="profile__location">New York, USA</p>
+                        <button class="button profile__edit-btn">Edit Profile</button>
+                    </div>
+                </div>
+
+                <!-- Profile Stats -->
+                <div class="profile__stats grid">
+                    <div class="profile__stat">
+                        <h3 class="stat__number">24</h3>
+                        <p class="stat__label">Books Purchased</p>
+                    </div>
+                    <div class="profile__stat">
+                        <h3 class="stat__number">15</h3>
+                        <p class="stat__label">Wishlist Items</p>
+                    </div>
+                    <div class="profile__stat">
+                        <h3 class="stat__number">8</h3>
+                        <p class="stat__label">Reviews Written</p>
+                    </div>
+                </div>
+
+                <!-- Recent Purchases (Modified) -->
+                <div class="profile__section">
+                    <h2 class="section__title">Recent Purchases</h2>
+                    <div class="profile__purchases swiper">
+                        <div class="swiper-wrapper">
+                            <article class="purchase__card swiper-slide">
+                                <img src="../../img/book-1.png" alt="Book" class="purchase__img">
+                                <h3 class="purchase__title">Book Title 1</h3>
+                                <div class="rating__stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-half-fill"></i>
+                                </div>
+                                <p class="purchase__date">Purchased: Mar 10, 2025</p>
+                            </article>
+                            <article class="purchase__card swiper-slide">
+                                <img src="../../img/book-2.png" alt="Book" class="purchase__img">
+                                <h3 class="purchase__title">Book Title 2</h3>
+                                <div class="rating__stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-line"></i>
+                                    <i class="ri-star-line"></i>
+                                </div>
+                                <p class="purchase__date">Purchased: Feb 28, 2025</p>
+                            </article>
+                            <article class="purchase__card swiper-slide">
+                                <img src="../../img/book-3.png" alt="Book" class="purchase__img">
+                                <h3 class="purchase__title">Book Title 3</h3>
+                                <div class="rating__stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-line"></i>
+                                </div>
+                                <p class="purchase__date">Purchased: Feb 15, 2025</p>
+                            </article>
+                        </div>
+                        <div class="swiper-button-prev"><i class="ri-arrow-left-s-line"></i></div>
+                        <div class="swiper-button-next"><i class="ri-arrow-right-s-line"></i></div>
+                    </div>
+                </div>
+
+                <!-- Wishlist -->
+                <div class="profile__section">
+                    <h2 class="section__title">Your Wishlist</h2>
+                    <div class="profile__wishlist swiper">
+                        <div class="swiper-wrapper">
+                            <article class="wishlist__card swiper-slide">
+                                <img src="../../img/book-4.png" alt="Book" class="wishlist__img">
+                                <h3 class="wishlist__title">Wishlist Book 1</h3>
+                                <button class="button wishlist__btn">Add to Cart</button>
+                            </article>
+                            <article class="wishlist__card swiper-slide">
+                                <img src="../../img/book-5.png" alt="Book" class="wishlist__img">
+                                <h3 class="wishlist__title">Wishlist Book 2</h3>
+                                <button class="button wishlist__btn">Add to Cart</button>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Reading Progress Section -->
+                <div class="profile__section">
+                    <h2 class="section__title">Reading Progress</h2>
+                    <div class="profile__progress swiper">
+                        <div class="swiper-wrapper">
+                            <article class="progress__card swiper-slide">
+                                <img src="../../img/book-6.png" alt="Book" class="progress__img">
+                                <h3 class="progress__title">Current Book</h3>
+                                <div class="progress__bar">
+                                    <div class="progress__fill" style="width: 65%;"></div>
+                                </div>
+                                <p class="purchase__date">65% Complete</p>
+                            </article>
+                            <article class="progress__card swiper-slide">
+                                <img src="../../img/book-7.png" alt="Book" class="progress__img">
+                                <h3 class="progress__title">Next Book</h3>
+                                <div class="progress__bar">
+                                    <div class="progress__fill" style="width: 20%;"></div>
+                                </div>
+                                <p class="purchase__date">20% Complete</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!--==================== FOOTER ====================-->
+    <footer class="footer">
+        <div class="footer__container container grid">
+            <div>
+                <a href="#" class="footer__logo">
+                    <i class="ri-book-3-line"></i>E-Book
+                </a>
+                <p class="footer__description">
+                    Find and explore the best eBooks from all your favorite writers.
+                </p>
+            </div>
+            <!-- Footer content similar to reference -->
+        </div>
+        <span class="footer__copy">
+            © All Rights Reserved By BookMania
+        </span>
+    </footer>
+
+    <!--========== SCROLL UP ==========-->
+    <a href="#" class="scrollup" id="scroll-up">
+        <i class="ri-arrow-up-line"></i>
+    </a>
+
+    <!--=============== SCROLLREVEAL ===============-->
+    <script src="javascripts/scrollreveal.min.js"></script>
+    <!--=============== SWIPER JS ===============-->
+    <script src="javascripts/swiper-bundle.min.js"></script>
+    <!--=============== MAIN JS ===============-->
+    <script src="javascripts/home.js"></script>
+</body>
+</html>

@@ -18,6 +18,9 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
   res.render('login')
 })
+app.get('/profile', (req, res) => {
+  res.render('./user/profile')
+})
 
 
 app.listen(port, () => {
