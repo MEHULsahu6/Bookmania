@@ -9,7 +9,6 @@
    <title>Book Mania - Login & Signup</title>
    <style>
     /*=============== LOGIN & SIGNUP ===============*/
-/*=============== LOGIN & SIGNUP ===============*/
 .login-signup__container {
    display: flex;
    justify-content: center;
@@ -136,11 +135,64 @@
    background-color: hsla(230, 12%, 18%, 0.9);
    color: var(--white-color);
 }
+.login-signup__select {
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--body-color);
+        border: 2px solid var(--border-color);
+        border-radius: 0.5rem;
+        color: var(--text-color);
+        transition: background-color 0.4s, border 0.4s;
+        font-size: var(--normal-font-size);
+    }
+
+    .login-signup__select:focus {
+        border-color: var(--first-color);
+        outline: none;
+    }
+
+    .dark-theme .login-signup__select {
+        background-color: hsla(230, 12%, 8%, 0.6);
+        color: var(--white-color);
+    }
+    .login-signup__select {
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--body-color);
+        border: 2px solid var(--border-color);
+        border-radius: 0.5rem;
+        color: var(--text-color);
+        transition: background-color 0.4s, border 0.4s;
+        font-size: var(--normal-font-size);
+    }
+
+    .login-signup__select:focus {
+        border-color: var(--first-color);
+        outline: none;
+    }
+
+    .dark-theme .login-signup__select {
+        background-color: hsla(230, 12%, 8%, 0.6);
+        color: var(--white-color);
+    }
+
+    /* Error message styling */
+    .error-message {
+        color: #ff4444;
+        font-size: var(--small-font-size);
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    /* Disabled Google button styling */
+    .login-signup__google:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 
    </style>
 </head>
 <body>
-   <!--==================== LOGIN & SIGNUP ====================-->
    <section class="login-signup section">
       <div class="login-signup__container container">
          <div class="login-signup__content">
@@ -153,10 +205,12 @@
             <form action="#" class="login-signup__form login-form active" id="login-form">
                <h2 class="login-signup__title">Welcome Back</h2>
                <div class="login-signup__group">
-                  <input type="email" placeholder="Email" class="login-signup__input" required>
+                  <input type="email" placeholder="Email" class="login-signup__input" name="email" required>
+                  <span class="error-message" id="login-email-error"></span>
                </div>
                <div class="login-signup__group">
-                  <input type="password" placeholder="Password" class="login-signup__input" required>
+                  <input type="password" placeholder="Password" class="login-signup__input" name="password" required>
+                  <span class="error-message" id="login-password-error"></span>
                </div>
                <button type="submit" class="button">Login</button>
                <p class="login-signup__text">
@@ -174,13 +228,24 @@
             <form action="#" class="login-signup__form signup-form" id="signup-form">
                <h2 class="login-signup__title">Create Account</h2>
                <div class="login-signup__group">
-                  <input type="text" placeholder="Full Name" class="login-signup__input" required>
+                  <input type="text" placeholder="Full Name" class="login-signup__input" name="fullname" required>
+                  <span class="error-message" id="signup-name-error"></span>
                </div>
                <div class="login-signup__group">
-                  <input type="email" placeholder="Email" class="login-signup__input" required>
+                  <input type="email" placeholder="Email" class="login-signup__input" name="email" required>
+                  <span class="error-message" id="signup-email-error"></span>
                </div>
                <div class="login-signup__group">
-                  <input type="password" placeholder="Password" class="login-signup__input" required>
+                  <input type="password" placeholder="Password" class="login-signup__input" name="password" required>
+                  <span class="error-message" id="signup-password-error"></span>
+               </div>
+               <div class="login-signup__group">
+                  <select class="login-signup__select" name="role" required>
+                     <option value="" disabled selected>Select Role</option>
+                     <option value="user">User</option>
+                     <option value="admin">Admin</option>
+                  </select>
+                  <span class="error-message" id="signup-role-error"></span>
                </div>
                <button type="submit" class="button">Signup</button>
                <p class="login-signup__text">
@@ -188,7 +253,7 @@
                </p>
                <div class="login-signup__social">
                   <p>Or continue with</p>
-                  <button type="button" class="login-signup__google">
+                  <button type="button" class="login-signup__google" id="signup-google" disabled>
                      <i class="ri-google-fill"></i> Google
                   </button>
                </div>
@@ -197,8 +262,8 @@
       </div>
    </section>
 
-   <!--=============== MAIN JS ===============-->
    <script>
+      // Form toggle functionality (unchanged)
       const loginBtn = document.getElementById('login-btn');
       const signupBtn = document.getElementById('signup-btn');
       const loginForm = document.getElementById('login-form');
@@ -228,6 +293,116 @@
       switchToLogin.addEventListener('click', (e) => {
          e.preventDefault();
          loginBtn.click();
+      });
+
+      // Validation functions
+      function validateEmail(email) {
+         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+         return re.test(email);
+      }
+
+      function validatePassword(password) {
+         return password.length >= 8;
+      }
+
+      function validateName(name) {
+         return name.trim().length >= 2;
+      }
+
+      // Login form validation
+      loginForm.addEventListener('submit', (e) => {
+         e.preventDefault();
+         let isValid = true;
+
+         const email = loginForm.querySelector('input[name="email"]').value;
+         const password = loginForm.querySelector('input[name="password"]').value;
+         
+         const emailError = document.getElementById('login-email-error');
+         const passwordError = document.getElementById('login-password-error');
+
+         emailError.style.display = 'none';
+         passwordError.style.display = 'none';
+
+         if (!validateEmail(email)) {
+            emailError.textContent = 'Please enter a valid email address';
+            emailError.style.display = 'block';
+            isValid = false;
+         }
+
+         if (!validatePassword(password)) {
+            passwordError.textContent = 'Password must be at least 8 characters long';
+            passwordError.style.display = 'block';
+            isValid = false;
+         }
+
+         if (isValid) {
+            // Proceed with form submission
+            console.log('Login form is valid');
+            // loginForm.submit();
+         }
+      });
+
+      // Signup form validation
+      signupForm.addEventListener('submit', (e) => {
+         e.preventDefault();
+         let isValid = true;
+
+         const name = signupForm.querySelector('input[name="fullname"]').value;
+         const email = signupForm.querySelector('input[name="email"]').value;
+         const password = signupForm.querySelector('input[name="password"]').value;
+         const role = signupForm.querySelector('select[name="role"]').value;
+
+         const nameError = document.getElementById('signup-name-error');
+         const emailError = document.getElementById('signup-email-error');
+         const passwordError = document.getElementById('signup-password-error');
+         const roleError = document.getElementById('signup-role-error');
+
+         nameError.style.display = 'none';
+         emailError.style.display = 'none';
+         passwordError.style.display = 'none';
+         roleError.style.display = 'none';
+
+         if (!validateName(name)) {
+            nameError.textContent = 'Name must be at least 2 characters long';
+            nameError.style.display = 'block';
+            isValid = false;
+         }
+
+         if (!validateEmail(email)) {
+            emailError.textContent = 'Please enter a valid email address';
+            emailError.style.display = 'block';
+            isValid = false;
+         }
+
+         if (!validatePassword(password)) {
+            passwordError.textContent = 'Password must be at least 8 characters long';
+            passwordError.style.display = 'block';
+            isValid = false;
+         }
+
+         if (!role) {
+            roleError.textContent = 'Please select a role';
+            roleError.style.display = 'block';
+            isValid = false;
+         }
+
+         if (isValid) {
+            // Proceed with form submission
+            console.log('Signup form is valid');
+            // signupForm.submit();
+         }
+      });
+
+      // Enable/disable Google button based on role selection
+      const roleSelect = signupForm.querySelector('select[name="role"]');
+      const googleButton = document.getElementById('signup-google');
+
+      roleSelect.addEventListener('change', () => {
+         if (roleSelect.value === 'user') {
+            googleButton.disabled = false;
+         } else {
+            googleButton.disabled = true;
+         }
       });
    </script>
 </body>
