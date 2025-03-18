@@ -1,0 +1,149 @@
+<style>
+/*=============== PROFILE ===============*/
+.profile__container {
+padding-top: 2rem;
+row-gap: 3rem;
+}
+
+.profile__header {
+display: flex;
+align-items: center;
+gap: 2rem;
+background-color: var(--container-color);
+padding: 2rem;
+border: 2px solid var(--border-color);
+border-radius: 0.5rem;
+}
+
+.profile__avatar {
+width: 120px;
+height: 120px;
+border-radius: 50%;
+border: 2px solid var(--border-color);
+object-fit: cover;
+}
+
+.profile__info {
+flex: 1;
+}
+
+.profile__name {
+font-size: var(--h1-font-size);
+margin-bottom: 0.5rem;
+}
+
+.profile__email,
+.profile__location {
+font-size: var(--normal-font-size);
+color: var(--text-color);
+margin-bottom: 0.75rem;
+}
+
+.profile__edit-btn {
+padding: 0.75rem 1.5rem;
+}
+
+.profile__stats {
+grid-template-columns: repeat(3, 1fr);
+gap: 2rem;
+text-align: center;
+}
+
+.profile__stat {
+background-color: var(--container-color);
+padding: 1.5rem;
+border: 2px solid var(--border-color);
+border-radius: 0.5rem;
+}
+
+.stat__number {
+font-size: var(--h2-font-size);
+color: var(--first-color);
+margin-bottom: 0.5rem;
+}
+
+.stat__label {
+font-size: var(--small-font-size);
+}
+
+.profile__section {
+margin-top: 2rem;
+}
+
+.purchase__card,
+.wishlist__card,
+.progress__card {
+background-color: var(--container-color);
+padding: 1.5rem;
+border: 2px solid var(--border-color);
+text-align: center;
+border-radius: 0.5rem;
+}
+
+.purchase__img,
+.wishlist__img,
+.progress__img {
+width: 120px;
+margin: 0 auto 1rem;
+}
+
+.purchase__title,
+.wishlist__title,
+.progress__title {
+font-size: var(--h3-font-size);
+margin-bottom: 0.75rem;
+}
+
+.purchase__date {
+font-size: var(--small-font-size);
+color: var(--text-color);
+}
+
+.rating__stars {
+color: #ffd700;
+margin: 0.5rem 0;
+}
+
+.progress__bar {
+width: 100%;
+height: 10px;
+background-color: #e0e0e0;
+border-radius: 5px;
+margin: 0.75rem 0;
+overflow: hidden;
+}
+
+.progress__fill {
+height: 100%;
+background-color: var(--first-color);
+border-radius: 5px;
+}
+
+.wishlist__btn {
+padding: 0.75rem 1.25rem;
+margin-top: 0.75rem;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+.profile__header {
+flex-direction: column;
+text-align: center;
+}
+
+.profile__stats {
+grid-template-columns: 1fr;
+}
+}
+
+@media screen and (min-width: 1150px) {
+.profile__container {
+grid-template-columns: 1fr 1fr;
+gap: 3rem;
+}
+
+.profile__header {
+grid-column: 1 / 3;
+}
+}
+</style>
