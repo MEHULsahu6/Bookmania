@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+   <link rel="stylesheet" href="../../stylesheets/User/explore.css">
+   <link rel="stylesheet" href="../../stylesheets/User/home.css">
+   <title>Explore Books - Book Mania</title>
+   <style>
+    /*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Montagu+Slab:wght@500&family=Montserrat:wght@400;500;600&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  --header-height: 3.5rem;
+
+  /*========== Colors ==========*/
+  --first-color: hsl(230, 62%, 56%);
+  --title-color: hsl(230, 70%, 16%);
+  --text-color: hsl(230, 16%, 45%);
+  --border-color: hsl(230, 50%, 90%);
+  --white-color: hsl(0, 0%, 100%);
+  --body-color: hsl(230, 100%, 96%);
+  --container-color: hsl(230, 100%, 97%);
+
+  /*========== Font and typography ==========*/
+  --body-font: "Montserrat", sans-serif;
+  --second-font: "Montagu Slab", serif;
+  --biggest-font-size: 2rem;
+  --h1-font-size: 1.5rem;
+  --h2-font-size: 1.25rem;
+  --h3-font-size: 1rem;
+  --normal-font-size: .938rem;
+  --small-font-size: .813rem;
+  --smaller-font-size: .75rem;
+}
+
+/* Base styles from your existing CSS */
+/* ... Include necessary base styles ... */
+
+.explore__filters {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filters__search {
+  flex: 1;
+  min-width: 280px;
+  position: relative;
+}
+
+.search__input {
+  width: 100%;
+  padding: 1rem 3rem 1rem 1.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 4rem;
+  font-family: var(--body-font);
+  transition: border-color .3s;
+}
+
+.search__input:focus {
+  border-color: var(--first-color);
+}
+
+.search__icon {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-color);
+}
+
+.filters__options {
+  display: flex;
+  gap: 1rem;
+}
+
+.filter__select {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 4rem;
+  font-family: var(--body-font);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.explore__container {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.explore__card {
+  background-color: var(--container-color);
+  padding: 1.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 1rem;
+  transition: transform .3s, border-color .3s;
+}
+
+.explore__card:hover {
+  transform: translateY(-0.25rem);
+  border-color: var(--first-color);
+}
+
+.explore__img {
+  width: 150px;
+  margin: 0 auto 1rem;
+  transition: transform .3s;
+}
+
+.explore__card:hover .explore__img {
+  transform: scale(1.05);
+}
+
+.explore__data {
+  text-align: center;
+}
+
+.explore__title {
+  font-size: var(--h3-font-size);
+  margin-bottom: .25rem;
+}
+
+.explore__author {
+  color: var(--text-color);
+  font-size: var(--small-font-size);
+  margin-bottom: .75rem;
+}
+
+.explore__prices {
+  display: flex;
+  justify-content: center;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+
+.explore__discount {
+  color: var(--title-color);
+  font-weight: var(--font-medium);
+}
+
+.explore__price {
+  color: var(--text-color);
+  text-decoration: line-through;
+  font-size: var(--small-font-size);
+}
+
+.explore__stars {
+  color: var(--first-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .25rem;
+  margin-bottom: 1rem;
+}
+
+.explore__stars span {
+  color: var(--text-color);
+  font-size: var(--small-font-size);
+  margin-left: .5rem;
+}
+
+.explore__button {
+  width: 100%;
+  text-align: center;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .filters__options {
+    width: 100%;
+  }
+  
+  .filter__select {
+    flex: 1;
+  }
+}
+   </style>
+</head>
+<body>
+   <!-- Include the navbar partial -->
+   <%- include('partials/navbar') %>
+
+   <main class="main">
+      <section class="explore section">
+         <h2 class="section__title">All Books</h2>
+
+         <!-- Filter and Sort Options -->
+         <div class="explore__filters container">
+            <div class="filters__search">
+               <input type="text" placeholder="Search books..." class="search__input">
+               <i class="ri-search-line search__icon"></i>
+            </div>
+            
+            <div class="filters__options">
+               <select class="filter__select">
+                  <option value="">Category</option>
+                  <option value="fiction">Fiction</option>
+                  <option value="non-fiction">Non-Fiction</option>
+                  <option value="mystery">Mystery</option>
+                  <option value="sci-fi">Sci-Fi</option>
+               </select>
+
+               <select class="filter__select">
+                  <option value="">Sort By</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="name">Name</option>
+                  <option value="popular">Popularity</option>
+               </select>
+            </div>
+         </div>
+
+         <!-- Books Grid -->
+         <div class="explore__container container grid">
+            <!-- Book Card Template -->
+            <article class="explore__card">
+               <img src="../../img/book-1.png" alt="book" class="explore__img">
+               <div class="explore__data">
+                  <h3 class="explore__title">Book Title</h3>
+                  <p class="explore__author">Author Name</p>
+                  <div class="explore__prices">
+                     <span class="explore__discount">$11.99</span>
+                     <span class="explore__price">$19.99</span>
+                  </div>
+                  <div class="explore__stars">
+                     <i class="ri-star-fill"></i>
+                     <i class="ri-star-fill"></i>
+                     <i class="ri-star-fill"></i>
+                     <i class="ri-star-fill"></i>
+                     <i class="ri-star-line"></i>
+                     <span>(4.0)</span>
+                  </div>
+                  <button class="button explore__button">Add To Cart</button>
+               </div>
+            </article>
+
+            <!-- Repeat book cards for all books -->
+            <!-- You can use EJS to loop through your book data -->
+         </div>
+      </section>
+   </main>
+
+
+   <!--========== SCROLL UP ==========-->
+   <a href="#" class="scrollup" id="scroll-up">
+      <i class="ri-arrow-up-line"></i>
+   </a>
+
+   <!--=============== MAIN JS ===============-->
+   <script >
+    // Get DOM elements
+const searchInput = document.querySelector('.search__input');
+const filterSelects = document.querySelectorAll('.filter__select');
+const exploreCards = document.querySelectorAll('.explore__card');
+
+// Search functionality
+searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    exploreCards.forEach(card => {
+        const title = card.querySelector('.explore__title').textContent.toLowerCase();
+        const author = card.querySelector('.explore__author').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || author.includes(searchTerm)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// Filter and sort functionality
+filterSelects.forEach(select => {
+    select.addEventListener('change', () => {
+        // Add your filter and sort logic here
+        console.log('Filter/Sort changed:', select.value);
+    });
+});
+
+// Add to cart functionality
+const addToCartButtons = document.querySelectorAll('.explore__button');
+addToCartButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Add your cart logic here
+        console.log('Added to cart');
+    });
+});
+   </script>
+</body>
+</html>

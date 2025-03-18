@@ -25,6 +25,9 @@ app.get('/signup', (req, res) => {
 app.get('/profile', (req, res) => {
   res.render('./user/profile')
 })
+app.get('/Explore', (req, res) => {
+  res.render('./user/explore')
+})
 
 app.get('/orders', (req, res) => {
   const orders = [
