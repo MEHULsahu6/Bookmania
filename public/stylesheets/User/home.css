@@ -176,6 +176,16 @@ body.dark-theme{
   transition: box-shadow .4s , background-color .4s;
 }
 
+.logout-button i {
+  font-size: 1.25rem;
+  color: var(--title-color);
+  cursor: pointer;
+  transition: color .4s;
+}
+
+.logout-button i:hover {
+  color: var(--first-color);
+}
 .nav{
   height: var(--header-height);
   display: flex;
@@ -210,15 +220,18 @@ body.dark-theme{
   
 }
 
-.nav__list{
+.nav__list {
   display: flex;
   justify-content: space-between;
- 
 }
 
-.nav__link{
+.nav__link {
   color: var(--text-color);
   transition: color .4s;
+  position: relative; /* Added for positioning text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .nav__link span {
   display: none;
@@ -226,6 +239,10 @@ body.dark-theme{
 
 .nav__link i{
   font-size: 1.25rem;
+}
+.nav__text {
+  display: none; /* Hide by default on mobile */
+  font-size: var(--small-font-size);
 }
 
 .nav__link:hover{
@@ -237,13 +254,33 @@ body.dark-theme{
   align-items: center;
   column-gap: 1rem;
 }
-
-.nav__actions i {
-  font-size: 1.25rem;
-  color : var(--title-color);
-  cursor: pointer;
-  transition: color .4s;
+.nav__actions a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+.action__text {
+  display: none; /* Hide by default */
+  font-size: var(--small-font-size);
+}
+/* Show text on hover for action buttons */
+.nav__actions a:hover .action__text {
+  display: block;
+  position: absolute;
+  top: 2rem; /* Position below icon */
+  background-color: var(--container-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 4px hsla(0, 0%, 0%, .1);
+  color: var(--text-color);
+}
+  .nav__actions i {
+    font-size: 1.25rem;
+    color : var(--title-color);
+    cursor: pointer;
+    transition: color .4s;
+  }
 
 .nav__actions i:hover{
   color: var(--first-color);
@@ -760,10 +797,11 @@ margin-bottom: 1.25rem;
   }
 
   .nav__list{
-    column-gap: 4rem;
+    column-gap: 3rem;
   }
  .nav__link {
   font-weight: var(--font-medium);
+  flex-direction: row
  }
 
  .dark-theme .nav__menu{
@@ -1483,7 +1521,9 @@ margin-bottom: 1.25rem;
     padding-block: 7rem 2rem;
 
   }
-
+  .nav__text {
+    font-size: var(--normal-font-size);
+  }
   .nav{
     height: calc(var(--header-height) + 2rem);
     column-gap: 4rem;
@@ -1493,6 +1533,12 @@ margin-bottom: 1.25rem;
   }
   .nav__link span{
     display: block;
+  }
+  .nav__link:hover .nav__text {
+    position: static; /* Reset mobile positioning */
+    background-color: transparent;
+    padding: 0;
+    box-shadow: none;
   }
   .nav__menu{
     width: initial;
