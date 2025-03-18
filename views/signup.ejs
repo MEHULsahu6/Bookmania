@@ -6,7 +6,7 @@
    <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/x-icon">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
    <link rel="stylesheet" href="/stylesheets/User/home.css">
-   <title>Book Mania - Login</title>
+   <title>Book Mania - Signup</title>
    <style>
       /* Reset default margins and ensure no scrollbar */
       * {
@@ -20,8 +20,8 @@
          overflow: hidden; /* Prevent scrollbar */
       }
 
-      /* Login Container */
-      .login__container {
+      /* Signup Container */
+      .signup__container {
          display: flex;
          justify-content: center;
          align-items: center;
@@ -29,7 +29,7 @@
          padding: 1rem; /* Minimal padding */
       }
 
-      .login__content {
+      .signup__content {
          background-color: var(--container-color);
          padding: 1.5rem; /* Reduced padding */
          border: 2px solid var(--border-color);
@@ -40,20 +40,20 @@
          transition: background-color 0.4s, border 0.4s;
       }
 
-      .login__form {
+      .signup__form {
          text-align: center;
       }
 
-      .login__title {
+      .signup__title {
          font-size: var(--h2-font-size);
          margin-bottom: 1rem; /* Reduced margin */
       }
 
-      .login__group {
+      .signup__group {
          margin-bottom: 0.75rem; /* Reduced spacing */
       }
 
-      .login__input {
+      .signup__input, .signup__select {
          width: 100%;
          padding: 0.75rem; /* Reduced padding */
          background-color: var(--body-color);
@@ -64,26 +64,26 @@
          font-size: var(--normal-font-size);
       }
 
-      .login__input::placeholder {
+      .signup__input::placeholder {
          color: var(--text-color);
       }
 
-      .login__input:focus {
+      .signup__input:focus, .signup__select:focus {
          border-color: var(--first-color);
          outline: none;
       }
 
-      .login__text {
+      .signup__text {
          font-size: var(--small-font-size);
          margin: 0.75rem 0; /* Reduced margin */
       }
 
-      .login__text a {
+      .signup__text a {
          color: var(--first-color);
          font-weight: var(--font-medium);
       }
 
-      .login__google {
+      .signup__google {
          display: flex;
          align-items: center;
          justify-content: center;
@@ -99,7 +99,7 @@
          transition: box-shadow 0.4s, background-color 0.4s;
       }
 
-      .login__google:hover {
+      .signup__google:hover {
          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
 
@@ -121,16 +121,16 @@
       }
 
       /* Dark theme adjustments */
-      .dark-theme .login__content {
+      .dark-theme .signup__content {
          background-color: hsla(230, 12%, 12%, 0.9);
       }
 
-      .dark-theme .login__input {
+      .dark-theme .signup__input, .dark-theme .signup__select {
          background-color: hsla(230, 12%, 8%, 0.6);
          color: var(--white-color);
       }
 
-      .dark-theme .login__google {
+      .dark-theme .signup__google {
          background-color: hsla(230, 12%, 18%, 0.9);
          color: var(--white-color);
       }
@@ -144,38 +144,56 @@
          text-align: left;
       }
 
+      /* Disabled Google button styling */
+      .signup__google:disabled {
+         opacity: 0.6;
+         cursor: not-allowed;
+      }
+
       /* Social section */
-      .login__social {
+      .signup__social {
          margin-top: 0.75rem; /* Reduced margin */
       }
 
-      .login__social p {
+      .signup__social p {
          font-size: var(--small-font-size);
          margin-bottom: 0.5rem; /* Reduced margin */
       }
    </style>
 </head>
 <body>
-   <div class="login__container">
-      <div class="login__content">
-         <!-- Login Form -->
-         <form action="/login" method="POST" class="login__form" id="login-form">
-            <h2 class="login__title">Welcome Back</h2>
-            <div class="login__group">
-               <input type="email" placeholder="Email" class="login__input" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" required>
-               <span class="error-message" id="login-email-error"><%= typeof errors !== 'undefined' && errors.email ? errors.email : '' %></span>
+   <div class="signup__container">
+      <div class="signup__content">
+         <!-- Signup Form -->
+         <form action="/signup" method="POST" class="signup__form" id="signup-form">
+            <h2 class="signup__title">Create Account</h2>
+            <div class="signup__group">
+               <input type="text" placeholder="Full Name" class="signup__input" name="fullname" value="<%= typeof fullname !== 'undefined' ? fullname : '' %>" required>
+               <span class="error-message" id="signup-name-error"><%= typeof errors !== 'undefined' && errors.fullname ? errors.fullname : '' %></span>
             </div>
-            <div class="login__group">
-               <input type="password" placeholder="Password" class="login__input" name="password" required>
-               <span class="error-message" id="login-password-error"><%= typeof errors !== 'undefined' && errors.password ? errors.password : '' %></span>
+            <div class="signup__group">
+               <input type="email" placeholder="Email" class="signup__input" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" required>
+               <span class="error-message" id="signup-email-error"><%= typeof errors !== 'undefined' && errors.email ? errors.email : '' %></span>
             </div>
-            <button type="submit" class="button">Login</button>
-            <p class="login__text">
-               Don’t have an account? <a href="/signup">Sign up</a>
+            <div class="signup__group">
+               <input type="password" placeholder="Password" class="signup__input" name="password" required>
+               <span class="error-message" id="signup-password-error"><%= typeof errors !== 'undefined' && errors.password ? errors.password : '' %></span>
+            </div>
+            <div class="signup__group">
+               <select class="signup__select" name="role" required>
+                  <option value="" disabled <%= typeof role === 'undefined' || role === '' ? 'selected' : '' %>>Select Role</option>
+                  <option value="user" <%= typeof role !== 'undefined' && role === 'user' ? 'selected' : '' %>>User</option>
+                  <option value="admin" <%= typeof role !== 'undefined' && role === 'admin' ? 'selected' : '' %>>Admin</option>
+               </select>
+               <span class="error-message" id="signup-role-error"><%= typeof errors !== 'undefined' && errors.role ? errors.role : '' %></span>
+            </div>
+            <button type="submit" class="button">Signup</button>
+            <p class="signup__text">
+               Already have an account? <a href="/login">Login</a>
             </p>
-            <div class="login__social">
+            <div class="signup__social">
                <p>Or continue with</p>
-               <button type="button" class="login__google">
+               <button type="button" class="signup__google" id="signup-google" disabled>
                   <i class="ri-google-fill"></i> Google
                </button>
             </div>
@@ -194,19 +212,35 @@
          return password.length >= 8;
       }
 
-      // Login form validation
-      const loginForm = document.getElementById('login-form');
-      loginForm.addEventListener('submit', (e) => {
+      function validateName(name) {
+         return name.trim().length >= 2;
+      }
+
+      // Signup form validation
+      const signupForm = document.getElementById('signup-form');
+      signupForm.addEventListener('submit', (e) => {
          let isValid = true;
 
-         const email = loginForm.querySelector('input[name="email"]').value;
-         const password = loginForm.querySelector('input[name="password"]').value;
+         const name = signupForm.querySelector('input[name="fullname"]').value;
+         const email = signupForm.querySelector('input[name="email"]').value;
+         const password = signupForm.querySelector('input[name="password"]').value;
+         const role = signupForm.querySelector('select[name="role"]').value;
 
-         const emailError = document.getElementById('login-email-error');
-         const passwordError = document.getElementById('login-password-error');
+         const nameError = document.getElementById('signup-name-error');
+         const emailError = document.getElementById('signup-email-error');
+         const passwordError = document.getElementById('signup-password-error');
+         const roleError = document.getElementById('signup-role-error');
 
+         nameError.style.display = 'none';
          emailError.style.display = 'none';
          passwordError.style.display = 'none';
+         roleError.style.display = 'none';
+
+         if (!validateName(name)) {
+            nameError.textContent = nameError.textContent || 'Name must be at least 2 characters long';
+            nameError.style.display = 'block';
+            isValid = false;
+         }
 
          if (!validateEmail(email)) {
             emailError.textContent = emailError.textContent || 'Please enter a valid email address';
@@ -220,11 +254,29 @@
             isValid = false;
          }
 
+         if (!role) {
+            roleError.textContent = roleError.textContent || 'Please select a role';
+            roleError.style.display = 'block';
+            isValid = false;
+         }
+
          if (isValid) {
-            console.log('Login form is valid');
-            loginForm.submit();
+            console.log('Signup form is valid');
+            signupForm.submit();
          } else {
             e.preventDefault();
+         }
+      });
+
+      // Enable/disable Google button based on role selection
+      const roleSelect = signupForm.querySelector('select[name="role"]');
+      const googleButton = document.getElementById('signup-google');
+
+      roleSelect.addEventListener('change', () => {
+         if (roleSelect.value === 'user') {
+            googleButton.disabled = false;
+         } else {
+            googleButton.disabled = true;
          }
       });
    </script>
