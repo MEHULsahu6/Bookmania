@@ -7,18 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="../../stylesheets/User/swiper-bundle.min.css">
     <link rel="stylesheet" href="../../stylesheets/User/home.css">
-    <link rel="stylesheet" href="stylesheets/User/profile.css">
+    <link rel="stylesheet" href="../../stylesheets/User/profile.css">
 
     <title>Book Mania - User Profile</title>
-   
 </head>
 <body>
-    <!-- Include the navbar partial -->
     <%- include('partials/navbar') %>
 
-    <!--==================== MAIN ====================-->
     <main class="main">
-        <!--==================== PROFILE ====================-->
         <section class="profile section" id="profile">
             <div class="profile__container container grid">
                 <!-- Profile Header -->
@@ -28,27 +24,41 @@
                         <h1 class="profile__name">John Doe</h1>
                         <p class="profile__email">john.doe@email.com</p>
                         <p class="profile__location">New York, USA</p>
-                        <button class="button profile__edit-btn">Edit Profile</button>
+                        <button class="button profile__edit-btn" id="editProfileBtn">Edit Profile</button>
                     </div>
                 </div>
 
-                <!-- Profile Stats -->
-                <div class="profile__stats grid">
-                    <div class="profile__stat">
-                        <h3 class="stat__number">24</h3>
-                        <p class="stat__label">Books Purchased</p>
-                    </div>
-                    <div class="profile__stat">
-                        <h3 class="stat__number">15</h3>
-                        <p class="stat__label">Wishlist Items</p>
-                    </div>
-                    <div class="profile__stat">
-                        <h3 class="stat__number">8</h3>
-                        <p class="stat__label">Reviews Written</p>
+                <!-- Edit Profile Modal -->
+                <div class="profile__modal" id="editModal">
+                    <div class="profile__modal-content">
+                        <span class="modal__close" id="closeModal">&times;</span>
+                        <h2 class="section__title">Edit Profile</h2>
+                        <form action="/profile/update" method="POST" enctype="multipart/form-data" class="edit__form">
+                            <div class="form__group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" placeholder="John Doe" class="form__input" required>
+                            </div>
+                            <div class="form__group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" placeholder="john.doe@email.com" class="form__input" required>
+                            </div>
+                            <div class="form__group">
+                                <label for="location">Location</label>
+                                <input type="text" id="location" name="location" placeholder="New York, USA" class="form__input">
+                            </div>
+                            <div class="form__group">
+                                <label for="avatar">Profile Picture</label>
+                                <input type="file" id="avatar" name="avatar" class="form__input" accept="image/*">
+                            </div>
+                            <div class="form__actions">
+                                <button type="submit" class="button form__submit">Save Changes</button>
+                                <button type="button" class="button form__cancel" id="cancelEdit">Cancel</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
-                <!-- Recent Purchases (Modified) -->
+                <!-- Recent Purchases -->
                 <div class="profile__section">
                     <h2 class="section__title">Recent Purchases</h2>
                     <div class="profile__purchases swiper">
@@ -114,27 +124,33 @@
                     </div>
                 </div>
 
-                <!-- New Reading Progress Section -->
+                <!-- Order History -->
                 <div class="profile__section">
-                    <h2 class="section__title">Reading Progress</h2>
-                    <div class="profile__progress swiper">
-                        <div class="swiper-wrapper">
-                            <article class="progress__card swiper-slide">
-                                <img src="../../img/book-6.png" alt="Book" class="progress__img">
-                                <h3 class="progress__title">Current Book</h3>
-                                <div class="progress__bar">
-                                    <div class="progress__fill" style="width: 65%;"></div>
-                                </div>
-                                <p class="purchase__date">65% Complete</p>
-                            </article>
-                            <article class="progress__card swiper-slide">
-                                <img src="../../img/book-7.png" alt="Book" class="progress__img">
-                                <h3 class="progress__title">Next Book</h3>
-                                <div class="progress__bar">
-                                    <div class="progress__fill" style="width: 20%;"></div>
-                                </div>
-                                <p class="purchase__date">20% Complete</p>
-                            </article>
+                    <h2 class="section__title">Order History</h2>
+                    <div class="profile__orders">
+                        <div class="order__item">
+                            <div class="order__details">
+                                <p class="order__number">Order #12345</p>
+                                <p class="order__date">Placed: Mar 10, 2025</p>
+                                <p class="order__total">Total: $29.99</p>
+                            </div>
+                            <span class="order__status delivered">Delivered</span>
+                        </div>
+                        <div class="order__item">
+                            <div class="order__details">
+                                <p class="order__number">Order #12344</p>
+                                <p class="order__date">Placed: Feb 28, 2025</p>
+                                <p class="order__total">Total: $19.99</p>
+                            </div>
+                            <span class="order__status shipped">Shipped</span>
+                        </div>
+                        <div class="order__item">
+                            <div class="order__details">
+                                <p class="order__number">Order #12343</p>
+                                <p class="order__date">Placed: Feb 15, 2025</p>
+                                <p class="order__total">Total: $24.99</p>
+                            </div>
+                            <span class="order__status delivered">Delivered</span>
                         </div>
                     </div>
                 </div>
@@ -142,7 +158,6 @@
         </section>
     </main>
 
-    <!--==================== FOOTER ====================-->
     <footer class="footer">
         <div class="footer__container container grid">
             <div>
@@ -153,23 +168,44 @@
                     Find and explore the best eBooks from all your favorite writers.
                 </p>
             </div>
-            <!-- Footer content similar to reference -->
         </div>
         <span class="footer__copy">
             © All Rights Reserved By BookMania
         </span>
     </footer>
 
-    <!--========== SCROLL UP ==========-->
     <a href="#" class="scrollup" id="scroll-up">
         <i class="ri-arrow-up-line"></i>
     </a>
 
-    <!--=============== SCROLLREVEAL ===============-->
     <script src="javascripts/scrollreveal.min.js"></script>
-    <!--=============== SWIPER JS ===============-->
     <script src="javascripts/swiper-bundle.min.js"></script>
-    <!--=============== MAIN JS ===============-->
     <script src="javascripts/home.js"></script>
+    <script>
+        // Modal Functionality
+        const editBtn = document.getElementById('editProfileBtn');
+        const modal = document.getElementById('editModal');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelEdit');
+
+        editBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
