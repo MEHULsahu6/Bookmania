@@ -183,3 +183,37 @@ sr.reveal(`.home__images`, {delay: 600})
 sr.reveal(`.services__card`, {interval: 100})
 sr.reveal(`.discount__data`, {origin: 'left'})
 sr.reveal(`.discount__images`, {origin: 'right'})
+
+
+
+
+// view description or FEATURED CARD
+document.addEventListener('DOMContentLoaded', () => {
+    const viewButtons = document.querySelectorAll('.view-desc-btn');
+    
+    viewButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const card = e.target.closest('.featured__card');
+            const isShown = card.classList.contains('show-description');
+            
+            // Close all other descriptions
+            document.querySelectorAll('.featured__card').forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('show-description');
+                }
+            });
+            
+            // Toggle current description
+            card.classList.toggle('show-description', !isShown);
+        });
+    });
+
+    // Close description when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.featured__card')) {
+            document.querySelectorAll('.featured__card').forEach(card => {
+                card.classList.remove('show-description');
+            });
+        }
+    });
+});
