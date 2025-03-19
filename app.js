@@ -1,43 +1,29 @@
-const express = require('express')
-const app = express()
-const port = 3000;
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
 const path = require('path');
 
-
+// Import routes
+const homeRoutes = require('./routes/user/home.routes');
+const authRoutes = require('./routes/auth.routes');
+const profileRoutes = require('./routes/user/profile.routes');
+const exploreRoutes = require('./routes/user/explore.routes');
+const cartRoutes = require('./routes/user/cart.routes');
+const wishlistRoutes = require('./routes/user/wishlist.routes');
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.set(express())
 
-app.get('/', (req, res) => {
-  res.render('./user/home')
-})
-app.get('/login', (req, res) => {
-  res.render('login')
-})
-app.get('/signup', (req, res) => {
-  res.render('signup')
-})
-
-app.get('/profile', (req, res) => {
-  res.render('./user/profile')
-})
-app.get('/Explore', (req, res) => {
-  res.render('./user/explore')
-})
-app.get('/cart', (req, res) => {
-  res.render('./user/cart')
-})
-app.get('/wishlist', (req, res) => {
-  res.render('./user/wishlist')
-})
-
-
-
-
+// Use routes
+app.use('/', homeRoutes);
+app.use('/', authRoutes);
+app.use('/profile', profileRoutes);
+app.use('/explore', exploreRoutes);
+app.use('/cart', cartRoutes);
+app.use('/wishlist', wishlistRoutes);
 
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
