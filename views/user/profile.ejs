@@ -8,204 +8,167 @@
     <link rel="stylesheet" href="../../stylesheets/User/swiper-bundle.min.css">
     <link rel="stylesheet" href="../../stylesheets/User/home.css">
     <link rel="stylesheet" href="../../stylesheets/User/profile.css">
-
-    <title>Book Mania - User Profile</title>
+    <title>User Profile | Book Mania</title>
 </head>
 <body>
     <%- include('partials/navbar') %>
 
     <main class="main">
-        <section class="profile section" id="profile">
-            <div class="profile__container container grid">
-                <!-- Profile Header -->
-                <div class="profile__header">
-                    <img src="../../img/profile_default.avif" alt="User Avatar" class="profile__avatar">
-                    <div class="profile__info">
-                        <h1 class="profile__name">John Doe</h1>
-                        <p class="profile__email">john.doe@email.com</p>
-                        <p class="profile__location">New York, USA</p>
-                        <button class="button profile__edit-btn" id="editProfileBtn">Edit Profile</button>
+        <div class="profile-wrapper">
+            <!-- Profile Header -->
+            <section class="profile-header">
+                <div class="profile-cover">
+                    <div class="profile-avatar-container">
+                        <img src="../../img/user-avatar.png" alt="User Avatar" class="profile-avatar">
+                        <div class="avatar-upload">
+                            <label for="avatar-input">
+                                <i class="ri-camera-line"></i>
+                            </label>
+                            <input type="file" id="avatar-input" hidden>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Edit Profile Modal -->
-                <div class="profile__modal" id="editModal">
-                    <div class="profile__modal-content">
-                        <span class="modal__close" id="closeModal">&times;</span>
-                        <h2 class="section__title">Edit Profile</h2>
-                        <form action="/profile/update" method="POST" enctype="multipart/form-data" class="edit__form">
-                            <div class="form__group">
-                                <label for="name">Name</label>
-                                <input type="text" id="name" name="name" placeholder="John Doe" class="form__input" required>
-                            </div>
-                            <div class="form__group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" placeholder="john.doe@email.com" class="form__input" required>
-                            </div>
-                            <div class="form__group">
-                                <label for="location">Location</label>
-                                <input type="text" id="location" name="location" placeholder="New York, USA" class="form__input">
-                            </div>
-                            <div class="form__group">
-                                <label for="avatar">Profile Picture</label>
-                                <input type="file" id="avatar" name="avatar" class="form__input" accept="image/*">
-                            </div>
-                            <div class="form__actions">
-                                <button type="submit" class="button form__submit">Save Changes</button>
-                                <button type="button" class="button form__cancel" id="cancelEdit">Cancel</button>
-                            </div>
-                        </form>
+                <div class="profile-info">
+                    <h1 class="profile-name">John Doe</h1>
+                    <p class="profile-email">john.doe@email.com</p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">42</span>
+                            <span class="stat-label">Books Read</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">15</span>
+                            <span class="stat-label">Wishlist</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">8</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Recent Purchases -->
-                <div class="profile__section">
-                    <h2 class="section__title">Recent Purchases</h2>
-                    <div class="profile__purchases swiper">
-                        <div class="swiper-wrapper">
-                            <article class="purchase__card swiper-slide">
-                                <img src="../../img/book-1.png" alt="Book" class="purchase__img">
-                                <h3 class="purchase__title">Book Title 1</h3>
-                                <div class="rating__stars">
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-half-fill"></i>
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <!-- Left Column -->
+                <div class="profile-main">
+                    <section class="profile-about card">
+                        <div class="card-header">
+                            <h2>About Me</h2>
+                            <button class="edit-btn" id="edit-about">
+                                <i class="ri-edit-line"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <p class="profile-bio">
+                                Avid reader and book enthusiast. I love exploring different genres, 
+                                especially mystery and science fiction. Always on the lookout for 
+                                my next great read!
+                            </p>
+                        </div>
+                    </section>
+
+                    <section class="profile-favorites card">
+                        <div class="card-header">
+                            <h2>Favorite Books</h2>
+                            <button class="view-all-btn">View All</button>
+                        </div>
+                        <div class="favorites-grid">
+                            <div class="book-card">
+                                <img src="../../img/book-1.png" alt="Book">
+                                <div class="book-info">
+                                    <h3>Book Title 1</h3>
+                                    <div class="book-rating">
+                                        <i class="ri-star-fill"></i>
+                                        <span>4.5</span>
+                                    </div>
                                 </div>
-                                <p class="purchase__date">Purchased: Mar 10, 2025</p>
-                            </article>
-                            <article class="purchase__card swiper-slide">
-                                <img src="../../img/book-2.png" alt="Book" class="purchase__img">
-                                <h3 class="purchase__title">Book Title 2</h3>
-                                <div class="rating__stars">
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-line"></i>
-                                    <i class="ri-star-line"></i>
+                            </div>
+                            <!-- Add more book cards -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="profile-sidebar">
+                    <section class="profile-actions card">
+                        <button class="action-btn primary">
+                            <i class="ri-edit-line"></i>
+                            Edit Profile
+                        </button>
+                        <button class="action-btn">
+                            <i class="ri-settings-3-line"></i>
+                            Settings
+                        </button>
+                    </section>
+
+                    <section class="recent-activity card">
+                        <div class="card-header">
+                            <h2>Recent Activity</h2>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="ri-book-read-line"></i>
                                 </div>
-                                <p class="purchase__date">Purchased: Feb 28, 2025</p>
-                            </article>
-                            <article class="purchase__card swiper-slide">
-                                <img src="../../img/book-3.png" alt="Book" class="purchase__img">
-                                <h3 class="purchase__title">Book Title 3</h3>
-                                <div class="rating__stars">
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-fill"></i>
-                                    <i class="ri-star-line"></i>
+                                <div class="activity-details">
+                                    <h4>Finished Reading</h4>
+                                    <p>"Mystery of the Lost City"</p>
+                                    <span class="activity-date">March 15, 2025</span>
                                 </div>
-                                <p class="purchase__date">Purchased: Feb 15, 2025</p>
-                            </article>
-                        </div>
-                        <div class="swiper-button-prev"><i class="ri-arrow-left-s-line"></i></div>
-                        <div class="swiper-button-next"><i class="ri-arrow-right-s-line"></i></div>
-                    </div>
-                </div>
-
-                <!-- Wishlist -->
-                <div class="profile__section">
-                    <h2 class="section__title">Your Wishlist</h2>
-                    <div class="profile__wishlist swiper">
-                        <div class="swiper-wrapper">
-                            <article class="wishlist__card swiper-slide">
-                                <img src="../../img/book-4.png" alt="Book" class="wishlist__img">
-                                <h3 class="wishlist__title">Wishlist Book 1</h3>
-                                <button class="button wishlist__btn">Add to Cart</button>
-                            </article>
-                            <article class="wishlist__card swiper-slide">
-                                <img src="../../img/book-5.png" alt="Book" class="wishlist__img">
-                                <h3 class="wishlist__title">Wishlist Book 2</h3>
-                                <button class="button wishlist__btn">Add to Cart</button>
-                            </article>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Order History -->
-                <div class="profile__section">
-                    <h2 class="section__title">Order History</h2>
-                    <div class="profile__orders">
-                        <div class="order__item">
-                            <div class="order__details">
-                                <p class="order__number">Order #12345</p>
-                                <p class="order__date">Placed: Mar 10, 2025</p>
-                                <p class="order__total">Total: $29.99</p>
                             </div>
-                            <span class="order__status delivered">Delivered</span>
+                            <!-- Add more activity items -->
                         </div>
-                        <div class="order__item">
-                            <div class="order__details">
-                                <p class="order__number">Order #12344</p>
-                                <p class="order__date">Placed: Feb 28, 2025</p>
-                                <p class="order__total">Total: $19.99</p>
-                            </div>
-                            <span class="order__status shipped">Shipped</span>
-                        </div>
-                        <div class="order__item">
-                            <div class="order__details">
-                                <p class="order__number">Order #12343</p>
-                                <p class="order__date">Placed: Feb 15, 2025</p>
-                                <p class="order__total">Total: $24.99</p>
-                            </div>
-                            <span class="order__status delivered">Delivered</span>
-                        </div>
-                    </div>
+                    </section>
                 </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="footer__container container grid">
-            <div>
-                <a href="#" class="footer__logo">
-                    <i class="ri-book-3-line"></i>E-Book
-                </a>
-                <p class="footer__description">
-                    Find and explore the best eBooks from all your favorite writers.
-                </p>
             </div>
         </div>
-        <span class="footer__copy">
-            © All Rights Reserved By BookMania
-        </span>
-    </footer>
+    </main>
 
-    <a href="#" class="scrollup" id="scroll-up">
-        <i class="ri-arrow-up-line"></i>
-    </a>
+
+    <div class="edit-profile-modal" id="editProfileModal">
+        <div class="modal-content">
+            <form class="edit-profile-form" action="/update-profile" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h3>Edit Profile</h3>
+                    <button type="button" class="close-modal">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-image">Profile Image</label>
+                    <div class="image-upload">
+                        <img id="preview-image" src="../../img/user-avatar.png" alt="Preview">
+                        <input type="file" id="profile-image" name="profileImage" accept="image/*">
+                        <label for="profile-image" class="upload-label">
+                            <i class="ri-camera-line"></i>
+                            Choose Image
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="profile-name">Full Name</label>
+                    <input type="text" id="profile-name" name="name" value="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" name="email" value="john.doe@email.com" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="javascripts/scrollreveal.min.js"></script>
     <script src="javascripts/swiper-bundle.min.js"></script>
     <script src="javascripts/home.js"></script>
-    <script>
-        // Modal Functionality
-        const editBtn = document.getElementById('editProfileBtn');
-        const modal = document.getElementById('editModal');
-        const closeBtn = document.getElementById('closeModal');
-        const cancelBtn = document.getElementById('cancelEdit');
-
-        editBtn.addEventListener('click', () => {
-            modal.style.display = 'block';
-        });
-
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        // Close modal when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="javascripts/profile.js"></script>
 </body>
 </html>
