@@ -25,6 +25,12 @@ app.use('/explore', exploreRoutes);
 app.use('/cart', cartRoutes);
 app.use('/wishlist', wishlistRoutes);
 
+
+
+
+app.get('/admin', (req, res) => {
+    res.render('./admin/admin');
+});
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
 });

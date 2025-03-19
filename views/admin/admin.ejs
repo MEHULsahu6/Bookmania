@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <title>Admin Panel - Book Mania</title>
+</head>
+<body>
+    <!-- =============== HEADER =============== -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo">
+                <i class="ri-book-3-line"></i> Admin Panel
+            </a>
+
+            <div class="nav__menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#profile" class="nav__link">
+                            <i class="ri-user-line"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#orders" class="nav__link">
+                            <i class="ri-shopping-bag-line"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#help" class="nav__link">
+                            <i class="ri-question-line"></i>
+                            <span>Help</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav__actions">
+                <i class="ri-moon-line change-theme" id="theme-button"></i>
+                <a href="/logout" class="logout-button">
+                    <i class="ri-logout-box-r-line"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- =============== SIDEBAR =============== -->
+    <div class="sidebar">
+        <div class="sidebar__content">
+            <ul class="sidebar__list">
+                <li class="sidebar__item">
+                    <a href="#dashboard" class="sidebar__link active-link">
+                        <i class="ri-dashboard-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sidebar__item">
+                    <a href="#books" class="sidebar__link">
+                        <i class="ri-book-open-line"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+
+                <li class="sidebar__item">
+                    <a href="#reviews" class="sidebar__link">
+                        <i class="ri-star-line"></i>
+                        <span>Reviews</span>
+                    </a>
+                </li>
+
+                <li class="sidebar__item">
+                    <a href="#history" class="sidebar__link">
+                        <i class="ri-history-line"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- =============== MAIN =============== -->
+    <main class="main">
+        <div class="main__container container">
+            <!-- Dashboard Section -->
+            <section class="dashboard section" id="dashboard">
+                <h2 class="section__title">Dashboard</h2>
+                <div class="dashboard__container grid">
+                    <div class="dashboard__card">
+                        <i class="ri-shopping-bag-line"></i>
+                        <h3>Total Orders</h3>
+                        <span>254</span>
+                    </div>
+
+                    <div class="dashboard__card">
+                        <i class="ri-book-open-line"></i>
+                        <h3>Total Books</h3>
+                        <span>1,200</span>
+                    </div>
+
+                    <div class="dashboard__card">
+                        <i class="ri-user-line"></i>
+                        <h3>Total Users</h3>
+                        <span>5,420</span>
+                    </div>
+
+                    <div class="dashboard__card">
+                        <i class="ri-money-dollar-circle-line"></i>
+                        <h3>Revenue</h3>
+                        <span>$52,400</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Books Section -->
+            <section class="books section" id="books">
+                <h2 class="section__title">Books Management</h2>
+                <div class="books__container">
+                    <div class="books__header">
+                        <button class="button">Add New Book</button>
+                        <div class="books__search">
+                            <input type="text" placeholder="Search books...">
+                            <i class="ri-search-line"></i>
+                        </div>
+                    </div>
+
+                    <div class="books__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Book Title 1</td>
+                                    <td>Author Name</td>
+                                    <td>$19.99</td>
+                                    <td>150</td>
+                                    <td>
+                                        <button class="edit-btn"><i class="ri-edit-line"></i></button>
+                                        <button class="delete-btn"><i class="ri-delete-bin-line"></i></button>
+                                    </td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section class="reviews section" id="reviews">
+                <h2 class="section__title">Customer Reviews</h2>
+                <div class="reviews__container grid">
+                    <div class="review__card">
+                        <div class="review__header">
+                            <img src="../../img/testimonial-perfil-1.png" alt="User" class="review__img">
+                            <div>
+                                <h3>John Doe</h3>
+                                <div class="review__stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-half-fill"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review__description">
+                            Great book! Really enjoyed reading it. The quality of the content is excellent.
+                        </p>
+                    </div>
+                    <!-- Add more review cards as needed -->
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section class="history section" id="history">
+                <h2 class="section__title">Transaction History</h2>
+                <div class="history__container">
+                    <div class="history__filters">
+                        <select>
+                            <option value="">All Transactions</option>
+                            <option value="sales">Sales</option>
+                            <option value="purchases">Purchases</option>
+                        </select>
+                        <input type="date">
+                    </div>
+
+                    <div class="history__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-20</td>
+                                    <td>#TRX001</td>
+                                    <td>Sale</td>
+                                    <td>$29.99</td>
+                                    <td><span class="status completed">Completed</span></td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!--=============== MAIN JS ===============-->
+    <script src="../../javascripts/admin.js"></script>
+</body>
+</html>
