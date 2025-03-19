@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+
+    <link rel="stylesheet" href="../../stylesheets/User/wishlist.css">
+    <link rel="stylesheet" href="../../stylesheets/User/home.css">  
+    <title>Wishlist - Book Mania</title>
+</head>
+<body>
+    <!-- Include the navbar partial -->
+    <%- include('partials/navbar') %>
+
+    <main class="main">
+        <section class="wishlist section">
+            <h2 class="section__title">My Wishlist</h2>
+
+            <div class="wishlist__container container">
+                <!-- Empty state -->
+                <div class="wishlist__empty" id="emptyWishlist">
+                    <img src="../../img/empty-wishlist.png" alt="Empty wishlist" class="empty__img">
+                    <h3 class="empty__title">Your wishlist is empty</h3>
+                    <p class="empty__description">Browse our collection and add your favorite books!</p>
+                    <a href="/" class="button">Explore Books</a>
+                </div>
+
+                <!-- Wishlist items -->
+                <div class="wishlist__content" id="wishlistContent">
+                    <!-- Wishlist item -->
+                    <div class="wishlist__card">
+                        <img src="../../img/book-1.png" alt="Book" class="wishlist__img">
+                        <div class="wishlist__data">
+                            <h3 class="wishlist__title">The Psychology of Money</h3>
+                            <p class="wishlist__author">By Morgan Housel</p>
+                            <div class="wishlist__prices">
+                                <span class="wishlist__discount">$11.99</span>
+                                <span class="wishlist__price">$19.99</span>
+                            </div>
+                        </div>
+                        <div class="wishlist__actions">
+                            <button class="button wishlist__cart">Add to Cart</button>
+                            <button class="wishlist__remove">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Repeat wishlist item for demonstration -->
+                    <div class="wishlist__card">
+                        <img src="../../img/book-2.png" alt="Book" class="wishlist__img">
+                        <div class="wishlist__data">
+                            <h3 class="wishlist__title">Atomic Habits</h3>
+                            <p class="wishlist__author">By James Clear</p>
+                            <div class="wishlist__prices">
+                                <span class="wishlist__discount">$13.99</span>
+                                <span class="wishlist__price">$24.99</span>
+                            </div>
+                        </div>
+                        <div class="wishlist__actions">
+                            <button class="button wishlist__cart">Add to Cart</button>
+                            <button class="wishlist__remove">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Include the footer partial -->
+
+    <!--========== SCROLL UP ==========-->
+    <a href="#" class="scrollup" id="scroll-up">
+        <i class="ri-arrow-up-line"></i>
+    </a>
+
+    <!--=============== MAIN JS ===============-->
+    <script src="javascripts/wishlist.js"></script>
+</body>
+</html>
