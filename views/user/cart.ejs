@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+change the styling of 'checkout-progress' 
+code : <!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="UTF-8">
@@ -15,40 +16,151 @@
 
 /* Cart Page Specific Styles */
 .main {
-  padding-top: var(--header-height);
+  padding-top: calc(var(--header-height) + 2rem);
 }
-
-/* Checkout Progress */
 .checkout-progress {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem 0;
-  background-color: var(--container-color);
-  margin-bottom: 2rem;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(135deg, var(--container-color) 0%, rgba(245, 245, 245, 0.95) 100%);
+  margin-bottom: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .progress-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--text-color);
+  color: var(--text-color-light);
+  position: relative;
+  transition: all 0.4s ease;
+  z-index: 1;
+  padding: 0.5rem;
+}
+
+.progress-step i {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  background: var(--white-color);
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.progress-step span {
+  font-weight: var(--font-medium);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .progress-step.active {
   color: var(--first-color);
+  transform: translateY(-4px);
 }
 
-.progress-step i {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+.progress-step.active i {
+  background: var(--first-color);
+  color: var(--white-color);
+  border-color: var(--first-color);
+  box-shadow: 0 6px 20px rgba(var(--first-color-rgb), 0.25);
+  transform: scale(1.1);
 }
 
 .progress-line {
-  width: 100px;
-  height: 2px;
-  background-color: var(--border-color);
-  margin: 0 1rem;
+  width: 150px;
+  height: 4px;
+  background: var(--border-color);
+  margin: 0 2rem;
+  position: relative;
+  top: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.progress-step.active + .progress-line {
+  background: linear-gradient(to right, var(--first-color) 100%, var(--border-color) 0%);
+  animation: line-fill 0.5s ease forwards;
+}
+
+.progress-step.active + .progress-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--first-color);
+  animation: line-progress 0.8s ease-out forwards;
+}
+
+/* Animation for the progress line */
+@keyframes line-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Hover effects */
+.progress-step:hover:not(.active) {
+  color: var(--first-color);
+  transform: translateY(-2px);
+}
+
+.progress-step:hover:not(.active) i {
+  border-color: var(--first-color);
+  box-shadow: 0 2px 10px rgba(var(--first-color-rgb), 0.15);
+}
+
+/* Media queries */
+@media screen and (max-width: 768px) {
+  .checkout-progress {
+    padding: 1.5rem 0.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .progress-line {
+    width: 80px;
+    margin: 0 1rem;
+  }
+
+  .progress-step i {
+    font-size: 1.5rem;
+    padding: 0.8rem;
+  }
+
+  .progress-step span {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .progress-line {
+    width: 40px;
+  }
+
+  .progress-step span {
+    font-size: 0.8rem;
+  }
+}
+/* Add this to your existing media query */
+@media screen and (max-width: 768px) {
+  .progress-line {
+    width: 60px;
+  }
+  
+  .progress-step i {
+    font-size: 1.5rem;
+    padding: 0.75rem;
+  }
 }
 
 /* Cart Section */
