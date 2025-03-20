@@ -1,4 +1,90 @@
 /* Profile Layout */
+/* Ordered Books Reviews */
+.ordered-books-reviews .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: var(--body-color);
+    transition: box-shadow 0.3s ease;
+}
+
+.review-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.book-thumbnail {
+    width: 80px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+.book-details h3 {
+    font-size: var(--normal-font-size);
+    color: var(--title-color);
+    margin-bottom: 0.25rem;
+}
+
+.order-date, .delivery-date {
+    font-size: var(--small-font-size);
+    color: var(--text-color-light);
+}
+
+.review-content {
+    padding-left: 1rem;
+}
+
+.rating {
+    display: flex;
+    gap: 0.25rem;
+    color: var(--first-color);
+    margin-bottom: 0.5rem;
+}
+
+.review-text {
+    font-size: var(--normal-font-size);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Responsive Adjustments */
+@media screen and (min-width: 768px) {
+    .review-item {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .book-info {
+        flex: 0 0 40%;
+    }
+
+    .review-content {
+        flex: 1;
+        padding-left: 2rem;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .book-thumbnail {
+        width: 60px;
+        height: 90px;
+    }
+}
 .profile-wrapper {
     max-width: 1200px;
     margin: 0 auto;
@@ -279,7 +365,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2rem;    
 }
 
 .close-modal {
