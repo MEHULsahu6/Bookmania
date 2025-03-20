@@ -222,7 +222,143 @@ a {
     color: var(--first-color);
     font-weight: var(--font-medium);
 }
-/* Continuing from previous CSS... */
+
+/* Welcome Admin Section */
+.welcome-card {
+    background-color: var(--white-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 16px hsla(0, 0%, 0%, .1);
+    margin-bottom: 2rem;
+}
+
+.welcome-content h1 {
+    color: var(--title-color);
+    font-size: var(--biggest-font-size);
+    margin-bottom: .5rem;
+}
+
+.welcome-content p {
+    color: var(--text-color);
+    font-size: var(--normal-font-size);
+    margin-bottom: 1.5rem;
+}
+
+.welcome-stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.stat i {
+    font-size: 1.25rem;
+    color: var(--first-color);
+}
+
+.stat span {
+    color: var(--text-color);
+    font-size: var(--small-font-size);
+}
+
+/* User Reviews Section */
+.reviews-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.review-card {
+    background-color: var(--white-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 16px hsla(0, 0%, 0%, .1);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.review-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-user-info {
+    flex: 1;
+}
+
+.review-user-info h3 {
+    color: var(--title-color);
+    font-size: var(--h3-font-size);
+    margin-bottom: .25rem;
+}
+
+.review-date {
+    color: var(--text-color);
+    font-size: var(--smaller-font-size);
+}
+
+.review-rating {
+    color: #ffd700;
+    font-size: var(--normal-font-size);
+}
+
+.review-book {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--container-color);
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+}
+
+.book-thumbnail {
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: .25rem;
+}
+
+.book-info h4 {
+    color: var(--title-color);
+    font-size: var(--normal-font-size);
+    margin-bottom: .25rem;
+}
+
+.book-author {
+    color: var(--text-color);
+    font-size: var(--small-font-size);
+}
+
+.review-text {
+    color: var(--text-color);
+    font-size: var(--normal-font-size);
+    line-height: 1.5;
+}
+
+/* Dark Theme Support */
+.dark-theme .review-card {
+    box-shadow: 0 2px 16px hsla(0, 0%, 0%, .4);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .welcome-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
 
 
 
