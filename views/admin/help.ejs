@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <title>Help - Admin Panel</title>
+</head>
+<body>
+    <%- include('./components/navbar') %>
+    <%- include('./components/sidebar') %>
+
+    <main class="main">
+        <div class="main__container container">
+            <section class="help section">
+                <h2 class="section__title">Help Center</h2>
+                <div class="help__container">
+                    <div class="help__search">
+                        <input type="text" placeholder="Search for help topics...">
+                    </div>
+                    <div class="help__categories">
+                        <div class="help__card">
+                            <h3>Getting Started</h3>
+                            <p>Learn the basics of using the admin panel</p>
+                        </div>
+                        <div class="help__card">
+                            <h3>Managing Orders</h3>
+                            <p>Learn how to handle customer orders</p>
+                        </div>
+                        <div class="help__card">
+                            <h3>Book Management</h3>
+                            <p>Learn how to add and manage books</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../javascripts/admin.js"></script>
+</body>
+</html>
