@@ -28,8 +28,33 @@ app.use('/wishlist', wishlistRoutes);
 
 
 
-app.get('/admin', (req, res) => {
-    res.render('./admin/admin');
+// Admin routes
+app.get('/admin/dashboard', (req, res) => {
+    res.render('Admin/admin');
+});
+
+app.get('/admin/profile', (req, res) => {
+    res.render('Admin/profile');
+});
+
+app.get('/admin/orders', (req, res) => {
+    res.render('Admin/orders');
+});
+
+app.get('/admin/books', (req, res) => {
+    res.render('Admin/books');
+});
+
+app.get('/admin/reviews', (req, res) => {
+    res.render('Admin/reviews');
+});
+
+app.get('/admin/history', (req, res) => {
+    res.render('Admin/history');
+});
+
+app.get('/admin/help', (req, res) => {
+    res.render('Admin/help');
 });
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
