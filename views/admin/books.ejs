@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <title>Books - Admin Panel</title>
+</head>
+<body>
+    <%- include('./components/navbar') %>
+    <%- include('./components/sidebar') %>
+
+    <main class="main">
+        <div class="main__container container">
+            <section class="books section">
+                <h2 class="section__title">Books Management</h2>
+                <div class="books__container">
+                    <div class="books__actions">
+                        <button class="add-book-btn">Add New Book</button>
+                    </div>
+                    <div class="books__grid">
+                        <!-- Book cards will be dynamically added here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../javascripts/admin.js"></script>
+</body>
+</html>

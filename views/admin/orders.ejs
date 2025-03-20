@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <title>Orders - Admin Panel</title>
+</head>
+<body>
+    <%- include('./components/navbar') %>
+    <%- include('./components/sidebar') %>
+
+    <main class="main">
+        <div class="main__container container">
+            <section class="orders section">
+                <h2 class="section__title">Orders</h2>
+                <div class="orders__container">
+                    <!-- Add orders table or list here -->
+                    <table class="orders__table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Order rows will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../javascripts/admin.js"></script>
+</body>
+</html>

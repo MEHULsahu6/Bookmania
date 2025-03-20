@@ -470,6 +470,49 @@ body.dark-theme{
   margin-bottom: .5rem;
 }
 /*=============== FEATURED ===============*/
+.featured__description {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  background-color: var(--container-color);
+  padding: 1rem;
+  text-align: center;
+  font-size: var(--small-font-size);
+  border-top: 2px solid var(--border-color);
+  transition: bottom 0.4s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.featured__card {
+  position: relative;
+  overflow: visible; /* Changed from hidden to allow description to show */
+}
+
+.featured__card.show-description .featured__description {
+  bottom: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Adjust card padding when description is visible */
+.featured__card.show-description {
+  padding-bottom: 3.5rem;
+}
+
+/* Hover effect for view button */
+.view-desc-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media screen and (min-width: 1150px) {
+  .featured__description {
+      font-size: var(--normal-font-size);
+      padding: 1.5rem;
+  }
+}
 .featured__card{
   position: relative;
   text-align: center;

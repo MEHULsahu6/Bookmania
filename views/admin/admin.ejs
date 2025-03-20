@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <title>Admin Panel - Book Mania</title>
+</head>
+<body>
+    <%- include('./components/navbar') %>
+    <%- include('./components/sidebar') %>
+
+    <!-- =============== MAIN =============== -->
+    <main class="main">
+        <div class="main__container container">
+            <!-- Dashboard Section -->
+            <section class="dashboard section" id="dashboard">
+                <h2 class="section__title">Dashboard</h2>
+                <div class="dashboard__container grid">
+                    <div class="dashboard__card">
+                        <i class="ri-shopping-bag-line"></i>
+                        <h3>Total Orders</h3>
+                        <span>254</span>
+                    </div>
+
+                    <div class="dashboard__card">
+                        <i class="ri-book-open-line"></i>
+                        <h3>Total Books</h3>
+                        <span>1,200</span>
+                    </div>
+
+                    <div class="dashboard__card">
+                        <i class="ri-user-line"></i>
+                        <h3>Total Users</h3>
+                        <span>5,420</span>
+                    </div>
+
+                    <div class="dashboard__card">
+                        <i class="ri-money-dollar-circle-line"></i>
+                        <h3>Revenue</h3>
+                        <span>$52,400</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!--=============== MAIN JS ===============-->
+    <script src="../../javascripts/admin.js"></script>
+</body>
+</html>
