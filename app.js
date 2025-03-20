@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path = require('path');
 
-// Import routes
+// Import user routes
 const homeRoutes = require('./routes/user/home.routes');
 const authRoutes = require('./routes/auth.routes');
 const profileRoutes = require('./routes/user/profile.routes');
@@ -17,7 +17,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Use routes
+// Use USER routes
 app.use('/', homeRoutes);
 app.use('/', authRoutes);
 app.use('/profile', profileRoutes);
