@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/reviews.css">
     <title>Reviews - Admin Panel</title>
 </head>
 <body>
@@ -15,20 +16,92 @@
     <main class="main">
         <div class="main__container container">
             <section class="reviews section">
-                <h2 class="section__title">Reviews Management</h2>
+                
+
                 <div class="reviews__container">
                     <div class="reviews__filters">
-                        <select class="filter-rating">
-                            <option value="all">All Ratings</option>
-                            <option value="5">5 Stars</option>
-                            <option value="4">4 Stars</option>
-                            <option value="3">3 Stars</option>
-                            <option value="2">2 Stars</option>
-                            <option value="1">1 Star</option>
-                        </select>
+                        <div class="search-box">
+                            <i class="ri-search-line"></i>
+                            <input type="text" placeholder="Search reviews...">
+                        </div>
+                        <div class="filter-group">
+                            <select class="filter-rating">
+                                <option value="all">All Ratings</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                            <select class="filter-status">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
                     </div>
+
                     <div class="reviews__list">
-                        <!-- Reviews will be dynamically added here -->
+                        <!-- Sample Review Card -->
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="user-info">
+                                    <img src="../../img/user-avatar.png" alt="User">
+                                    <div>
+                                        <h4>Sarah Johnson</h4>
+                                        <span>Posted on Jan 15, 2024</span>
+                                    </div>
+                                </div>
+                                <div class="review-status pending">Pending</div>
+                            </div>
+
+                            <div class="review-content">
+                                <div class="book-info">
+                                    <img src="../../img/book-1.png" alt="Book">
+                                    <div>
+                                        <h5>The Great Gatsby</h5>
+                                        <div class="rating">
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-line"></i>
+                                            <span>4.0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="review-text">
+                                    This book was absolutely amazing! The character development and storyline kept me engaged throughout. Highly recommend it to anyone who loves classic literature.
+                                </p>
+                            </div>
+
+                            <div class="review-actions">
+                                <button class="approve-btn" title="Approve Review">
+                                    <i class="ri-checkbox-circle-line"></i>
+                                    Approve
+                                </button>
+                                <button class="reject-btn" title="Reject Review">
+                                    <i class="ri-close-circle-line"></i>
+                                    Reject
+                                </button>
+                                <button class="delete-btn" title="Delete Review">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pagination">
+                        <button class="prev-btn"><i class="ri-arrow-left-s-line"></i></button>
+                        <div class="page-numbers">
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <span>...</span>
+                            <button>10</button>
+                        </div>
+                        <button class="next-btn"><i class="ri-arrow-right-s-line"></i></button>
                     </div>
                 </div>
             </section>

@@ -15,7 +15,27 @@
     <!-- =============== MAIN =============== -->
     <main class="main">
         <div class="main__container container">
-            <!-- Dashboard Section -->
+            <!-- Welcome Admin Section -->
+            <section class="welcome-admin section">
+                <div class="welcome-card">
+                    <div class="welcome-content">
+                        <h1>Welcome Back, Admin!</h1>
+                        <p>Here's your daily overview of the bookstore</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat">
+                            <i class="ri-time-line"></i>
+                            <span>Last login: Today, 9:30 AM</span>
+                        </div>
+                        <div class="stat">
+                            <i class="ri-notification-3-line"></i>
+                            <span>5 new notifications</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Section (existing) -->
             <section class="dashboard section" id="dashboard">
                 <h2 class="section__title">Dashboard</h2>
                 <div class="dashboard__container grid">
@@ -41,6 +61,68 @@
                         <i class="ri-money-dollar-circle-line"></i>
                         <h3>Revenue</h3>
                         <span>$52,400</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Reviews Section -->
+            <section class="user-reviews section">
+                <h2 class="section__title">Recent Book Reviews</h2>
+                <div class="reviews-container">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <img src="../../img/user-avatar.png" alt="User" class="review-avatar">
+                            <div class="review-user-info">
+                                <h3>John Doe</h3>
+                                <span class="review-date">2 days ago</span>
+                            </div>
+                            <div class="review-rating">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                            </div>
+                        </div>
+                        <div class="review-book">
+                            <img src="../../img/book-1.png" alt="Book" class="book-thumbnail">
+                            <div class="book-info">
+                                <h4>The Great Gatsby</h4>
+                                <span class="book-author">F. Scott Fitzgerald</span>
+                            </div>
+                        </div>
+                        <p class="review-text">
+                            Amazing book! The storytelling is masterful and the characters are unforgettable.
+                            Highly recommend this classic to everyone.
+                        </p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <img src="../../img/user-avatar.png" alt="User" class="review-avatar">
+                            <div class="review-user-info">
+                                <h3>Jane Smith</h3>
+                                <span class="review-date">1 week ago</span>
+                            </div>
+                            <div class="review-rating">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-line"></i>
+                            </div>
+                        </div>
+                        <div class="review-book">
+                            <img src="../../img/book-2.png" alt="Book" class="book-thumbnail">
+                            <div class="book-info">
+                                <h4>1984</h4>
+                                <span class="book-author">George Orwell</span>
+                            </div>
+                        </div>
+                        <p class="review-text">
+                            A thought-provoking dystopian novel that remains relevant today.
+                            The writing style is engaging and the plot is gripping.
+                        </p>
                     </div>
                 </div>
             </section>

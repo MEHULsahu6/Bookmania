@@ -2,55 +2,56 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const path = require('path');
+const connectDB = require('./config/db');
 
-// View Engine & Static Files
+// Connect to MongoDB
+connectDB();
+
+// Import user routes
+const homeRoutes = require('./routes/user/home.routes');
+const authRoutes = require('./routes/auth.routes');
+const profileRoutes = require('./routes/user/profile.routes');
+const exploreRoutes = require('./routes/user/explore.routes');
+const cartRoutes = require('./routes/user/cart.routes');
+const wishlistRoutes = require('./routes/user/wishlist.routes');
+
+
+
+//import admin routes
+const dashboardAdminRoutes = require('./routes/admin/dashboard.routes');
+const profileAdminRoutes = require('./routes/admin/profile.routes');
+const ordersAdminRoutes = require('./routes/admin/orders.routes');
+const booksAdminRoutes = require('./routes/admin/books.routes');
+const reviewsAdminRoutes = require('./routes/admin/reviews.routes');
+const historyAdminRoutes = require('./routes/admin/history.routes');
+const helpAdminRoutes = require('./routes/admin/help.routes');
+
+
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.set('views', path.join(__dirname, 'views'));  // ✅ Ensure Express finds the views
+// Use USER routes
+app.use('/', homeRoutes);
+app.use('/', authRoutes);
+app.use('/profile', profileRoutes);
+app.use('/explore', exploreRoutes);
+app.use('/cart', cartRoutes);
+app.use('/wishlist', wishlistRoutes);
 
-// Routes
-app.get('/', (req, res) => {
-  res.render('user/home');  // Fixed path
-});
-app.get('/login', (req, res) => {
-  res.render('user/login'); // Ensure 'views/user/login.ejs' exists
-});
-app.get('/profile', (req, res) => {
-  res.render('user/profile');
-});
-app.get('/explore', (req, res) => {  // Fixed duplicate route issue
-  const books = [
-    { id: 1, image: '/img/book-1.png', title: 'Book 1', discountPrice: 7.99, originalPrice: 14.99 },
-    { id: 2, image: '/img/book-2.png', title: 'Book 2', discountPrice: 7.99, originalPrice: 14.99 },
-  ];
-  res.render('user/explore', { books });
-});
-app.get('/cart', (req, res) => {
-  res.render('user/cart');
-});
-app.get('/orders', (req, res) => {
-  const orders = [
-    { id: 1, date: '2023-10-01', total: 29.99, status: 'Delivered' },
-    { id: 2, date: '2023-10-05', total: 15.99, status: 'Pending' },
-  ];
-  res.render('user/orders', { orders });
-});
-app.get('/wishlist', (req, res) => {  // Fixed spelling issue
-  const wishlist = [
-    { image: '/img/book-1.png', title: 'Book 1', discountPrice: 11.99, originalPrice: 19.99 },
-    { image: '/img/book-2.png', title: 'Book 2', discountPrice: 11.99, originalPrice: 19.99 },
-  ];
-  res.render('user/wishlist', { wishlist }); // Ensure 'views/user/wishlist.ejs' exists
-});
 
-// Signup Route
-const signupRoutes = require('./routes/signup.routes');  // Fixed typo
-app.use('/signup', signupRoutes);
 
-// Start Server
+
+// use Admin routes
+app.use('/admin/dashboard', dashboardAdminRoutes);
+app.use('/admin/profile', profileAdminRoutes);
+app.use('/admin/orders', ordersAdminRoutes);
+app.use('/admin/books', booksAdminRoutes);
+app.use('/admin/reviews', reviewsAdminRoutes);
+app.use('/admin/history', historyAdminRoutes);
+app.use('/admin/help', helpAdminRoutes);
+
 app.listen(port, () => {
   console.log(`Server started on: http://localhost:${port}`);
 });

@@ -1788,3 +1788,66 @@ margin-bottom: 1.25rem;
   }
   
 }
+
+/*=============== BOOK POPUP ===============*/
+.book-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: hsla(230, 12%, 10%, 0.8); /* Dark overlay */
+  z-index: var(--z-fixed);
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.book-popup.show-popup {
+  display: flex;
+  opacity: 1;
+}
+
+.book-popup__content {
+  background-color: var(--container-color);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 4px 16px hsla(0, 0%, 0%, 0.2);
+  transition: background-color 0.4s;
+}
+
+.book-popup__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 1.5rem;
+  color: var(--title-color);
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.book-popup__close:hover {
+  color: var(--first-color);
+}
+
+.book-popup__title {
+  font-size: var(--h2-font-size);
+  margin-bottom: 0.75rem;
+}
+
+.book-popup__author,
+.book-popup__description,
+.book-popup__genre,
+.book-popup__price {
+  font-size: var(--normal-font-size);
+  margin-bottom: 0.5rem;
+}
+
+.book-popup__description {
+  line-height: 1.5;
+}

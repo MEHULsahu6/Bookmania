@@ -217,3 +217,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+// Select all view description buttons and popup elements
+const viewButtons = document.querySelectorAll('.view-desc-btn');
+const bookPopup = document.getElementById('bookPopup');
+const closePopup = document.getElementById('closePopup');
+const popupTitle = document.getElementById('popupTitle');
+const popupAuthor = document.getElementById('popupAuthor');
+const popupDescription = document.getElementById('popupDescription');
+const popupGenre = document.getElementById('popupGenre');
+const popupPrice = document.getElementById('popupPrice');
+
+// Add click event to each view button
+viewButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    // Get book details from data attributes
+    const title = button.getAttribute('data-title');
+    const author = button.getAttribute('data-author');
+    const description = button.getAttribute('data-description');
+    const genre = button.getAttribute('data-genre');
+    const price = button.getAttribute('data-price');
+
+    // Populate popup with book details
+    popupTitle.textContent = title;
+    popupAuthor.textContent = `Author: ${author}`;
+    popupDescription.textContent = description;
+    popupGenre.textContent = `Genre: ${genre}`;
+    popupPrice.textContent = `Price: ${price}`;
+
+    // Show the popup
+    bookPopup.classList.add('show-popup');
+  });
+});
+
+// Close popup when clicking the close button
+closePopup.addEventListener('click', () => {
+  bookPopup.classList.remove('show-popup');
+});
+
+// Close popup when clicking outside the content
+bookPopup.addEventListener('click', (e) => {
+  if (e.target === bookPopup) {
+    bookPopup.classList.remove('show-popup');
+  }
+});

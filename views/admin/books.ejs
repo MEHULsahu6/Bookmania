@@ -6,7 +6,8 @@
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
-    <title>Books - Admin Panel</title>
+    <link rel="stylesheet" href="../../stylesheets/Admin/books.css">
+    <title>Books Management - Admin Panel</title>
 </head>
 <body>
     <%- include('./components/navbar') %>
@@ -15,19 +16,146 @@
     <main class="main">
         <div class="main__container container">
             <section class="books section">
-                <h2 class="section__title">Books Management</h2>
-                <div class="books__container">
+                <div class="books__header">
+                    <h2 class="section__title">Books Management</h2>
                     <div class="books__actions">
-                        <button class="add-book-btn">Add New Book</button>
+                        <div class="search-box">
+                            <i class="ri-search-line"></i>
+                            <input type="text" placeholder="Search books...">
+                        </div>
+                        <button class="add-book-btn" id="addBookBtn">
+                            <i class="ri-add-line"></i>
+                            Add New Book
+                        </button>
                     </div>
+                </div>
+
+                <div class="books__container">
                     <div class="books__grid">
-                        <!-- Book cards will be dynamically added here -->
+                        <!-- Sample Book Card -->
+                        <div class="book-card">
+                            <div class="book-image">
+                                <img src="../../img/book-1.png" alt="Book Cover">
+                                <div class="book-actions">
+                                    <button class="edit-btn" title="Edit">
+                                        <i class="ri-edit-line"></i>
+                                    </button>
+                                    <button class="delete-btn" title="Delete">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="book-info">
+                                <h3>The Great Gatsby</h3>
+                                <p class="author">F. Scott Fitzgerald</p>
+                                <div class="book-meta">
+                                    <span class="price">$19.99</span>
+                                    <span class="stock">In Stock: 25</span>
+                                </div>
+                                <div class="book-tags">
+                                    <span class="tag">Fiction</span>
+                                    <span class="tag">Classic</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            <!-- Add/Edit Book Modal -->
+            <div class="modal" id="bookModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add New Book</h3>
+                        <button class="close-modal">
+                            <i class="ri-close-line"></i>
+                        </button>
+                    </div>
+                    <form class="book-form" id="bookForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="bookTitle">Book Title*</label>
+                                <input type="text" id="bookTitle" name="title" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookAuthor">Author Name*</label>
+                                <input type="text" id="bookAuthor" name="author" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookPrice">Price*</label>
+                                <input type="number" id="bookPrice" name="price" step="0.01" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookStock">Stock Quantity*</label>
+                                <input type="number" id="bookStock" name="stock" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookISBN">ISBN</label>
+                                <input type="text" id="bookISBN" name="isbn">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookPublisher">Publisher</label>
+                                <input type="text" id="bookPublisher" name="publisher">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="bookTags">Tags (comma separated)</label>
+                                <input type="text" id="bookTags" name="tags" placeholder="Fiction, Classic, Fantasy">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="bookDescription">Description*</label>
+                                <textarea id="bookDescription" name="description" rows="4" required></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="bookCover">Book Cover Image*</label>
+                                <div class="image-upload">
+                                    <input type="file" id="bookCover" name="cover" accept="image/*" required>
+                                    <label for="bookCover" class="upload-label">
+                                        <i class="ri-upload-cloud-line"></i>
+                                        <span>Choose Image</span>
+                                    </label>
+                                    <div class="image-preview" id="imagePreview"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <button type="submit" class="submit-btn">Save Book</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal" id="deleteModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Delete Book</h3>
+                        <button class="close-modal">
+                            <i class="ri-close-line"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this book? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
     <script src="../../javascripts/admin.js"></script>
+    <script src="../../javascripts/books.js"></script>
 </body>
 </html>
