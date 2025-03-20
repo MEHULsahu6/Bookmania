@@ -15,42 +15,27 @@
 
     <main class="main">
         <div class="profile-wrapper">
-            <!-- Profile Header -->
             <section class="profile-header">
                 <div class="profile-cover">
                     <div class="profile-avatar-container">  
                         <img src="../../img/profile_default.avif" alt="User Avatar" class="profile-avatar">
-                        <div class="avatar-upload">
+                        <form action="/upload-avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
                             <label for="avatar-input">
                                 <i class="ri-camera-line"></i>
                             </label>
-                            <input type="file" id="avatar-input" hidden>
-                        </div>
+                            <input type="file" id="avatar-input" name="avatar" accept="image/*" hidden>
+                            <button type="submit" hidden></button>
+                        </form>
                     </div>
                 </div>
                 <div class="profile-info">
                     <h1 class="profile-name">John Doe</h1>
                     <p class="profile-email">john.doe@email.com</p>
-                    <div class="profile-stats">
-                        <div class="stat-item">
-                            <span class="stat-value">42</span>
-                            <span class="stat-label">Books Read</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">15</span>
-                            <span class="stat-label">Wishlist</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">8</span>
-                            <span class="stat-label">Reviews</span>
-                        </div>
-                    </div>
+                
                 </div>
             </section>
 
-            <!-- Profile Content -->
             <div class="profile-content">
-                <!-- Left Column -->
                 <div class="profile-main">
                     <section class="profile-about card">
                         <div class="card-header">
@@ -59,7 +44,15 @@
                                 <i class="ri-edit-line"></i>
                             </button>
                         </div>
-                        <div class="card-body">
+                        <form action="/update-bio" method="POST" class="card-body about-form" id="about-form" style="display: none;">
+                            <textarea name="bio" class="profile-bio" rows="4" required>
+                                Avid reader and book enthusiast. I love exploring different genres, 
+                                especially mystery and science fiction. Always on the lookout for 
+                                my next great read!
+                            </textarea>
+                            <button type="submit" class="save-btn">Save</button>
+                        </form>
+                        <div class="card-body bio-display">
                             <p class="profile-bio">
                                 Avid reader and book enthusiast. I love exploring different genres, 
                                 especially mystery and science fiction. Always on the lookout for 
@@ -70,7 +63,7 @@
 
                     <section class="ordered-books-reviews card">
                         <div class="card-header">
-                            <h2>Reviews of My Ordered Books</h2>
+                            <h2>Leave a Review</h2>
                         </div>
                         <div class="reviews-list">
                             <div class="review-item">
@@ -82,20 +75,22 @@
                                         <p class="delivery-date">Delivered on: March 15, 2025</p>
                                     </div>
                                 </div>
-                                <div class="review-content">
+                                <form action="/submit-review" method="POST" class="review-content">
+                                    <input type="hidden" name="bookId" value="book1">
                                     <div class="rating">
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-half-fill"></i>
+                                        <select name="rating" required>
+                                            <option value="5">★★★★★</option>
+                                            <option value="4">★★★★☆</option>
+                                            <option value="3">★★★☆☆</option>
+                                            <option value="2">★★☆☆☆</option>
+                                            <option value="1">★☆☆☆☆</option>
+                                        </select>
                                     </div>
-                                    <p class="review-text">
-                                        A gripping mystery that kept me on edge until the very end. The plot twists were unexpected, and the characters were well-developed. Highly recommend!
-                                    </p>
-                                </div>
+                                    <textarea name="reviewText" placeholder="Write your review..." required></textarea>
+                                    <button type="submit" class="save-btn">Submit Review</button>
+                                </form>
                             </div>
-                    
+
                             <div class="review-item">
                                 <div class="book-info">
                                     <img src="../../img/book-2.png" alt="Book" class="book-thumbnail">
@@ -105,38 +100,36 @@
                                         <p class="delivery-date">Delivered on: March 12, 2025</p>
                                     </div>
                                 </div>
-                                <div class="review-content">
+                                <form action="/submit-review" method="POST" class="review-content">
+                                    <input type="hidden" name="bookId" value="book2">
                                     <div class="rating">
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-line"></i>
-                                        <i class="ri-star-line"></i>
+                                        <select name="rating" required>
+                                            <option value="5">★★★★★</option>
+                                            <option value="4">★★★★☆</option>
+                                            <option value="3">★★★☆☆</option>
+                                            <option value="2">★★☆☆☆</option>
+                                            <option value="1">★☆☆☆☆</option>
+                                        </select>
                                     </div>
-                                    <p class="review-text">
-                                        Decent sci-fi read, but it lacked the depth I was hoping for. The world-building was great, though pacing felt slow at times.
-                                    </p>
-                                </div>
+                                    <textarea name="reviewText" placeholder="Write your review..." required></textarea>
+                                    <button type="submit" class="save-btn">Submit Review</button>
+                                </form>
                             </div>
-                            <!-- Add more review items as needed -->
                         </div>
                     </section>
                 </div>
 
-                <!-- Right Column -->
                 <div class="profile-sidebar">
                     <section class="profile-actions card">
-                        <button class="action-btn primary">
+                        <button class="action-btn primary" id="open-edit-modal">
                             <i class="ri-edit-line"></i>
                             Edit Profile
                         </button>
-                        
                     </section>
                 </div>
             </div>
         </div>
     </main>
-
 
     <div class="edit-profile-modal" id="editProfileModal">
         <div class="modal-content">
@@ -182,5 +175,60 @@
     <script src="javascripts/swiper-bundle.min.js"></script>
     <script src="javascripts/home.js"></script>
     <script src="javascripts/profile.js"></script>
+    <script>
+        // profile.js
+
+// Modal handling
+const editProfileModal = document.getElementById('editProfileModal');
+const openEditModalBtn = document.getElementById('open-edit-modal');
+const closeModalBtn = document.querySelector('.close-modal');
+const cancelBtn = document.querySelector('.cancel-btn');
+
+// Open modal
+openEditModalBtn.addEventListener('click', () => {
+    editProfileModal.style.display = 'block';
+});
+
+// Close modal
+closeModalBtn.addEventListener('click', () => {
+    editProfileModal.style.display = 'none';
+});
+
+cancelBtn.addEventListener('click', () => {
+    editProfileModal.style.display = 'none';
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+    if (e.target === editProfileModal) {
+        editProfileModal.style.display = 'none';
+    }
+});
+
+// Image preview
+const profileImageInput = document.getElementById('profile-image');
+const previewImage = document.getElementById('preview-image');
+
+profileImageInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+// About section toggle (optional, if you want edit functionality here)
+const editAboutBtn = document.getElementById('edit-about');
+const aboutForm = document.getElementById('about-form');
+const bioDisplay = document.querySelector('.bio-display');
+
+editAboutBtn.addEventListener('click', () => {
+    aboutForm.style.display = aboutForm.style.display === 'none' ? 'block' : 'none';
+    bioDisplay.style.display = aboutForm.style.display === 'none' ? 'block' : 'none';
+});
+    </script>
 </body>
 </html>
