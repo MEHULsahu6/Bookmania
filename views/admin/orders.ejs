@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
+    <link rel="stylesheet" href="../../stylesheets/Admin/orders.css">
     <title>Orders - Admin Panel</title>
 </head>
 <body>
@@ -15,24 +16,121 @@
     <main class="main">
         <div class="main__container container">
             <section class="orders section">
-                <h2 class="section__title">Orders</h2>
+                <div class="orders__header">
+                    <h2 class="section__title">Orders Management</h2>
+                    <div class="orders__actions">
+                        <div class="search-box">
+                            <i class="ri-search-line"></i>
+                            <input type="text" placeholder="Search orders...">
+                        </div>
+                        <div class="filter-box">
+                            <select id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="orders__container">
-                    <!-- Add orders table or list here -->
-                    <table class="orders__table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Order rows will be dynamically added here -->
-                        </tbody>
-                    </table>
+                    <div class="orders__stats">
+                        <div class="stat-card">
+                            <i class="ri-shopping-bag-line"></i>
+                            <div class="stat-info">
+                                <h3>Total Orders</h3>
+                                <span>1,234</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="ri-truck-line"></i>
+                            <div class="stat-info">
+                                <h3>Pending Delivery</h3>
+                                <span>45</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="ri-calendar-check-line"></i>
+                            <div class="stat-info">
+                                <h3>Completed Today</h3>
+                                <span>28</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="orders__table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAll">
+                                    </th>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Products</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample Order Row -->
+                                <tr>
+                                    <td><input type="checkbox" class="order-select"></td>
+                                    <td>#ORD-2024-001</td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <img src="../../img/user-avatar.png" alt="Customer">
+                                            <div>
+                                                <h4>John Doe</h4>
+                                                <span>john@example.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="product-preview">
+                                            <img src="../../img/book-1.png" alt="Book">
+                                            <span>+2 more</span>
+                                        </div>
+                                    </td>
+                                    <td>Jan 15, 2024</td>
+                                    <td>$89.99</td>
+                                    <td>
+                                        <span class="status-badge pending">Pending</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="view-btn" title="View Details">
+                                                <i class="ri-eye-line"></i>
+                                            </button>
+                                            <button class="edit-btn" title="Edit Order">
+                                                <i class="ri-edit-line"></i>
+                                            </button>
+                                            <button class="delete-btn" title="Delete Order">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <button class="prev-btn"><i class="ri-arrow-left-s-line"></i></button>
+                        <div class="page-numbers">
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <span>...</span>
+                            <button>10</button>
+                        </div>
+                        <button class="next-btn"><i class="ri-arrow-right-s-line"></i></button>
+                    </div>
                 </div>
             </section>
         </div>
