@@ -32,7 +32,7 @@
                   possible categories, take advantage of the
                   50% discount and much more.
                </p>
-               <a href="#" class="button">Explore Now</a>
+               <a href="/explore" class="button">Explore Now</a>
             </div>
 
             <div class="home__images">
@@ -93,20 +93,24 @@
                <div class="swiper-wrapper">
                   <article class="featured__card swiper-slide">
                      <img src="../../img/book-1.png" alt="image" class="featured__img">
-                     <h2 class="featured__title">Featured Book</h2>
+                     <h2 class="featured__title">The Great Adventure</h2>
                      <div class="featured__prices">
-                         <span class="featured__discount">$11.99</span>
-                         <span class="featured__price">$19.99</span>
+                       <span class="featured__discount">$11.99</span>
+                       <span class="featured__price">$19.99</span>
                      </div>
                      <button class="button">Add To Cart</button>
                      <div class="featured__actions">
-                         <button><i class="ri-heart-3-line"></i></button>
-                         <button class="view-desc-btn"><i class="ri-eye-line"></i></button>
+                       <button><i class="ri-heart-3-line"></i></button>
+                       <button class="view-desc-btn" 
+                               data-title="The Great Adventure" 
+                               data-author="John Doe" 
+                               data-description="A captivating tale of adventure and discovery that will keep you engaged from start to finish." 
+                               data-genre="Adventure" 
+                               data-price="$11.99">
+                         <i class="ri-eye-line"></i>
+                       </button>
                      </div>
-                     <div class="featured__description">
-                         <p>A captivating tale of adventure and discovery that will keep you engaged from start to finish.</p>
-                     </div>
-                 </article>
+                   </article>
                   <article class="featured__card swiper-slide">
                      <img src="../../img/book-2.png" alt="image" class="featured__img">
                      <h2 class="featured__title">
@@ -286,7 +290,7 @@
                   writers, the more you buy, the more
                   discounts we have for you.
                </p>
-               <a href="#" class="button">Shop Now
+               <a href="/explore" class="button">Shop Now
                </a>
             </div>
             <div class="discount_images">
@@ -832,6 +836,17 @@
             </div>
          </div>
       </section>
+      <!-- Popup Structure (Add this just before the closing </main> tag) -->
+<div class="book-popup" id="bookPopup">
+   <div class="book-popup__content">
+     <span class="book-popup__close" id="closePopup">&times;</span>
+     <h2 class="book-popup__title" id="popupTitle"></h2>
+     <p class="book-popup__author" id="popupAuthor"></p>
+     <p class="book-popup__description" id="popupDescription"></p>
+     <p class="book-popup__genre" id="popupGenre"></p>
+     <p class="book-popup__price" id="popupPrice"></p>
+   </div>
+ </div>
    </main>
 
    <!--==================== FOOTER ====================-->
