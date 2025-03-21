@@ -45,13 +45,13 @@ app.use('/wishlist', wishlistRoutes);
 
 
 // use Admin routes
-app.use('/admin/dashboard', dashboardAdminRoutes);
-app.use('/admin/profile', profileAdminRoutes);
-app.use('/admin/orders', ordersAdminRoutes);
-app.use('/admin/books', booksAdminRoutes);
-app.use('/admin/reviews', reviewsAdminRoutes);
-app.use('/admin/history', historyAdminRoutes);
-app.use('/admin/help', helpAdminRoutes);
+app.use('/admin/dashboard',  dashboardAdminRoutes);
+app.use('/admin/profile',  profileAdminRoutes);
+app.use('/admin/orders',  ordersAdminRoutes);
+app.use('/admin/books',  booksAdminRoutes);
+app.use('/admin/reviews',  reviewsAdminRoutes);
+app.use('/admin/history',  historyAdminRoutes);
+app.use('/admin/help',  helpAdminRoutes);
 
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
