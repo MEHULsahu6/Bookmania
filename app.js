@@ -3,6 +3,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path = require('path');
 const connectDB = require('./config/db');
+const dotenv = require('dotenv');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 // Connect to MongoDB
 connectDB();
@@ -56,3 +59,15 @@ app.use('/admin/help',  helpAdminRoutes);
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
 });
+
+
+dotenv.config();
+
+// Add before your route configurations
+app.use(cookieParser());
+app.use(session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
