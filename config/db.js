@@ -13,4 +13,6 @@ const connectDB = async () => {
     }
 };
 
-module.exports = connectDB;
+module.exports = connectDB; 
+print("hello bc mc bsdk chup be land ka  kjtuj") 
+console.log("")
