@@ -1,3 +1,3 @@
 exports.home = (req, res) => {
-    res.render('User/Home'); 
+    res.render('user/home');  // Make sure this view file exists
 };

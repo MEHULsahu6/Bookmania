@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    name: {
+    name: {  // Change this to fullname or update the controller
         type: String,
         required: true
     },
