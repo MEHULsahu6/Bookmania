@@ -35,22 +35,22 @@
                     </div>
 
                     <!-- Profile Form -->
-                    <form class="profile__form">
+                    <form class="profile__form" id="profileForm">
                         <div class="form__grid">
                             <!-- Personal Information -->
                             <div class="form__section">
                                 <h4>Personal Information</h4>
                                 <div class="form__group">
                                     <label for="fullName">Full Name</label>
-                                    <input type="text" id="fullName" value="John Doe">
+                                    <input type="text" id="fullName" name="fullName" value="<%= adminProfile && adminProfile.admin ? adminProfile.admin.name : '' %>">
                                 </div>
                                 <div class="form__group">
                                     <label for="email">Email Address</label>
-                                    <input type="email" id="email" value="john@example.com">
+                                    <input type="email" id="email" name="email" value="<%= adminProfile && adminProfile.admin ? adminProfile.admin.email : '' %>">
                                 </div>
                                 <div class="form__group">
                                     <label for="phone">Phone Number</label>
-                                    <input type="tel" id="phone" value="+1 234 567 890">
+                                    <input type="tel" id="phone" name="phoneNumber" value="<%= adminProfile ? adminProfile.phoneNumber : '' %>">
                                 </div>
                             </div>
 
@@ -86,5 +86,40 @@
     </main>
 
     <script src="../../javascripts/admin.js"></script>
+    <!-- Add this script before closing body tag -->
+    <script>
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phoneNumber: document.getElementById('phone').value,
+            currentPassword: document.getElementById('currentPassword').value,
+            newPassword: document.getElementById('newPassword').value
+        };
+    
+        try {
+            const response = await fetch('/admin/profile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+    
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Profile updated successfully');
+                location.reload();
+            } else {
+                alert(data.error || 'Error updating profile');
+            }
+        } catch (error) {
+            alert('Error updating profile');
+        }
+    });
+    </script>
 </body>
 </html>
