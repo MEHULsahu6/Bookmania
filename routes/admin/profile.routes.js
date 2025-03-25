@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const profileController = require('../../controllers/admin/profile.controller');
+const { jwtMiddleware } = require('../../middlewares/JWTauth');
 
-router.get('/', profileController.getProfile);
+
+router.get('/',jwtMiddleware, profileController.getProfile);
 
 module.exports = router;

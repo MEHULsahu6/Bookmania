@@ -116,3 +116,8 @@ exports.signupPost = async (req, res) => {
         return res.status(500).render('signup', { error: 'Internal server error' });
     }
 };
+
+exports.logout = (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/');
+};
