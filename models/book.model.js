@@ -17,10 +17,22 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    discountPrice: {
+        type: Number
+    },
+    isbn: {
+        type: String
+    },
+    publisher: {
+        type: String
+    },
     category: {
         type: String,
         required: true
     },
+    tags: [{
+        type: String
+    }],
     stock: {
         type: Number,
         required: true,
