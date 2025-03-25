@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 const path = require('path');
 const connectDB = require('./config/db');
 const session = require('express-session');
@@ -67,5 +67,5 @@ app.use('/admin/help', helpAdminRoutes);
 
 // Start server
 app.listen(port, () => {
-    console.log(`Server started on: http://localhost:${port}`);
+  console.log(`Server started on: http://localhost:${port}`);
 });

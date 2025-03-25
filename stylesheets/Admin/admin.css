@@ -1,0 +1,52 @@
+/* ... existing styles ... */
+
+.help__container {
+    padding: 2rem;
+    background-color: var(--container-color);
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.help__search {
+    margin-bottom: 2rem;
+}
+
+.help__search input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: var(--normal-font-size);
+}
+
+.help__categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.help__card {
+    padding: 1.5rem;
+    background-color: var(--body-color);
+    border-radius: 0.75rem;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.help__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.help__card h3 {
+    color: var(--title-color);
+    font-size: var(--h3-font-size);
+    margin-bottom: 0.75rem;
+}
+
+.help__card p {
+    color: var(--text-color);
+    font-size: var(--small-font-size);
+}
+
+/* ... existing styles ... */

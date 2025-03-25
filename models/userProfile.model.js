@@ -6,6 +6,17 @@ const userProfileSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    fullName: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    bio: {
+        type: String
+    },
     address: {
         street: String,
         city: String,
@@ -18,7 +29,7 @@ const userProfileSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        default: 'default.jpg'
+        default: 'user-avatar.png'
     },
     dateOfBirth: {
         type: Date
@@ -31,6 +42,10 @@ const userProfileSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     }],
+    memberSince: {
+        type: Date,
+        default: Date.now
+    },
     updatedAt: {
         type: Date,
         default: Date.now
