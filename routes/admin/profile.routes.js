@@ -3,7 +3,7 @@ const router = express.Router();
 const profileController = require('../../controllers/admin/profile.controller');
 const { jwtMiddleware } = require('../../middlewares/JWTauth');
 
-
-router.get('/',jwtMiddleware, profileController.getProfile);
+router.get('/', jwtMiddleware, profileController.getProfile);
+router.post('/update', jwtMiddleware, profileController.updateProfile);
 
 module.exports = router;

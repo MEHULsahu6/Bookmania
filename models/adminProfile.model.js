@@ -4,11 +4,24 @@ const adminProfileSchema = new mongoose.Schema({
     admin: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        unique: true
     },
     phoneNumber: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number'] // Basic phone validation
+    },
+    address: { // Added to match EJS
+        type: String,
+        trim: true,
+        default: ''
+    },
+    city: { // Added to match EJS
+        type: String,
+        trim: true,
+        default: ''
     },
     profilePicture: {
         type: String,
