@@ -1,23 +1,51 @@
 const AdminProfile = require('../../models/adminProfile.model');
 const User = require('../../models/user.model');
+const multer = require('multer');
+const path = require('path');
+
+// Configure Multer storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/admin_profiles'); // Ensure this directory exists
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `${req.user.id}-${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+
+// File filter to accept only images
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+        return cb(null, true);
+    }
+    cb(new Error('Only JPEG and PNG images are allowed'));
+};
+
+// Multer instance
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: fileFilter
+}).single('profilePicture'); // Field name in form
 
 const getProfile = async (req, res) => {
     try {
-        // Ensure only admins can access
         if (req.user.role !== 'admin') {
             return res.status(403).render('error', { message: 'Unauthorized access' });
         }
 
-        // Fetch user data from JWT payload
         const user = await User.findById(req.user.id).select('-password');
         if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
 
-        // Fetch admin profile data
         let adminProfile = await AdminProfile.findOne({ admin: req.user.id });
         if (!adminProfile) {
-            // Create default profile if none exists
             adminProfile = await AdminProfile.create({
                 admin: req.user.id,
                 phoneNumber: ''
@@ -40,41 +68,65 @@ const getProfile = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-    try {
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ error: 'Unauthorized access' });
-        }
+    upload(req, res, async (err) => {
+        try {
+            if (req.user.role !== 'admin') {
+                return res.status(403).json({ error: 'Unauthorized access' });
+            }
 
-        const { fullName, email, phoneNumber, address, city } = req.body;
+            if (err instanceof multer.MulterError) {
+                return res.status(400).render('admin/profile', {
+                    user: await User.findById(req.user.id),
+                    adminProfile: await AdminProfile.findOne({ admin: req.user.id }),
+                    error: 'File upload error: ' + err.message
+                });
+            } else if (err) {
+                return res.status(400).render('admin/profile', {
+                    user: await User.findById(req.user.id),
+                    adminProfile: await AdminProfile.findOne({ admin: req.user.id }),
+                    error: err.message
+                });
+            }
 
-        // Update User model
-        const user = await User.findByIdAndUpdate(
-            req.user.id,
-            { name: fullName, email },
-            { new: true, runValidators: true }
-        );
+            const { fullName, email, phoneNumber, address, city } = req.body;
 
-        // Update AdminProfile model
-        const adminProfile = await AdminProfile.findOneAndUpdate(
-            { admin: req.user.id },
-            { 
+            // Update User model
+            const user = await User.findByIdAndUpdate(
+                req.user.id,
+                { name: fullName, email },
+                { new: true, runValidators: true }
+            );
+
+            // Prepare update object for AdminProfile
+            const updateData = { 
                 phoneNumber,
-                address, // Added to schema
-                city,    // Added to schema
+                address,
+                city,
                 updatedAt: Date.now() 
-            },
-            { new: true, runValidators: true, upsert: true }
-        );
+            };
 
-        res.redirect('/admin/profile');
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        res.status(500).render('admin/profile', {
-            user: await User.findById(req.user.id),
-            adminProfile: await AdminProfile.findOne({ admin: req.user.id }),
-            error: 'Failed to update profile'
-        });
-    }
+            // If a file was uploaded, add profilePicture path
+            if (req.file) {
+                updateData.profilePicture = `/uploads/admin_profiles/${req.file.filename}`;
+            }
+
+            // Update AdminProfile
+            const adminProfile = await AdminProfile.findOneAndUpdate(
+                { admin: req.user.id },
+                updateData,
+                { new: true, runValidators: true, upsert: true }
+            );
+
+            res.redirect('/admin/profile');
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            res.status(500).render('admin/profile', {
+                user: await User.findById(req.user.id),
+                adminProfile: await AdminProfile.findOne({ admin: req.user.id }),
+                error: 'Failed to update profile'
+            });
+        }
+    });
 };
 
 module.exports = {

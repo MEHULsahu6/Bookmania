@@ -11,14 +11,14 @@ const adminProfileSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number'] // Basic phone validation
+        match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number']
     },
-    address: { // Added to match EJS
+    address: {
         type: String,
         trim: true,
         default: ''
     },
-    city: { // Added to match EJS
+    city: {
         type: String,
         trim: true,
         default: ''

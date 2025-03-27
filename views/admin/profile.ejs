@@ -27,9 +27,9 @@
                     <div class="profile__header">
                         <div class="profile__avatar">
                             <img src="<%= adminProfile && adminProfile.profilePicture ? adminProfile.profilePicture : '/img/admin-avatar.png' %>" alt="Admin Avatar">
-                            <button class="change-avatar-btn" onclick="alert('Image upload not implemented yet')">
+                            <label for="profilePicture" class="change-avatar-btn">
                                 <i class="ri-camera-line"></i>
-                            </button>
+                            </label>
                         </div>
                         <div class="profile__info">
                             <h3><%= user ? user.name : 'Unknown' %></h3>
@@ -39,7 +39,7 @@
                     </div>
 
                     <!-- Profile Form -->
-                    <form class="profile__form" action="/admin/profile/update" method="POST">
+                    <form class="profile__form" action="/admin/profile/update" method="POST" enctype="multipart/form-data">
                         <div class="form__grid">
                             <!-- Personal Information -->
                             <div class="form__section">
@@ -55,6 +55,10 @@
                                 <div class="form__group">
                                     <label for="phone">Phone Number</label>
                                     <input type="tel" id="phone" name="phoneNumber" value="<%= adminProfile ? adminProfile.phoneNumber : '' %>" required>
+                                </div>
+                                <div class="form__group">
+                                    <label for="profilePicture">Profile Picture</label>
+                                    <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png">
                                 </div>
                             </div>
 
@@ -83,19 +87,27 @@
 
     <script src="/javascripts/admin.js"></script>
     <script>
-        // Basic client-side validation
         document.querySelector('.profile__form').addEventListener('submit', (e) => {
             const phone = document.getElementById('phone').value;
             const email = document.getElementById('email').value;
+            const file = document.getElementById('profilePicture').files[0];
             
             if (!/^\+?[1-9]\d{1,14}$/.test(phone)) {
                 e.preventDefault();
                 alert('Please enter a valid phone number');
+                return;
             }
             
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 e.preventDefault();
                 alert('Please enter a valid email address');
+                return;
+            }
+
+            if (file && file.size > 5 * 1024 * 1024) {
+                e.preventDefault();
+                alert('File size must be less than 5MB');
+                return;
             }
         });
     </script>
