@@ -1,13 +1,13 @@
-const user = require('../models/user.model');
+const User = require('../models/user.model'); // Capitalized User
 const { generateToken } = require('../middlewares/JWTauth');
 const bcrypt = require('bcrypt');
 
 exports.login = (req, res) => {
-    res.render('login');
+    res.render('login', { error: null }); // Initialize error as null
 };
 
 exports.signup = (req, res) => {
-    res.render('signup');
+    res.render('signup', { error: null }); // Initialize error as null
 };
 
 exports.loginPost = async (req, res) => {
@@ -18,7 +18,7 @@ exports.loginPost = async (req, res) => {
             return res.status(400).render('login', { error: 'Please fill in all fields' });
         }
         
-        const findUser = await user.findOne({ email });
+        const findUser = await User.findOne({ email }); // Capitalized User
         if (!findUser) {
             return res.status(404).render('login', { error: 'User not found' });
         }
@@ -29,7 +29,7 @@ exports.loginPost = async (req, res) => {
         }
 
         const payload = {
-            id: findUser.id,
+            id: findUser._id, // Use _id for MongoDB
             name: findUser.name || findUser.fullname,
             role: findUser.role
         };
@@ -39,7 +39,7 @@ exports.loginPost = async (req, res) => {
         res.cookie('token', token, { 
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            maxAge: 60 * 60 * 1000 // 1 hour to match token expiration
         });
 
         if (findUser.role === "admin") {
@@ -74,14 +74,14 @@ exports.signupPost = async (req, res) => {
             return res.status(400).render('signup', { error: 'Invalid role' });
         }
 
-        const existingUser = await user.findOne({ email });
+        const existingUser = await User.findOne({ email }); // Capitalized User
         if (existingUser) {
             return res.status(400).render('signup', { error: 'User already exists' });
         }
 
-        const hashedpass = await bcrypt.hash(password, 10);
+        const hashedpass = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10);
 
-        const createUser = await user.create({
+        const createUser = await User.create({ // Capitalized User
             name: fullname,
             email,
             password: hashedpass,
@@ -89,7 +89,7 @@ exports.signupPost = async (req, res) => {
         });
 
         const payload = {
-            id: createUser.id,
+            id: createUser._id, // Use _id
             name: createUser.name,
             role: createUser.role
         };
@@ -99,7 +99,7 @@ exports.signupPost = async (req, res) => {
         res.cookie('token', token, { 
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            maxAge: 60 * 60 * 1000 // 1 hour
         });
 
         if (createUser.role === "admin") {
@@ -119,5 +119,5 @@ exports.signupPost = async (req, res) => {
 
 exports.logout = (req, res) => {
     res.clearCookie('token');
-    res.redirect('/');
+    res.redirect('/login'); // Redirect to login instead of home
 };
