@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
-    <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
-    <link rel="stylesheet" href="../../stylesheets/Admin/books.css">
+    <link rel="stylesheet" href="/stylesheets/Admin/admin.css">
+    <link rel="stylesheet" href="/stylesheets/Admin/books.css">
     <title>Books Management - Admin Panel</title>
 </head>
 <body>
@@ -21,7 +21,7 @@
                     <div class="books__actions">
                         <div class="search-box">
                             <i class="ri-search-line"></i>
-                            <input type="text" placeholder="Search books...">
+                            <input type="text" placeholder="Search books..." id="searchInput">
                         </div>
                         <button class="add-book-btn" id="addBookBtn">
                             <i class="ri-add-line"></i>
@@ -32,32 +32,38 @@
 
                 <div class="books__container">
                     <div class="books__grid">
-                        <!-- Sample Book Card -->
-                        <div class="book-card">
-                            <div class="book-image">
-                                <img src="../../img/book-1.png" alt="Book Cover">
-                                <div class="book-actions">
-                                    <button class="edit-btn" title="Edit">
-                                        <i class="ri-edit-line"></i>
-                                    </button>
-                                    <button class="delete-btn" title="Delete">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
+                        <% if (books && books.length > 0) { %>
+                            <% books.forEach(book => { %>
+                                <div class="book-card" data-id="<%= book._id %>">
+                                    <div class="book-image">
+                                        <img src="<%= book.image %>" alt="<%= book.title %> Cover">
+                                        <div class="book-actions">
+                                            <button class="edit-btn" data-id="<%= book._id %>" title="Edit">
+                                                <i class="ri-edit-line"></i>
+                                            </button>
+                                            <button class="delete-btn" data-id="<%= book._id %>" title="Delete">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="book-info">
+                                        <h3><%= book.title %></h3>
+                                        <p class="author"><%= book.author %></p>
+                                        <div class="book-meta">
+                                            <span class="price">$<%= book.price.toFixed(2) %></span>
+                                            <span class="stock">In Stock: <%= book.stock %></span>
+                                        </div>
+                                        <div class="book-tags">
+                                            <% book.tags.forEach(tag => { %>
+                                                <span class="tag"><%= tag %></span>
+                                            <% }) %>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="book-info">
-                                <h3>The Great Gatsby</h3>
-                                <p class="author">F. Scott Fitzgerald</p>
-                                <div class="book-meta">
-                                    <span class="price">$19.99</span>
-                                    <span class="stock">In Stock: 25</span>
-                                </div>
-                                <div class="book-tags">
-                                    <span class="tag">Fiction</span>
-                                    <span class="tag">Classic</span>
-                                </div>
-                            </div>
-                        </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p>No books available.</p>
+                        <% } %>
                     </div>
                 </div>
             </section>
@@ -66,12 +72,12 @@
             <div class="modal" id="bookModal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>Add New Book</h3>
+                        <h3 id="modalTitle">Add New Book</h3>
                         <button class="close-modal">
                             <i class="ri-close-line"></i>
                         </button>
                     </div>
-                    <form class="book-form" id="bookForm">
+                    <form class="book-form" id="bookForm" action="/admin/books/create" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="bookTitle">Book Title*</label>
@@ -101,6 +107,11 @@
                             <div class="form-group">
                                 <label for="bookPublisher">Publisher</label>
                                 <input type="text" id="bookPublisher" name="publisher">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookCategory">Category*</label>
+                                <input type="text" id="bookCategory" name="category" required>
                             </div>
 
                             <div class="form-group full-width">
@@ -148,14 +159,106 @@
                     </div>
                     <div class="modal-actions">
                         <button class="cancel-btn">Cancel</button>
-                        <button class="delete-btn">Delete</button>
+                        <button class="delete-btn" id="confirmDelete">Delete</button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="../../javascripts/admin.js"></script>
-    <script src="../../javascripts/books.js"></script>
+    <script src="/javascripts/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bookModal = document.getElementById('bookModal');
+            const deleteModal = document.getElementById('deleteModal');
+            const bookForm = document.getElementById('bookForm');
+
+            // Add new book
+            document.getElementById('addBookBtn').addEventListener('click', () => {
+                bookForm.reset();
+                document.getElementById('modalTitle').textContent = 'Add New Book';
+                bookForm.action = '/admin/books/create';
+                bookForm.querySelector('#bookCover').setAttribute('required', 'required');
+                bookModal.style.display = 'block';
+            });
+
+            // Edit book
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bookId = e.target.closest('button').dataset.id;
+                    try {
+                        const response = await fetch(`/admin/books/${bookId}`, {
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        const book = await response.json();
+
+                        // Populate form
+                        document.getElementById('bookTitle').value = book.title;
+                        document.getElementById('bookAuthor').value = book.author;
+                        document.getElementById('bookPrice').value = book.price;
+                        document.getElementById('bookStock').value = book.stock;
+                        document.getElementById('bookISBN').value = book.isbn || '';
+                        document.getElementById('bookPublisher').value = book.publisher || '';
+                        document.getElementById('bookCategory').value = book.category;
+                        document.getElementById('bookTags').value = book.tags.join(', ');
+                        document.getElementById('bookDescription').value = book.description;
+                        document.getElementById('modalTitle').textContent = 'Edit Book';
+                        bookForm.action = `/admin/books/update/${bookId}`;
+                        bookForm.querySelector('#bookCover').removeAttribute('required'); // Optional for updates
+
+                        bookModal.style.display = 'block';
+                    } catch (error) {
+                        console.error('Error fetching book:', error);
+                    }
+                });
+            });
+
+            // Delete book
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const bookId = e.target.closest('button').dataset.id;
+                    deleteModal.style.display = 'block';
+                    document.getElementById('confirmDelete').onclick = () => {
+                        window.location.href = `/admin/books/delete/${bookId}`;
+                    };
+                });
+            });
+
+            // Close modals
+            document.querySelectorAll('.close-modal, .cancel-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    bookModal.style.display = 'none';
+                    deleteModal.style.display = 'none';
+                });
+            });
+
+            // Image preview
+            document.getElementById('bookCover').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const preview = document.getElementById('imagePreview');
+                if (file) {
+                    preview.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.style.maxWidth = '100px';
+                    preview.appendChild(img);
+                }
+            });
+
+            // Simple search functionality
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.book-card').forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const author = card.querySelector('.author').textContent.toLowerCase();
+                    if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
