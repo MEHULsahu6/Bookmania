@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
-
+const admin = require('./adminProfile.model');
 const bookSchema = new mongoose.Schema({
+    admin: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AdminProfile',
+        unique: true
+    },
     title: {
         type: String,
         required: true
