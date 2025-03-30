@@ -22,6 +22,13 @@
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-size: var(--normal-font-size);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-box input:focus {
+    border-color: var(--first-color);
+    box-shadow: 0 0 0 3px rgba(var(--first-color-rgb), 0.1);
+    outline: none;
 }
 
 .search-box i {
@@ -42,11 +49,14 @@
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: opacity 0.3s;
+    transition: all 0.3s;
+    font-weight: var(--font-medium);
 }
 
 .add-book-btn:hover {
-    opacity: 0.8;
+    background-color: var(--first-color-alt);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--first-color-rgb), 0.2);
 }
 
 /* Books Grid */
@@ -61,11 +71,13 @@
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0 2px 16px hsla(0, 0%, 0%, .1);
-    transition: transform 0.3s;
+    transition: all 0.3s;
+    position: relative;
 }
 
 .book-card:hover {
     transform: translateY(-4px);
+    box-shadow: 0 8px 24px hsla(0, 0%, 0%, .15);
 }
 
 .book-image {
@@ -77,6 +89,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.book-card:hover .book-image img {
+    transform: scale(1.03);
 }
 
 .book-actions {
@@ -86,11 +103,13 @@
     display: flex;
     gap: 0.5rem;
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: all 0.3s;
+    transform: translateY(-10px);
 }
 
 .book-card:hover .book-actions {
     opacity: 1;
+    transform: translateY(0);
 }
 
 .book-actions button {
@@ -103,17 +122,20 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .edit-btn:hover {
     background-color: var(--first-color);
     color: var(--white-color);
+    transform: scale(1.1);
 }
 
 .delete-btn:hover {
     background-color: #ff4444;
     color: var(--white-color);
+    transform: scale(1.1);
 }
 
 .book-info {
@@ -124,6 +146,9 @@
     color: var(--title-color);
     font-size: var(--h3-font-size);
     margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .author {
@@ -140,6 +165,17 @@
 
 .price {
     color: var(--first-color);
+    font-weight: var(--font-medium);
+}
+
+.original-price {
+    color: var(--text-color-light);
+    font-size: 0.9em;
+    margin-right: 0.5em;
+}
+
+.discount-price {
+    color: #ff4444;
     font-weight: var(--font-medium);
 }
 
@@ -160,24 +196,33 @@
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: var(--smaller-font-size);
+    transition: background-color 0.3s;
 }
 
+.tag:hover {
+    background-color: var(--first-color-light);
+    color: var(--white-color);
+}
+
+/* Modal Styles */
 /* Modal Styles */
 .modal {
     display: none;
     position: fixed;
-    top: 0;
+    top: 45px;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: var(--z-fixed);
-}
-
-.modal.active {
-    display: flex;
+    z-index: var(--z-modal);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease-out;
+    /* Add these properties for proper centering */
     align-items: center;
     justify-content: center;
+    overflow: auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .modal-content {
@@ -187,7 +232,18 @@
     max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    /* Remove transform properties from here */
+    margin: auto; /* This helps with centering */
+    position: relative; /* Needed for proper stacking */
 }
+
+/* Delete Modal Specific Styles */
+#deleteModal .modal-content {
+    max-width: 500px;
+}
+
+
 
 .modal-header {
     display: flex;
@@ -195,6 +251,16 @@
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background-color: var(--white-color);
+    z-index: 1;
+}
+
+.modal-header h3 {
+    color: var(--title-color);
+    font-size: 1.5rem;
+    margin: 0;
 }
 
 .close-modal {
@@ -203,6 +269,19 @@
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--text-color);
+    transition: all 0.3s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-modal:hover {
+    background-color: var(--container-color);
+    color: var(--first-color);
+    transform: rotate(90deg);
 }
 
 /* Form Styles */
@@ -216,6 +295,10 @@
     gap: 1.5rem;
 }
 
+.form-group {
+    margin-bottom: 1rem;
+}
+
 .form-group.full-width {
     grid-column: 1 / -1;
 }
@@ -224,15 +307,43 @@
     display: block;
     color: var(--title-color);
     margin-bottom: 0.5rem;
+    font-weight: var(--font-medium);
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-size: var(--normal-font-size);
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--first-color);
+    box-shadow: 0 0 0 3px rgba(var(--first-color-rgb), 0.1);
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-group select[multiple] {
+    min-height: 120px;
+    padding: 8px;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-color-light);
+    font-size: 0.8rem;
 }
 
 .image-upload {
@@ -240,6 +351,13 @@
     border-radius: 0.5rem;
     padding: 1.5rem;
     text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.image-upload:hover {
+    border-color: var(--first-color);
+    background-color: rgba(var(--first-color-rgb), 0.05);
 }
 
 .upload-label {
@@ -259,38 +377,105 @@
     margin-top: 1rem;
     max-width: 200px;
     margin-inline: auto;
+    position: relative;
 }
 
 .image-preview img {
     width: 100%;
     border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
 }
 
+/* Delete Modal Specific Styles */
+#deleteModal .modal-content {
+    max-width: 500px;
+}
+
+#deleteModal .modal-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+#deleteModal .modal-body p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+#deleteModal .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Form Actions */
 .form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
 }
 
 .cancel-btn,
-.submit-btn {
+.submit-btn,
+.delete-btn {
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
     font-size: var(--normal-font-size);
+    font-weight: var(--font-medium);
+    transition: all 0.3s;
 }
 
 .cancel-btn {
     background-color: var(--container-color);
-    border: none;
+    border: 1px solid var(--border-color);
     color: var(--text-color);
+}
+
+.cancel-btn:hover {
+    background-color: var(--body-color);
+    transform: translateY(-2px);
 }
 
 .submit-btn {
     background-color: var(--first-color);
     border: none;
     color: var(--white-color);
+    box-shadow: 0 2px 8px rgba(var(--first-color-rgb), 0.2);
+}
+
+.submit-btn:hover {
+    background-color: var(--first-color-alt);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--first-color-rgb), 0.3);
+}
+
+.delete-btn {
+    background-color: #ff4444;
+    border: none;
+    color: var(--white-color);
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.2);
+}
+
+.delete-btn:hover {
+    background-color: #ff3333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* Responsive Design */
@@ -302,6 +487,7 @@
 
     .books__actions {
         width: 100%;
+        flex-direction: column;
     }
 
     .search-box {
@@ -311,20 +497,44 @@
     .form-grid {
         grid-template-columns: 1fr;
     }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+    
+    .form-actions {
+        justify-content: center;
+    }
 }
 
 /* Dark Theme Support */
 .dark-theme .book-card,
 .dark-theme .modal-content {
+    background-color: var(--container-color);
     box-shadow: 0 2px 16px hsla(0, 0%, 0%, .4);
 }
 
 .dark-theme .book-actions button {
-    background-color: var(--container-color);
+    background-color: var(--body-color);
 }
 
+.dark-theme .image-upload {
+    background-color: var(--body-color);
+    border-color: var(--border-color-alt);
+}
 
-/* Add these styles at the end of your books.css file */
+.dark-theme .form-group input,
+.dark-theme .form-group textarea,
+.dark-theme .form-group select {
+    background-color: var(--body-color);
+    border-color: var(--border-color-alt);
+    color: var(--text-color);
+}
+
+.dark-theme .tag {
+    background-color: var(--body-color);
+}
 
 /* Notification Styles */
 .notification {
@@ -334,23 +544,22 @@
     padding: 1rem 1.5rem;
     border-radius: 0.5rem;
     background: var(--white-color);
-    box-shadow: 0 2px 16px hsla(0, 0%, 0%, .1);
+    box-shadow: 0 4px 12px hsla(0, 0%, 0%, .15);
     z-index: var(--z-fixed);
     animation: slideIn 0.3s ease-out;
-}
-
-.notification-content {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    max-width: 350px;
 }
 
 .notification i {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
 .notification.success {
     border-left: 4px solid #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
 }
 
 .notification.success i {
@@ -359,10 +568,22 @@
 
 .notification.error {
     border-left: 4px solid #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
 }
 
 .notification.error i {
     color: #f44336;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.notification-message {
+    font-size: var(--normal-font-size);
+    color: var(--title-color);
 }
 
 @keyframes slideIn {
@@ -374,4 +595,15 @@
         transform: translateX(0);
         opacity: 1;
     }
+}
+
+@keyframes slideOut {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification.hide {
+    animation: slideOut 0.3s ease-in forwards;
 }
