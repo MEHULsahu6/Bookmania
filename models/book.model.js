@@ -18,8 +18,16 @@ const bookSchema = new mongoose.Schema({
         required: true
     },
     discountPrice: {
-        type: Number
+        type: Number,
+        validate: {
+            validator: function(value) {
+                // Discount price should be less than regular price if it exists
+                return value === null || value < this.price;
+            },
+            message: 'Discount price must be less than regular price'
+        }
     },
+    
     isbn: {
         type: String
     },
