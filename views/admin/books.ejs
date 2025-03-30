@@ -226,36 +226,52 @@
             });
 
             // Edit book
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const bookId = e.target.closest('button').dataset.id;
-                    try {
-                        const response = await fetch(`/admin/books/${bookId}`, {
-                            headers: { 'Accept': 'application/json' }
-                        });
-                        const book = await response.json();
-
-                        // Populate form
-                        document.getElementById('bookTitle').value = book.title;
-                        document.getElementById('bookAuthor').value = book.author;
-                        document.getElementById('bookPrice').value = book.price;
-                        document.getElementById('discountPrice').value = book.discountPrice || ''; // Add this line
-                        document.getElementById('bookStock').value = book.stock;
-                        document.getElementById('bookISBN').value = book.isbn || '';
-                        document.getElementById('bookPublisher').value = book.publisher || '';
-                        document.getElementById('bookCategory').value = book.category;
-                        document.getElementById('bookTags').value = book.tags.join(', ');
-                        document.getElementById('bookDescription').value = book.description;
-                        document.getElementById('modalTitle').textContent = 'Edit Book';
-                        bookForm.action = `/admin/books/update/${bookId}`;
-                        bookForm.querySelector('#bookCover').removeAttribute('required'); // Optional for updates
-
-                        bookModal.style.display = 'block';
-                    } catch (error) {
-                        console.error('Error fetching book:', error);
-                    }
-                });
+         // Edit book
+document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        const bookId = e.target.closest('button').dataset.id;
+        try {
+            const response = await fetch(`/admin/books/${bookId}`, {
+                headers: { 'Accept': 'application/json' }
             });
+            const book = await response.json();
+
+            // Populate form
+            document.getElementById('bookTitle').value = book.title;
+            document.getElementById('bookAuthor').value = book.author;
+            document.getElementById('bookPrice').value = book.price;
+            document.getElementById('discountPrice').value = book.discountPrice || '';
+            document.getElementById('bookStock').value = book.stock;
+            document.getElementById('bookISBN').value = book.isbn || '';
+            document.getElementById('bookPublisher').value = book.publisher || '';
+            document.getElementById('bookDescription').value = book.description;
+            
+            // Properly handle tags selection
+            const tagSelect = document.getElementById('bookTags');
+            Array.from(tagSelect.options).forEach(option => {
+                option.selected = book.tags.includes(option.value);
+            });
+
+            document.getElementById('modalTitle').textContent = 'Edit Book';
+            bookForm.action = `/admin/books/update/${bookId}`;
+            bookForm.querySelector('#bookCover').removeAttribute('required');
+
+            // Show existing image preview
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            if (book.image) {
+                const img = document.createElement('img');
+                img.src = book.image;
+                img.style.maxWidth = '100px';
+                preview.appendChild(img);
+            }
+
+            bookModal.style.display = 'block';
+        } catch (error) {
+            console.error('Error fetching book:', error);
+        }
+    });
+});
 
             // Delete book
             document.querySelectorAll('.delete-btn').forEach(btn => {
