@@ -11,7 +11,7 @@ const adminProfileSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-      
+        default: 'Not provided' // Default value if none is provided
     },
     address: {
         type: String,

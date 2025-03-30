@@ -33,6 +33,7 @@ const upload = multer({
     fileFilter: fileFilter
 }).single('profilePicture'); // Field name in form
 
+
 const getProfile = async (req, res) => {
     try {
         if (req.user.role !== 'admin') {
@@ -44,17 +45,11 @@ const getProfile = async (req, res) => {
             return res.status(404).render('error', { message: 'User not found' });
         }
 
-        let adminProfile = await AdminProfile.findOne({ admin: req.user.id });
-        if (!adminProfile) {
-            adminProfile = await AdminProfile.create({
-                admin: req.user.id,
-                phoneNumber: ''
-            });
-        }
+        const adminProfile = await AdminProfile.findOne({ admin: req.user.id });
 
         res.render('admin/profile', {
             user,
-            adminProfile,
+            adminProfile: adminProfile || null, // Pass null if no profile exists
             error: null
         });
     } catch (error) {
@@ -105,17 +100,22 @@ const updateProfile = async (req, res) => {
                 updatedAt: Date.now() 
             };
 
-            // If a file was uploaded, add profilePicture path
             if (req.file) {
                 updateData.profilePicture = `/uploads/admin_profiles/${req.file.filename}`;
             }
 
-            // Update AdminProfile
-            const adminProfile = await AdminProfile.findOneAndUpdate(
-                { admin: req.user.id },
-                updateData,
-                { new: true, runValidators: true, upsert: true }
-            );
+            // Update or create AdminProfile
+            let adminProfile = await AdminProfile.findOne({ admin: req.user.id });
+            if (adminProfile) {
+                adminProfile = await AdminProfile.findOneAndUpdate(
+                    { admin: req.user.id },
+                    updateData,
+                    { new: true, runValidators: true }
+                );
+            } else {
+                updateData.admin = req.user.id; // Add admin field for new profile
+                adminProfile = await AdminProfile.create(updateData);
+            }
 
             res.redirect('/admin/profile');
         } catch (error) {
@@ -123,7 +123,7 @@ const updateProfile = async (req, res) => {
             res.status(500).render('admin/profile', {
                 user: await User.findById(req.user.id),
                 adminProfile: await AdminProfile.findOne({ admin: req.user.id }),
-                error: 'Failed to update profile'
+                error: 'Failed to update profile: ' + error.message
             });
         }
     });
