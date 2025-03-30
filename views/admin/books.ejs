@@ -93,7 +93,11 @@
                                 <label for="bookPrice">Price*</label>
                                 <input type="number" id="bookPrice" name="price" step="0.01" required>
                             </div>
-
+                            
+                            <div class="form-group">
+                                <label for="discountPrice">Discount Price</label>
+                                <input type="text" id="discountPrice" name="discountPrice">
+                            </div>
                             <div class="form-group">
                                 <label for="bookStock">Stock Quantity*</label>
                                 <input type="number" id="bookStock" name="stock" required>
@@ -104,21 +108,56 @@
                                 <input type="text" id="bookISBN" name="isbn">
                             </div>
 
+                            
                             <div class="form-group">
                                 <label for="bookPublisher">Publisher</label>
                                 <input type="text" id="bookPublisher" name="publisher">
                             </div>
-
-                            <div class="form-group">
-                                <label for="bookCategory">Category*</label>
-                                <input type="text" id="bookCategory" name="category" required>
-                            </div>
-
+                            
+                           
                             <div class="form-group full-width">
-                                <label for="bookTags">Tags (comma separated)</label>
-                                <input type="text" id="bookTags" name="tags" placeholder="Fiction, Classic, Fantasy">
+                                <label for="bookTags">Tags*</label>
+                                <select id="bookTags" name="tags" multiple required>
+                                    <option value="Fiction">Fiction</option>
+                                    <option value="Non-Fiction">Non-Fiction</option>
+                                    <option value="Mystery">Mystery</option>
+                                    <option value="Romance">Romance</option>
+                                    <option value="Science Fiction">Science Fiction</option>
+                                    <option value="Fantasy">Fantasy</option>
+                                    <option value="Biography">Biography</option>
+                                    <option value="History">History</option>
+                                    <option value="Children">Children</option>
+                                    <option value="Young Adult">Young Adult</option>
+                                    <option value="Educational">Educational</option>
+                                    <option value="Self-Help">Self-Help</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Technology">Technology</option>
+                                </select>
+                                <small>Hold Ctrl (Windows) or Command (Mac) to select multiple tags</small>
                             </div>
 
+                            <!-- Add this CSS in the head section -->
+                            <style>
+                                select[multiple] {
+                                    width: 100%;
+                                    min-height: 120px;
+                                    padding: 8px;
+                                }
+                            </style>
+
+                            <!-- Modify the edit book JavaScript -->
+                            <script>
+                            // In your existing script, update the edit book population:
+                            document.getElementById('bookTags').value = ''; // Clear previous selections
+                            const tagSelect = document.getElementById('bookTags');
+                            book.tags.forEach(tag => {
+                                for(let option of tagSelect.options) {
+                                    if(option.value === tag) {
+                                        option.selected = true;
+                                    }
+                                }
+                            });
+                            </script>
                             <div class="form-group full-width">
                                 <label for="bookDescription">Description*</label>
                                 <textarea id="bookDescription" name="description" rows="4" required></textarea>

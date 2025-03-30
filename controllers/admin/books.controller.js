@@ -1,5 +1,5 @@
 const Book = require('../../models/book.model');
-const Category = require('../../models/category.model');
+// Remove this line
 const path = require('path');
 const fs = require('fs');
 
@@ -16,7 +16,7 @@ const getBooks = async (req, res) => {
 // Create a new book
 const createBook = async (req, res) => {
     try {
-        const { title, author, description, price, discountPrice, isbn, publisher, category, tags, stock } = req.body;
+        const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
         // Handle file upload
         let imagePath = '';
@@ -24,6 +24,7 @@ const createBook = async (req, res) => {
             imagePath = `/uploads/books/${req.file.filename}`;
         }
 
+        // In createBook function, modify the book creation:
         const book = new Book({
             title,
             author,
@@ -32,8 +33,7 @@ const createBook = async (req, res) => {
             discountPrice: discountPrice || null,
             isbn: isbn || null,
             publisher: publisher || null,
-            category,
-            tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
+            tags, // Now tags will be an array from multiple select
             stock,
             image: imagePath
         });
@@ -49,8 +49,9 @@ const createBook = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const bookId = req.params.id;
-        const { title, author, description, price, discountPrice, isbn, publisher, category, tags, stock } = req.body;
+        const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
+        // In updateBook function, modify updateData:
         const updateData = {
             title,
             author,
@@ -59,8 +60,7 @@ const updateBook = async (req, res) => {
             discountPrice: discountPrice || null,
             isbn: isbn || null,
             publisher: publisher || null,
-            category,
-            tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
+            tags, // Now tags will be an array from multiple select
             stock
         };
 

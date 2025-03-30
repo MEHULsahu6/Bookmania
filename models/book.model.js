@@ -26,12 +26,11 @@ const bookSchema = new mongoose.Schema({
     publisher: {
         type: String
     },
-    category: {
-        type: String,
-        required: true
-    },
     tags: [{
-        type: String
+        type: String,
+        enum: ['Fiction', 'Non-Fiction', 'Mystery', 'Romance', 'Science Fiction', 
+               'Fantasy', 'Biography', 'History', 'Children', 'Young Adult', 
+               'Educational', 'Self-Help', 'Business', 'Technology']
     }],
     stock: {
         type: Number,
