@@ -1,7 +1,7 @@
 const Book = require('../../models/book.model');
-// Remove this line
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
 
 // Get all books
 const getBooks = async (req, res) => {
@@ -18,13 +18,11 @@ const createBook = async (req, res) => {
     try {
         const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
-        // Handle file upload
         let imagePath = '';
         if (req.file) {
             imagePath = `/uploads/books/${req.file.filename}`;
         }
 
-        // In createBook function, modify the book creation:
         const book = new Book({
             title,
             author,
@@ -33,7 +31,7 @@ const createBook = async (req, res) => {
             discountPrice: discountPrice || null,
             isbn: isbn || null,
             publisher: publisher || null,
-            tags, // Now tags will be an array from multiple select
+            tags,
             stock,
             image: imagePath
         });
@@ -51,7 +49,6 @@ const updateBook = async (req, res) => {
         const bookId = req.params.id;
         const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
-        // In updateBook function, modify updateData:
         const updateData = {
             title,
             author,
@@ -60,12 +57,11 @@ const updateBook = async (req, res) => {
             discountPrice: discountPrice || null,
             isbn: isbn || null,
             publisher: publisher || null,
-            tags, // Now tags will be an array from multiple select
+            tags,
             stock
         };
 
         if (req.file) {
-            // Delete old image if exists
             const book = await Book.findById(bookId);
             if (book.image && fs.existsSync(path.join(__dirname, '../../public', book.image))) {
                 fs.unlinkSync(path.join(__dirname, '../../public', book.image));
@@ -84,18 +80,34 @@ const updateBook = async (req, res) => {
 const deleteBook = async (req, res) => {
     try {
         const bookId = req.params.id;
-        const book = await Book.findById(bookId);
         
-        if (book.image && fs.existsSync(path.join(__dirname, '../../public', book.image))) {
-            fs.unlinkSync(path.join(__dirname, '../../public', book.image));
+        // Validate the ID
+        if (!bookId || bookId === 'undefined' || !mongoose.Types.ObjectId.isValid(bookId)) {
+            return res.status(400).json({ message: 'Invalid book ID' });
+        }
+
+        const book = await Book.findById(bookId);
+
+        if (!book) {
+            return res.status(404).json({ message: 'Book not found' });
+        }
+
+        // Delete associated image if it exists
+        if (book.image) {
+            const imagePath = path.join(__dirname, '../../public', book.image);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
         }
 
         await Book.findByIdAndDelete(bookId);
-        res.redirect('/admin/books');
+        res.status(200).json({ message: 'Book deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting book', error });
+        console.error('Delete error:', error);
+        res.status(500).json({ message: 'Error deleting book', error: error.message });
     }
 };
+
 const getBookById = async (req, res) => {
     try {
         const book = await Book.findById(req.params.id);
@@ -111,5 +123,5 @@ module.exports = {
     createBook,
     updateBook,
     deleteBook,
-    getBookById // Add this
+    getBookById
 };

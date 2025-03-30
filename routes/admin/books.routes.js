@@ -8,7 +8,7 @@ const fs = require('fs');
 // Set up multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../../public/uploads/books');
+        const uploadPath = path.join(__dirname, '../../uploads/books');
         if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });
         }
@@ -24,6 +24,7 @@ const upload = multer({ storage });
 router.get('/', jwtMiddleware, booksController.getBooks);
 router.post('/create', jwtMiddleware, upload.single('cover'), booksController.createBook);
 router.post('/update/:id', jwtMiddleware, upload.single('cover'), booksController.updateBook);
-router.get('/delete/:id', jwtMiddleware, booksController.deleteBook);
+
+router.delete('/delete/:id', jwtMiddleware, booksController.deleteBook);
 router.get('/:id', jwtMiddleware, booksController.getBookById); // Add this route
 module.exports = router;

@@ -1,324 +1,391 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
-    <link rel="stylesheet" href="/stylesheets/Admin/admin.css">
-    <link rel="stylesheet" href="/stylesheets/Admin/books.css">
-    <title>Books Management - Admin Panel</title>
-</head>
-<body>
-    <%- include('./components/navbar') %>
-    <%- include('./components/sidebar') %>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+        <link rel="stylesheet" href="/stylesheets/Admin/admin.css">
+        <link rel="stylesheet" href="/stylesheets/Admin/books.css">
+        <title>Books Management - Admin Panel</title>
+        <style>
+            .book-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+    }
 
-    <main class="main">
-        <div class="main__container container">
-            <section class="books section">
-                <div class="books__header">
-                    <h2 class="section__title">Books Management</h2>
-                    <div class="books__actions">
-                        <div class="search-box">
-                            <i class="ri-search-line"></i>
-                            <input type="text" placeholder="Search books..." id="searchInput">
+    .tag {
+        background: #f0f0f0;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+    }   
+        </style>
+    </head>
+    <body>
+        <%- include('./components/navbar') %>
+        <%- include('./components/sidebar') %>
+
+        <main class="main">
+            <div class="main__container container">
+                <section class="books section">
+                    <div class="books__header">
+                        <h2 class="section__title">Books Management</h2>
+                        <div class="books__actions">
+                            <div class="search-box">
+                                <i class="ri-search-line"></i>
+                                <input type="text" placeholder="Search books..." id="searchInput">
+                            </div>
+                            <button class="add-book-btn" id="addBookBtn">
+                                <i class="ri-add-line"></i>
+                                Add New Book
+                            </button>
                         </div>
-                        <button class="add-book-btn" id="addBookBtn">
-                            <i class="ri-add-line"></i>
-                            Add New Book
-                        </button>
                     </div>
-                </div>
 
-                <div class="books__container">
-                    <div class="books__grid">
-                        <% if (books && books.length > 0) { %>
-                            <% books.forEach(book => { %>
-                                <div class="book-card" data-id="<%= book._id %>">
-                                    <div class="book-image">
-                                        <img src="<%= book.image %>" alt="<%= book.title %> Cover">
-                                        <div class="book-actions">
-                                            <button class="edit-btn" data-id="<%= book._id %>" title="Edit">
-                                                <i class="ri-edit-line"></i>
-                                            </button>
-                                            <button class="delete-btn" data-id="<%= book._id %>" title="Delete">
-                                                <i class="ri-delete-bin-line"></i>
-                                            </button>
+                    <div class="books__container">
+                        <div class="books__grid">
+                            <% if (books && books.length > 0) { %>
+                                <% books.forEach(book => { %>
+                                    <div class="book-card" data-id="<%= book._id %>">
+                                        <div class="book-image">
+                                            <img src="<%= book.image %>" alt="<%= book.title %> Cover">
+                                            <div class="book-actions">
+                                                <button class="edit-btn" data-id="<%= book._id %>" title="Edit">
+                                                    <i class="ri-edit-line"></i>
+                                                </button>
+                                                <button class="delete-btn" data-id="<%= book._id %>" title="Delete">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="book-info">
+                                            <h3><%= book.title %></h3>
+                                            <p class="author"><%= book.author %></p>
+                                            <div class="book-meta">
+                                                <% if (book.discountPrice) { %>
+                                                    <span class="original-price" style="text-decoration: line-through;">$<%= book.price.toFixed(2) %></span>
+                                                    <span class="discount-price">$<%= book.discountPrice.toFixed(2) %></span>
+                                                <% } else { %>
+                                                    <span class="price">$<%= book.price.toFixed(2) %></span>
+                                                <% } %>
+                                                <span class="stock">In Stock: <%= book.stock %></span>
+                                            </div>
+                                            <div class="book-tags">
+                                                <% book.tags.forEach(tag => { %>
+                                                    <span class="tag"><%= tag %></span>
+                                                <% }) %>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="book-info">
-                                        <h3><%= book.title %></h3>
-                                        <p class="author"><%= book.author %></p>
-                                        <div class="book-meta">
-                                            <% if (book.discountPrice) { %>
-                                                <span class="original-price" style="text-decoration: line-through;">$<%= book.price.toFixed(2) %></span>
-                                                <span class="discount-price">$<%= book.discountPrice.toFixed(2) %></span>
-                                            <% } else { %>
-                                                <span class="price">$<%= book.price.toFixed(2) %></span>
-                                            <% } %>
-                                            <span class="stock">In Stock: <%= book.stock %></span>
-                                        </div>
-                                        <div class="book-tags">
-                                            <% book.tags.forEach(tag => { %>
-                                                <span class="tag"><%= tag %></span>
-                                            <% }) %>
-                                        </div>
-                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <p>No books available.</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add/Edit Book Modal -->
+                <div class="modal" id="bookModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modalTitle">Add New Book</h3>
+                            <button class="close-modal">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
+                        <form class="book-form" id="bookForm" action="/admin/books/create" method="POST" enctype="multipart/form-data">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="bookTitle">Book Title*</label>
+                                    <input type="text" id="bookTitle" name="title" required>
                                 </div>
-                            <% }) %>
-                        <% } else { %>
-                            <p>No books available.</p>
-                        <% } %>
-                    </div>
-                </div>
-            </section>
 
-            <!-- Add/Edit Book Modal -->
-            <div class="modal" id="bookModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 id="modalTitle">Add New Book</h3>
-                        <button class="close-modal">
-                            <i class="ri-close-line"></i>
-                        </button>
-                    </div>
-                    <form class="book-form" id="bookForm" action="/admin/books/create" method="POST" enctype="multipart/form-data">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="bookTitle">Book Title*</label>
-                                <input type="text" id="bookTitle" name="title" required>
-                            </div>
+                                <div class="form-group">
+                                    <label for="bookAuthor">Author Name*</label>
+                                    <input type="text" id="bookAuthor" name="author" required>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="bookAuthor">Author Name*</label>
-                                <input type="text" id="bookAuthor" name="author" required>
-                            </div>
+                                <div class="form-group">
+                                    <label for="bookPrice">Price*</label>
+                                    <input type="number" id="bookPrice" name="price" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="discountPrice">Discount Price</label>
+                                    <input type="number" id="discountPrice" name="discountPrice" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookStock">Stock Quantity*</label>
+                                    <input type="number" id="bookStock" name="stock" required>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="bookPrice">Price*</label>
-                                <input type="number" id="bookPrice" name="price" step="0.01" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="discountPrice">Discount Price</label>
-                                <input type="number" id="discountPrice" name="discountPrice" step="0.01">
-                            </div>
-                            <div class="form-group">
-                                <label for="bookStock">Stock Quantity*</label>
-                                <input type="number" id="bookStock" name="stock" required>
-                            </div>
+                                <div class="form-group">
+                                    <label for="bookISBN">ISBN</label>
+                                    <input type="text" id="bookISBN" name="isbn">
+                                </div>
 
-                            <div class="form-group">
-                                <label for="bookISBN">ISBN</label>
-                                <input type="text" id="bookISBN" name="isbn">
-                            </div>
-
+                                
+                                <div class="form-group">
+                                    <label for="bookPublisher">Publisher</label>
+                                    <input type="text" id="bookPublisher" name="publisher">
+                                </div>
+                                
                             
-                            <div class="form-group">
-                                <label for="bookPublisher">Publisher</label>
-                                <input type="text" id="bookPublisher" name="publisher">
-                            </div>
-                            
-                           
-                            <div class="form-group full-width">
-                                <label for="bookTags">Tags*</label>
-                                <select id="bookTags" name="tags" multiple required>
-                                    <option value="Fiction">Fiction</option>
-                                    <option value="Non-Fiction">Non-Fiction</option>
-                                    <option value="Mystery">Mystery</option>
-                                    <option value="Romance">Romance</option>
-                                    <option value="Science Fiction">Science Fiction</option>
-                                    <option value="Fantasy">Fantasy</option>
-                                    <option value="Biography">Biography</option>
-                                    <option value="History">History</option>
-                                    <option value="Children">Children</option>
-                                    <option value="Young Adult">Young Adult</option>
-                                    <option value="Educational">Educational</option>
-                                    <option value="Self-Help">Self-Help</option>
-                                    <option value="Business">Business</option>
-                                    <option value="Technology">Technology</option>
-                                </select>
-                                <small>Hold Ctrl (Windows) or Command (Mac) to select multiple tags</small>
-                            </div>
+                                <div class="form-group full-width">
+                                    <label for="bookTags">Tags*</label>
+                                    <select id="bookTags" name="tags" multiple required>
+                                        <option value="Fiction">Fiction</option>
+                                        <option value="Non-Fiction">Non-Fiction</option>
+                                        <option value="Mystery">Mystery</option>
+                                        <option value="Romance">Romance</option>
+                                        <option value="Science Fiction">Science Fiction</option>
+                                        <option value="Fantasy">Fantasy</option>
+                                        <option value="Biography">Biography</option>
+                                        <option value="History">History</option>
+                                        <option value="Children">Children</option>
+                                        <option value="Young Adult">Young Adult</option>
+                                        <option value="Educational">Educational</option>
+                                        <option value="Self-Help">Self-Help</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Technology">Technology</option>
+                                    </select>
+                                    <small>Hold Ctrl (Windows) or Command (Mac) to select multiple tags</small>
+                                </div>
 
-                            <!-- Add this CSS in the head section -->
-                            <style>
-                                select[multiple] {
-                                    width: 100%;
-                                    min-height: 120px;
-                                    padding: 8px;
-                                }
-                            </style>
-
-                            <!-- Modify the edit book JavaScript -->
-                            <script>
-                            // In your existing script, update the edit book population:
-                            document.getElementById('bookTags').value = ''; // Clear previous selections
-                            const tagSelect = document.getElementById('bookTags');
-                            book.tags.forEach(tag => {
-                                for(let option of tagSelect.options) {
-                                    if(option.value === tag) {
-                                        option.selected = true;
+                                <!-- Add this CSS in the head section -->
+                                <style>
+                                    select[multiple] {
+                                        width: 100%;
+                                        min-height: 120px;
+                                        padding: 8px;
                                     }
-                                }
-                            });
-                            </script>
-                            <div class="form-group full-width">
-                                <label for="bookDescription">Description*</label>
-                                <textarea id="bookDescription" name="description" rows="4" required></textarea>
-                            </div>
+                                </style>
 
-                            <div class="form-group full-width">
-                                <label for="bookCover">Book Cover Image*</label>
-                                <div class="image-upload">
-                                    <input type="file" id="bookCover" name="cover" accept="image/*" required>
-                                    <label for="bookCover" class="upload-label">
-                                        <i class="ri-upload-cloud-line"></i>
-                                        <span>Choose Image</span>
-                                    </label>
-                                    <div class="image-preview" id="imagePreview"></div>
+                                <!-- Modify the edit book JavaScript -->
+                                <script>
+                                // In your existing script, update the edit book population:
+                                document.getElementById('bookTags').value = ''; // Clear previous selections
+                                const tagSelect = document.getElementById('bookTags');
+                                book.tags.forEach(tag => {
+                                    for(let option of tagSelect.options) {
+                                        if(option.value === tag) {
+                                            option.selected = true;
+                                        }
+                                    }
+                                });
+                                </script>
+                                <div class="form-group full-width">
+                                    <label for="bookDescription">Description*</label>
+                                    <textarea id="bookDescription" name="description" rows="4" required></textarea>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="bookCover">Book Cover Image*</label>
+                                    <div class="image-upload">
+                                        <input type="file" id="bookCover" name="cover" accept="image/*" required>
+                                        <label for="bookCover" class="upload-label">
+                                            <i class="ri-upload-cloud-line"></i>
+                                            <span>Choose Image</span>
+                                        </label>
+                                        <div class="image-preview" id="imagePreview"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="button" class="cancel-btn">Cancel</button>
-                            <button type="submit" class="submit-btn">Save Book</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Delete Confirmation Modal -->
-            <div class="modal" id="deleteModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Delete Book</h3>
-                        <button class="close-modal">
-                            <i class="ri-close-line"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete this book? This action cannot be undone.</p>
-                    </div>
-                    <div class="modal-actions">
-                        <button class="cancel-btn">Cancel</button>
-                        <button class="delete-btn" id="confirmDelete">Delete</button>
+                            <div class="form-actions">
+                                <button type="button" class="cancel-btn">Cancel</button>
+                                <button type="submit" class="submit-btn">Save Book</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal" id="deleteModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Delete Book</h3>
+                            <button class="close-modal">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete this book? This action cannot be undone.</p>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="cancel-btn">Cancel</button>
+                            <button class="delete-btn" id="confirmDelete">Delete</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <script src="/javascripts/admin.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const bookModal = document.getElementById('bookModal');
-            const deleteModal = document.getElementById('deleteModal');
-            const bookForm = document.getElementById('bookForm');
-
-            // Add new book
-            document.getElementById('addBookBtn').addEventListener('click', () => {
-                bookForm.reset();
-                document.getElementById('modalTitle').textContent = 'Add New Book';
-                bookForm.action = '/admin/books/create';
-                bookForm.querySelector('#bookCover').setAttribute('required', 'required');
-                bookModal.style.display = 'block';
-            });
-
-            // Edit book
-         // Edit book
-document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-        const bookId = e.target.closest('button').dataset.id;
-        try {
-            const response = await fetch(`/admin/books/${bookId}`, {
-                headers: { 'Accept': 'application/json' }
-            });
-            const book = await response.json();
-
-            // Populate form
-            document.getElementById('bookTitle').value = book.title;
-            document.getElementById('bookAuthor').value = book.author;
-            document.getElementById('bookPrice').value = book.price;
-            document.getElementById('discountPrice').value = book.discountPrice || '';
-            document.getElementById('bookStock').value = book.stock;
-            document.getElementById('bookISBN').value = book.isbn || '';
-            document.getElementById('bookPublisher').value = book.publisher || '';
-            document.getElementById('bookDescription').value = book.description;
-            
-            // Properly handle tags selection
-            const tagSelect = document.getElementById('bookTags');
-            Array.from(tagSelect.options).forEach(option => {
-                option.selected = book.tags.includes(option.value);
-            });
-
-            document.getElementById('modalTitle').textContent = 'Edit Book';
-            bookForm.action = `/admin/books/update/${bookId}`;
-            bookForm.querySelector('#bookCover').removeAttribute('required');
-
-            // Show existing image preview
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = '';
-            if (book.image) {
-                const img = document.createElement('img');
-                img.src = book.image;
-                img.style.maxWidth = '100px';
-                preview.appendChild(img);
-            }
-
-            bookModal.style.display = 'block';
-        } catch (error) {
-            console.error('Error fetching book:', error);
-        }
-    });
-});
-
-            // Delete book
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const bookId = e.target.closest('button').dataset.id;
-                    deleteModal.style.display = 'block';
-                    document.getElementById('confirmDelete').onclick = () => {
-                        window.location.href = `/admin/books/delete/${bookId}`;
-                    };
+        <script src="/javascripts/admin.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const bookModal = document.getElementById('bookModal');
+                const deleteModal = document.getElementById('deleteModal');
+                const bookForm = document.getElementById('bookForm');
+                let currentBookId = null;
+        
+                // Add new book
+                document.getElementById('addBookBtn').addEventListener('click', () => {
+                    bookForm.reset();
+                    document.getElementById('modalTitle').textContent = 'Add New Book';
+                    bookForm.action = '/admin/books/create';
+                    bookForm.querySelector('#bookCover').setAttribute('required', 'required');
+                    document.getElementById('imagePreview').innerHTML = '';
+                    bookModal.style.display = 'block';
                 });
-            });
-
-            // Close modals
-            document.querySelectorAll('.close-modal, .cancel-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    bookModal.style.display = 'none';
-                    deleteModal.style.display = 'none';
+        
+                // Edit book
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const bookId = e.target.closest('button').dataset.id;
+                        currentBookId = bookId;
+                        
+                        try {
+                            const response = await fetch(`/admin/books/${bookId}`, {
+                                headers: { 'Accept': 'application/json' }
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch book');
+                            }
+                            
+                            const book = await response.json();
+        
+                            // Populate form
+                            document.getElementById('bookTitle').value = book.title;
+                            document.getElementById('bookAuthor').value = book.author;
+                            document.getElementById('bookPrice').value = book.price;
+                            document.getElementById('discountPrice').value = book.discountPrice || '';
+                            document.getElementById('bookStock').value = book.stock;
+                            document.getElementById('bookISBN').value = book.isbn || '';
+                            document.getElementById('bookPublisher').value = book.publisher || '';
+                            document.getElementById('bookDescription').value = book.description;
+                            
+                            // Handle tags selection
+                            const tagSelect = document.getElementById('bookTags');
+                            Array.from(tagSelect.options).forEach(option => {
+                                option.selected = book.tags.includes(option.value);
+                            });
+        
+                            document.getElementById('modalTitle').textContent = 'Edit Book';
+                            bookForm.action = `/admin/books/update/${bookId}`;
+                            bookForm.querySelector('#bookCover').removeAttribute('required');
+        
+                            // Show existing image preview
+                            const preview = document.getElementById('imagePreview');
+                            preview.innerHTML = '';
+                            if (book.image) {
+                                const img = document.createElement('img');
+                                img.src = book.image;
+                                img.style.maxWidth = '100px';
+                                preview.appendChild(img);
+                            }
+        
+                            bookModal.style.display = 'block';
+                        } catch (error) {
+                            console.error('Error fetching book:', error);
+                            alert('Failed to load book details');
+                        }
+                    });
                 });
-            });
-
-            // Image preview
-            document.getElementById('bookCover').addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const preview = document.getElementById('imagePreview');
-                if (file) {
-                    preview.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(file);
-                    img.style.maxWidth = '100px';
-                    preview.appendChild(img);
-                }
-            });
-
-            // Simple search functionality
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                document.querySelectorAll('.book-card').forEach(card => {
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    const author = card.querySelector('.author').textContent.toLowerCase();
-                    if (title.includes(searchTerm) || author.includes(searchTerm)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
+        
+                // Delete book
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const bookCard = e.target.closest('.book-card');
+                        if (!bookCard) {
+                            console.error('Could not find book card element');
+                            return;
+                        }
+                        
+                        currentBookId = bookCard.dataset.id;
+                        if (!currentBookId) {
+                            console.error('No book ID found');
+                            return;
+                        }
+                        
+                        deleteModal.style.display = 'block';
+                    });
+                });
+        
+                // Confirm delete
+                document.getElementById('confirmDelete').addEventListener('click', async () => {
+                    if (!currentBookId) {
+                        alert('No book selected for deletion');
+                        deleteModal.style.display = 'none';
+                        return;
+                    }
+        
+                    try {
+                        const token = localStorage.getItem('token');
+                        const response = await fetch(`/admin/books/delete/${currentBookId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+        
+                        const result = await response.json();
+        
+                        if (response.ok) {
+                            alert('Book deleted successfully!');
+                            window.location.reload();
+                        } else {
+                            throw new Error(result.message || 'Failed to delete book');
+                        }
+                    } catch (error) {
+                        console.error('Delete error:', error);
+                        alert(error.message || 'An error occurred while deleting the book');
+                    } finally {
+                        deleteModal.style.display = 'none';
+                        currentBookId = null;
                     }
                 });
+        
+                // Close modals
+                document.querySelectorAll('.close-modal, .cancel-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        bookModal.style.display = 'none';
+                        deleteModal.style.display = 'none';
+                        currentBookId = null;
+                    });
+                });
+        
+                // Image preview
+                document.getElementById('bookCover').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = '';
+                    
+                    if (file) {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = '100px';
+                        preview.appendChild(img);
+                    }
+                });
+        
+                // Search functionality
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    document.querySelectorAll('.book-card').forEach(card => {
+                        const title = card.querySelector('h3').textContent.toLowerCase();
+                        const author = card.querySelector('.author').textContent.toLowerCase();
+                        card.style.display = (title.includes(searchTerm) || author.includes(searchTerm)) 
+                            ? 'block' 
+                            : 'none';
+                    });
+                });
             });
-        });
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
