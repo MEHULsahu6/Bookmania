@@ -3,10 +3,11 @@ const path = require('path');
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-// Get all books
+// Get all books for the current admin
 const getBooks = async (req, res) => {
     try {
-        const books = await Book.find();
+        const adminId = req.user.adminProfile; // Assuming JWT middleware adds admin profile ID to req.user
+        const books = await Book.find({ admin: adminId });
         res.render('admin/books', { books });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching books', error });
@@ -16,6 +17,7 @@ const getBooks = async (req, res) => {
 // Create a new book
 const createBook = async (req, res) => {
     try {
+        const adminId = req.user.adminProfile;
         const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
         let imagePath = '';
@@ -24,6 +26,7 @@ const createBook = async (req, res) => {
         }
 
         const book = new Book({
+            admin: adminId,
             title,
             author,
             description,
@@ -36,8 +39,17 @@ const createBook = async (req, res) => {
             image: imagePath
         });
 
-        await book.save();
-        res.redirect('/admin/books');
+        try {
+            await book.save();
+            res.redirect('/admin/books');
+        } catch (error) {
+            if (error.code === 11000) { // Duplicate key error
+                return res.status(400).json({ 
+                    message: 'A book with this title already exists for this admin' 
+                });
+            }
+            throw error;
+        }
     } catch (error) {
         res.status(500).json({ message: 'Error creating book', error });
     }
@@ -47,6 +59,7 @@ const createBook = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const bookId = req.params.id;
+        const adminId = req.user.adminProfile;
         const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
         const updateData = {
@@ -62,15 +75,31 @@ const updateBook = async (req, res) => {
         };
 
         if (req.file) {
-            const book = await Book.findById(bookId);
+            const book = await Book.findOne({ _id: bookId, admin: adminId });
+            if (!book) return res.status(404).json({ message: 'Book not found' });
+            
             if (book.image && fs.existsSync(path.join(__dirname, '../../public', book.image))) {
                 fs.unlinkSync(path.join(__dirname, '../../public', book.image));
             }
             updateData.image = `/uploads/books/${req.file.filename}`;
         }
 
-        await Book.findByIdAndUpdate(bookId, updateData);
-        res.redirect('/admin/books');
+        try {
+            const updatedBook = await Book.findOneAndUpdate(
+                { _id: bookId, admin: adminId },
+                updateData,
+                { new: true }
+            );
+            if (!updatedBook) return res.status(404).json({ message: 'Book not found' });
+            res.redirect('/admin/books');
+        } catch (error) {
+            if (error.code === 11000) {
+                return res.status(400).json({ 
+                    message: 'A book with this title already exists for this admin' 
+                });
+            }
+            throw error;
+        }
     } catch (error) {
         res.status(500).json({ message: 'Error updating book', error });
     }
@@ -80,19 +109,17 @@ const updateBook = async (req, res) => {
 const deleteBook = async (req, res) => {
     try {
         const bookId = req.params.id;
+        const adminId = req.user.adminProfile;
         
-        // Validate the ID
-        if (!bookId || bookId === 'undefined' || !mongoose.Types.ObjectId.isValid(bookId)) {
+        if (!mongoose.Types.ObjectId.isValid(bookId)) {
             return res.status(400).json({ message: 'Invalid book ID' });
         }
 
-        const book = await Book.findById(bookId);
-
+        const book = await Book.findOne({ _id: bookId, admin: adminId });
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
 
-        // Delete associated image if it exists
         if (book.image) {
             const imagePath = path.join(__dirname, '../../public', book.image);
             if (fs.existsSync(imagePath)) {
@@ -100,17 +127,17 @@ const deleteBook = async (req, res) => {
             }
         }
 
-        await Book.findByIdAndDelete(bookId);
+        await Book.deleteOne({ _id: bookId, admin: adminId });
         res.status(200).json({ message: 'Book deleted successfully' });
     } catch (error) {
-        console.error('Delete error:', error);
         res.status(500).json({ message: 'Error deleting book', error: error.message });
     }
 };
 
 const getBookById = async (req, res) => {
     try {
-        const book = await Book.findById(req.params.id);
+        const adminId = req.user.adminProfile;
+        const book = await Book.findOne({ _id: req.params.id, admin: adminId });
         if (!book) return res.status(404).json({ message: 'Book not found' });
         res.json(book);
     } catch (error) {

@@ -10,7 +10,7 @@
         <title>Books Management - Admin Panel</title>
         <style>
             .book-tags {
-        display: flex;
+        display: flex;  
         flex-wrap: wrap;
         gap: 5px;
         margin-top: 10px;
@@ -386,6 +386,12 @@
                     });
                 });
             });
+            const requiredFields = ['title', 'author', 'description', 'price', 'stock'];
+for (const field of requiredFields) {
+    if (!req.body[field]) {
+        return res.status(400).json({ message: `Missing required field: ${field}` });
+    }
+}
         </script>
     </body>
     </html>

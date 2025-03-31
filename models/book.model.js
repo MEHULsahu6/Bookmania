@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const admin = require('./adminProfile.model');
+
 const bookSchema = new mongoose.Schema({
     admin: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AdminProfile',
-        unique: true
+     // Remove unique: true from here
     },
     title: {
         type: String,
@@ -26,13 +27,11 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         validate: {
             validator: function(value) {
-                // Discount price should be less than regular price if it exists
                 return value === null || value < this.price;
             },
             message: 'Discount price must be less than regular price'
         }
     },
-    
     isbn: {
         type: String
     },
@@ -59,5 +58,8 @@ const bookSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+// Create a compound unique index for admin and title combination
+bookSchema.index({ admin: 1, title: 1 }, { unique: true });
 
 module.exports = mongoose.model('Book', bookSchema);
