@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const getBooks = async (req, res) => {
     try {
         const adminId =req.user.id; // Assuming JWT middleware adds admin profile ID to req.user
+        console.log(adminId);
         const books = await Book.find({ admin: adminId });
         res.render('admin/books', { books });
     } catch (error) {
