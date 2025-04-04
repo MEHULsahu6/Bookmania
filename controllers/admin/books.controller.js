@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 // Get all books for the current admin
 const getBooks = async (req, res) => {
     try {
-        const adminId = req.user.adminProfile; // Assuming JWT middleware adds admin profile ID to req.user
+        const adminId =req.user.id; // Assuming JWT middleware adds admin profile ID to req.user
         const books = await Book.find({ admin: adminId });
         res.render('admin/books', { books });
     } catch (error) {
@@ -17,7 +17,7 @@ const getBooks = async (req, res) => {
 // Create a new book
 const createBook = async (req, res) => {
     try {
-        const adminId = req.user.adminProfile;
+        const adminId =req.user.id;
         const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
         let imagePath = '';
@@ -59,7 +59,7 @@ const createBook = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const bookId = req.params.id;
-        const adminId = req.user.adminProfile;
+        const adminId =req.user.id;
         const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
         
         const updateData = {
@@ -109,7 +109,7 @@ const updateBook = async (req, res) => {
 const deleteBook = async (req, res) => {
     try {
         const bookId = req.params.id;
-        const adminId = req.user.adminProfile;
+        const adminId =req.user.id;
         
         if (!mongoose.Types.ObjectId.isValid(bookId)) {
             return res.status(400).json({ message: 'Invalid book ID' });
@@ -136,7 +136,7 @@ const deleteBook = async (req, res) => {
 
 const getBookById = async (req, res) => {
     try {
-        const adminId = req.user.adminProfile;
+        const adminId =req.user.id;
         const book = await Book.findOne({ _id: req.params.id, admin: adminId });
         if (!book) return res.status(404).json({ message: 'Book not found' });
         res.json(book);
