@@ -9,6 +9,30 @@
     <link rel="stylesheet" href="../../stylesheets/User/profile.css">
     <link rel="stylesheet" href="../../stylesheets/User/home.css">
     <title>User Profile | Book Mania</title>
+    <style>
+        .profile-header .personal-info {
+    margin: 1rem;
+}
+
+.personal-info .card-body {
+    padding: 1rem;
+}
+
+.info-item {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #666;
+}
+
+.info-value {
+    color: #333;
+}
+    </style>
 </head>
 <body>
     <%- include('partials/navbar') %>
@@ -31,36 +55,31 @@
                 <div class="profile-info">
                     <h1 class="profile-name">John Doe</h1>
                     <p class="profile-email">john.doe@email.com</p>
-                
                 </div>
+                <section class="personal-info card">
+                    <div class="card-header">
+                        <h2>Personal Info</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Mo No:</span>
+                            <span class="info-value">+91 1478526548</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gender: </span>
+                            <span class="info-value">male </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Joined:</span>
+                            <span class="info-value">January 15, 2023</span>
+                        </div>
+                       
+                    </div>
+                </section>
             </section>
 
             <div class="profile-content">
                 <div class="profile-main">
-                    <section class="profile-about card">
-                        <div class="card-header">
-                            <h2>About Me</h2>
-                            <button class="edit-btn" id="edit-about">
-                                <i class="ri-edit-line"></i>
-                            </button>
-                        </div>
-                        <form action="/update-bio" method="POST" class="card-body about-form" id="about-form" style="display: none;">
-                            <textarea name="bio" class="profile-bio" rows="4" required>
-                                Avid reader and book enthusiast. I love exploring different genres, 
-                                especially mystery and science fiction. Always on the lookout for 
-                                my next great read!
-                            </textarea>
-                            <button type="submit" class="save-btn">Save</button>
-                        </form>
-                        <div class="card-body bio-display">
-                            <p class="profile-bio">
-                                Avid reader and book enthusiast. I love exploring different genres, 
-                                especially mystery and science fiction. Always on the lookout for 
-                                my next great read!
-                            </p>
-                        </div>
-                    </section>
-
                     <section class="ordered-books-reviews card">
                         <div class="card-header">
                             <h2>Leave a Review</h2>
@@ -120,12 +139,7 @@
                 </div>
 
                 <div class="profile-sidebar">
-                    <section class="profile-actions card">
-                        <button class="action-btn primary" id="open-edit-modal">
-                            <i class="ri-edit-line"></i>
-                            Edit Profile
-                        </button>
-                    </section>
+                    <!-- Sidebar content can be added here if needed -->
                 </div>
             </div>
         </div>
@@ -176,59 +190,41 @@
     <script src="../../javascripts/user/profile.js"></script>
     <script src="../../javascripts/user/home.js"></script>
     <script>
-        // profile.js
+        // Modal handling
+        const editProfileModal = document.getElementById('editProfileModal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const cancelBtn = document.querySelector('.cancel-btn');
 
-// Modal handling
-const editProfileModal = document.getElementById('editProfileModal');
-const openEditModalBtn = document.getElementById('open-edit-modal');
-const closeModalBtn = document.querySelector('.close-modal');
-const cancelBtn = document.querySelector('.cancel-btn');
+        // Close modal
+        closeModalBtn.addEventListener('click', () => {
+            editProfileModal.style.display = 'none';
+        });
 
-// Open modal
-openEditModalBtn.addEventListener('click', () => {
-    editProfileModal.style.display = 'block';
-});
+        cancelBtn.addEventListener('click', () => {
+            editProfileModal.style.display = 'none';
+        });
 
-// Close modal
-closeModalBtn.addEventListener('click', () => {
-    editProfileModal.style.display = 'none';
-});
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === editProfileModal) {
+                editProfileModal.style.display = 'none';
+            }
+        });
 
-cancelBtn.addEventListener('click', () => {
-    editProfileModal.style.display = 'none';
-});
+        // Image preview
+        const profileImageInput = document.getElementById('profile-image');
+        const previewImage = document.getElementById('preview-image');
 
-// Close modal when clicking outside
-window.addEventListener('click', (e) => {
-    if (e.target === editProfileModal) {
-        editProfileModal.style.display = 'none';
-    }
-});
-
-// Image preview
-const profileImageInput = document.getElementById('profile-image');
-const previewImage = document.getElementById('preview-image');
-
-profileImageInput.addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            previewImage.src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
-});
-
-// About section toggle (optional, if you want edit functionality here)
-const editAboutBtn = document.getElementById('edit-about');
-const aboutForm = document.getElementById('about-form');
-const bioDisplay = document.querySelector('.bio-display');
-
-editAboutBtn.addEventListener('click', () => {
-    aboutForm.style.display = aboutForm.style.display === 'none' ? 'block' : 'none';
-    bioDisplay.style.display = aboutForm.style.display === 'none' ? 'block' : 'none';
-});
+        profileImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 </html>
