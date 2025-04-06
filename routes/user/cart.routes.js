@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const profileController = require('../../controllers/User/profile.controller');
+const cartController = require('../../controllers/User/cart.controller');
 const { jwtMiddleware } = require('../../middlewares/JWTauth');
 
 // Apply JWT authentication middleware to protect the profile route
-router.get('/', jwtMiddleware, profileController.profile);
+router.get('/', jwtMiddleware, cartController.cart);
 
 module.exports = router;
