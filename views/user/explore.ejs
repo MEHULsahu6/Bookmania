@@ -412,16 +412,81 @@
             });
         });
 
-        // Add to cart functionality
-        document.querySelectorAll('.explore__button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
+        // Replace the existing addToCartButtons event listener with this:
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', async () => {
                 const bookId = button.getAttribute('data-id');
-                console.log('Added to cart:', bookId);
-                // Implement your add to cart logic here
+                try {
+                    const response = await fetch('/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ bookId })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Item added to cart successfully!');
+                    } else {
+                        alert('Failed to add item to cart');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error adding item to cart');
+                }
             });
         });
     });
+   </script>
+   <script>
+    
+// Update the saveField function in the script section
+async function saveField(field) {
+    const input = document.getElementById(`${field}-input`);
+    const value = input.value.trim();
+    
+    if (!value) {
+        alert('Please enter a valid value');
+        return;
+    }
+
+    try {
+        const response = await fetch('/user/profile/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                field: field,  // Add field name
+                value: value   // Add value
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Server error');
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Hide the edit field
+            cancelEdit(field);
+            // Update the displayed value
+            const valueSpan = document.querySelector(`#${field}-edit`).previousElementSibling.querySelector('.info-value');
+            valueSpan.textContent = value;
+            // Show success message
+            alert('Updated successfully');
+            // Reload the page to reflect changes
+            window.location.reload();
+        } else {
+            throw new Error(data.error || 'Update failed');
+        }
+    } catch (error) {
+        console.error('Update error:', error);
+        alert('Failed to update profile. Please try again.');
+    }
+}
    </script>
 </body>
 </html>
