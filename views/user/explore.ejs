@@ -318,10 +318,29 @@
             });
         });
 
+        // Replace the existing addToCartButtons event listener with this:
         addToCartButtons.forEach(button => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', async () => {
                 const bookId = button.getAttribute('data-id');
-                console.log('Added to cart:', bookId);
+                try {
+                    const response = await fetch('/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ bookId })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Item added to cart successfully!');
+                    } else {
+                        alert('Failed to add item to cart');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error adding item to cart');
+                }
             });
         });
     });

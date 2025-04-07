@@ -3,7 +3,8 @@ const router = express.Router();
 const cartController = require('../../controllers/User/cart.controller');
 const { jwtMiddleware } = require('../../middlewares/JWTauth');
 
-// Apply JWT authentication middleware to protect the profile route
 router.get('/', jwtMiddleware, cartController.cart);
+// Add new route for adding items to cart
+router.post('/add', jwtMiddleware, cartController.addToCart);
 
 module.exports = router;
