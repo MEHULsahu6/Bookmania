@@ -67,4 +67,25 @@ exports.saveAddress = async (req, res) => {
     }
 };
 
+exports.removeFromCart = async (req, res) => {
+    try {
+        const { bookId } = req.params;
+        const userId = req.user.id;
+
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            return res.status(404).json({ success: false, message: 'Cart not found' });
+        }
+
+        // Remove the item from the cart
+        cart.items = cart.items.filter(item => item.book.toString() !== bookId);
+        await cart.save();
+
+        res.json({ success: true, message: 'Item removed from cart' });
+    } catch (error) {
+        console.error('Remove from cart error:', error);
+        res.status(500).json({ success: false, message: 'Error removing item from cart' });
+    }
+};
+
 module.exports = exports;

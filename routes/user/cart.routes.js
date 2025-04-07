@@ -6,5 +6,6 @@ const { jwtMiddleware } = require('../../middlewares/JWTauth');
 router.get('/', jwtMiddleware, cartController.cart);
 router.post('/add', jwtMiddleware, cartController.addToCart);
 router.post('/save-address', jwtMiddleware, cartController.saveAddress);
+router.delete('/remove/:bookId', jwtMiddleware, cartController.removeFromCart);
 
 module.exports = router;

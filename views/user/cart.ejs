@@ -607,6 +607,8 @@
          </div>
       </section>
    </main>
+   </body> 
+   
    <script>
       function showSection(sectionId) {
          document.querySelectorAll('.cart-section, .address-section, .payment-section').forEach(section => {
@@ -680,8 +682,6 @@
       document.addEventListener('DOMContentLoaded', updateSummary);
    </script>
    <script>
-      // ... existing JavaScript ...
-  
       document.getElementById('addressForm').addEventListener('submit', async function(e) {
           e.preventDefault();
           
@@ -711,7 +711,53 @@
           }
       });
   
-      // ... rest of your existing JavaScript ...
-  </script>
+      // Add this new function
+      async function removeFromCart(bookId) {
+          try {
+              const response = await fetch(`/cart/remove/${bookId}`, {
+                  method: 'DELETE',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              });
+  
+              const result = await response.json();
+              if (result.success) {
+                  // Remove the item from DOM
+                  const cartItem = document.querySelector(`.cart__item[data-id="${bookId}"]`);
+                  cartItem.remove();
+                  
+                  // Update the cart summary
+                  updateSummary();
+                  
+                  // If cart is empty, show empty cart message
+                  const cartItems = document.querySelectorAll('.cart__item');
+                  if (cartItems.length === 0) {
+                      const cartItemsContainer = document.querySelector('.cart__items');
+                      cartItemsContainer.innerHTML = `
+                          <div class="cart-empty">
+                              <i class="ri-shopping-cart-line"></i>
+                              <p>Your cart is empty</p>
+                          </div>
+                      `;
+                  }
+              } else {
+                  alert(result.message || 'Error removing item from cart');
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert('Error removing item from cart');
+          }
+      }
+  
+      // Add click event listeners for remove buttons
+      document.querySelectorAll('.cart__item-remove').forEach(button => {
+          button.addEventListener('click', function() {
+              const cartItem = this.closest('.cart__item');
+              const bookId = cartItem.dataset.id;
+              removeFromCart(bookId);
+          });
+      });
+   </script>
 </body>
 </html>
