@@ -675,13 +675,18 @@
               const result = await response.json();
               if (result.success) {
                   alert(`Order placed successfully! Order ID: ${result.orderId}`);
-                  window.location.href = '/orders';
+                  // Change the redirect URL to the admin orders page
+                  window.location.href = '/cart';
               } else {
                   alert(result.message || 'Error placing order');
+                  // Stay on the cart page if there's an error
+                  window.location.href = '/cart';
               }
           } catch (error) {
               console.error('Error:', error);
               alert('Error placing order');
+              // Stay on the cart page if there's an error
+              window.location.href = '/cart';
           }
       }
 
