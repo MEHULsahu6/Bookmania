@@ -1,6 +1,7 @@
 const Cart = require('../../models/cart.model');
 const Book = require('../../models/book.model');
 const User = require('../../models/user.model');
+const Order = require('../../models/order.model');
 
 exports.cart = async (req, res) => {
     try {
@@ -85,6 +86,68 @@ exports.removeFromCart = async (req, res) => {
     } catch (error) {
         console.error('Remove from cart error:', error);
         res.status(500).json({ success: false, message: 'Error removing item from cart' });
+    }
+};
+
+exports.placeOrder = async (req, res) => {
+    try {
+        const { addressId, paymentMethod } = req.body;
+        const userId = req.user.id;
+
+        // Get cart items with populated book details
+        const cart = await Cart.findOne({ user: userId }).populate('items.book');
+        if (!cart || !cart.items.length) {
+            return res.status(400).json({ success: false, message: 'Cart is empty' });
+        }
+
+        // Get user details
+        const user = await User.findById(userId);
+        const selectedAddress = user.addresses.find(addr => addr.id.toString() === addressId);
+
+        if (!selectedAddress) {
+            return res.status(400).json({ success: false, message: 'Invalid address' });
+        }
+
+        // Create order items with proper price from populated book
+        const books = cart.items.map(item => ({
+            book: item.book.id,
+            quantity: item.quantity,
+            price: item.book.price || 0 // Ensure price exists
+        }));
+
+        // Calculate total amount
+        const totalAmount = books.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+        // Create new order with all required fields
+        const order = new Order({
+            user: userId,
+            books: books,
+            totalAmount: totalAmount,
+            customerInfo: {
+                name: selectedAddress.fullName,
+                email: user.email,
+                address: {
+                    street: selectedAddress.street,
+                    city: selectedAddress.city,
+                    state: selectedAddress.state,
+                    zipCode: selectedAddress.zipCode,
+                    phone: selectedAddress.phone
+                }
+            },
+            paymentMethod: paymentMethod
+        });
+
+        // Save the order
+        const savedOrder = await order.save();
+
+        // Clear cart after successful order placement
+        cart.items = [];
+        await cart.save();
+
+        res.json({ success: true, orderId: savedOrder.orderId });
+    } catch (error) {
+        console.error('Place order error:', error.message); // Log the specific error message
+        res.status(500).json({ success: false, message: 'Error placing order: ' + error.message });
     }
 };
 
