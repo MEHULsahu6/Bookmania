@@ -6,45 +6,18 @@ const userProfileSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    fullName: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    bio: {
-        type: String
-    },
-    address: {
-        street: String,
-        city: String,
-        state: String,
-        pincode: String,
-        country: String
-    },
     phoneNumber: {
-        type: String
+        type: String,
+        default: ''
     },
     profilePicture: {
         type: String,
-        default: 'user-avatar.png'
-    },
-    dateOfBirth: {
-        type: Date
+        default: '../../img/profile_default.avif'
     },
     gender: {
         type: String,
-        enum: ['male', 'female', 'other']
-    },
-    orderHistory: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order'
-    }],
-    memberSince: {
-        type: Date,
-        default: Date.now
+        enum: ['male', 'female', 'other'],
+        default: ''
     },
     updatedAt: {
         type: Date,
