@@ -4,7 +4,7 @@ const cartController = require('../../controllers/User/cart.controller');
 const { jwtMiddleware } = require('../../middlewares/JWTauth');
 
 router.get('/', jwtMiddleware, cartController.cart);
-// Add new route for adding items to cart
 router.post('/add', jwtMiddleware, cartController.addToCart);
+router.post('/save-address', jwtMiddleware, cartController.saveAddress);
 
 module.exports = router;

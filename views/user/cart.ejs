@@ -498,56 +498,62 @@
       </section>
 
       <!-- Address Section -->
-      <section class="address-section" id="address">
-         <h2 class="section__title">Shipping Address</h2>
-         <div class="address__container">
-            <div class="saved-addresses">
-               <h3>Saved Addresses</h3>
-               <div class="address-card selected">
-                  <input type="radio" name="address" id="address1" checked>
-                  <label for="address1">
-                     <h4>Home</h4>
-                     <p>John Doe</p>
-                     <p>123 Main Street, Apt 4B</p>
-                     <p>New York, NY 10001</p>
-                     <p>Phone: (123) 456-7890</p>
-                  </label>
+     <!-- Address Section -->
+<section class="address-section" id="address">
+   <h2 class="section__title">Shipping Address</h2>
+   <div class="address__container">
+       <div class="saved-addresses">
+           <h3>Saved Addresses</h3>
+           <% if (user && user.addresses && user.addresses.length > 0) { %>
+               <% user.addresses.forEach((address, index) => { %>
+                   <div class="address-card <%= address.isDefault ? 'selected' : '' %>">
+                       <input type="radio" name="address" id="address<%= index %>" <%= address.isDefault ? 'checked' : '' %>>
+                       <label for="address<%= index %>">
+                           <h4><%= address.fullName %></h4>
+                           <p><%= address.street %></p>
+                           <p><%= address.city %>, <%= address.state %> <%= address.zipCode %></p>
+                           <p>Phone: <%= address.phone %></p>
+                       </label>
+                   </div>
+               <% }); %>
+           <% } else { %>
+               <p>No saved addresses found</p>
+           <% } %>
+       </div>
+       <div class="new-address">
+           <h3>Add New Address</h3>
+           <form class="address-form" id="addressForm">
+               <div class="form-group">
+                   <input type="text" name="fullName" placeholder="Full Name" required>
                </div>
-            </div>
-            <div class="new-address">
-               <h3>Add New Address</h3>
-               <form class="address-form">
-                  <div class="form-group">
-                     <input type="text" placeholder="Full Name" required>
-                  </div>
-                  <div class="form-group">
-                     <input type="text" placeholder="Street Address" required>
-                  </div>
-                  <div class="form-row">
-                     <div class="form-group">
-                        <input type="text" placeholder="City" required>
-                     </div>
-                     <div class="form-group">
-                        <input type="text" placeholder="State" required>
-                     </div>
-                  </div>
-                  <div class="form-row">
-                     <div class="form-group">
-                        <input type="text" placeholder="ZIP Code" required>
-                     </div>
-                     <div class="form-group">
-                        <input type="tel" placeholder="Phone Number" required>
-                     </div>
-                  </div>
-                  <button type="submit" class="button">Save Address</button>
-               </form>
-            </div>
-            <div class="address-buttons">
-               <button class="button back-btn" onclick="showSection('cart')">Back to Cart</button>
-               <button class="button proceed-btn" onclick="showSection('payment')">Proceed to Payment</button>
-            </div>
-         </div>
-      </section>
+               <div class="form-group">
+                   <input type="text" name="street" placeholder="Street Address" required>
+               </div>
+               <div class="form-row">
+                   <div class="form-group">
+                       <input type="text" name="city" placeholder="City" required>
+                   </div>
+                   <div class="form-group">
+                       <input type="text" name="state" placeholder="State" required>
+                   </div>
+               </div>
+               <div class="form-row">
+                   <div class="form-group">
+                       <input type="text" name="zipCode" placeholder="ZIP Code" required>
+                   </div>
+                   <div class="form-group">
+                       <input type="tel" name="phone" placeholder="Phone Number" required>
+                   </div>
+               </div>
+               <button type="submit" class="button">Save Address</button>
+           </form>
+       </div>
+       <div class="address-buttons">
+           <button class="button back-btn" onclick="showSection('cart')">Back to Cart</button>
+           <button class="button proceed-btn" onclick="showSection('payment')">Proceed to Payment</button>
+       </div>
+   </div>
+</section>
 
       <!-- Payment Section -->
       <section class="payment-section" id="payment">
@@ -673,5 +679,39 @@
       // Initial summary update
       document.addEventListener('DOMContentLoaded', updateSummary);
    </script>
+   <script>
+      // ... existing JavaScript ...
+  
+      document.getElementById('addressForm').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const formData = new FormData(this);
+          const addressData = Object.fromEntries(formData);
+  
+          try {
+              const response = await fetch('/cart/save-address', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(addressData)
+              });
+  
+              const result = await response.json();
+              if (result.success) {
+                  alert('Address saved successfully!');
+                  // Refresh the page to show the new address
+                  window.location.reload();
+              } else {
+                  alert(result.message || 'Error saving address');
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert('Error saving address');
+          }
+      });
+  
+      // ... rest of your existing JavaScript ...
+  </script>
 </body>
 </html>
