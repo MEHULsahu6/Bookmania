@@ -269,8 +269,9 @@
          <div class="explore__container container grid">
             <% if (books && books.length > 0) { %>
                 <% books.forEach(book => { %>
+                    <!-- In the books.forEach loop, update the wishlist icon -->
                     <article class="explore__card">
-                        <i class="ri-heart-line wishlist-icon" data-id="<%= book._id %>"></i>
+                        <i class="ri-heart-<%= wishlistBooks.includes(book.id.toString()) ? 'fill active' : 'line' %> wishlist-icon" data-id="<%= book.id %>"></i>
                         <img src="<%= book.image %>" alt="<%= book.title %>" class="explore__img">
                         <div class="explore__data">
                             <h3 class="explore__title"><%= book.title %></h3>
@@ -291,7 +292,7 @@
                                 <i class="ri-star-line"></i>
                                 <span>(4.0)</span>
                             </div>
-                            <button class="explore__button" data-id="<%= book._id %>">Add To Cart</button>
+                            <button class="explore__button" data-id="<%= book.id %>">Add To Cart</button>
                         </div>
                     </article>
                 <% }); %>
