@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const profileController = require('../../controllers/User/profile.controller');
-const { jwtMiddleware } = require('../../middlewares/JWTauth');
+const { jwtMiddleware } = require('../../middlewares/jwtAuth');
 
 router.get('/', jwtMiddleware, profileController.profile);
-// Add these new routes
-router.post('/update-profile/phone', jwtMiddleware, profileController.updatePhone);
-router.post('/update-profile/gender', jwtMiddleware, profileController.updateGender);
+router.post('/update-field', jwtMiddleware, profileController.updateField);  // Add this route
+router.post('/update', jwtMiddleware, profileController.updateProfile);
 
 module.exports = router;

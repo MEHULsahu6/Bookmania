@@ -96,8 +96,10 @@
       transition: transform .3s, border-color .3s;
       display: flex;
       flex-direction: column;
-      min-height: 400px; /* Set a minimum height for consistency */
+      min-height: 400px;
       box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
     }
 
     .explore__card:hover {
@@ -108,8 +110,8 @@
     .explore__img {
       width: 100%;
       max-width: 150px;
-      height: 200px; /* Fixed height for consistency */
-      object-fit: cover; /* Ensure images scale properly */
+      height: 200px;
+      object-fit: cover;
       margin: 0 auto 1rem;
       transition: transform .3s;
     }
@@ -120,7 +122,7 @@
 
     .explore__data {
       text-align: center;
-      flex-grow: 1; /* Allow data section to expand */
+      flex-grow: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -198,6 +200,55 @@
       margin: 1rem 0;
     }
 
+    /* Dropdown Details Styles */
+    .book-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background-color: var(--white-color);
+      margin: 0 -1.5rem -1.5rem;
+      padding: 0 1.5rem;
+    }
+
+    .book-details.active {
+      max-height: 500px;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .book-details p {
+      margin: 0.5rem 0;
+      font-size: var(--small-font-size);
+      color: var(--text-color);
+      text-align: left;
+    }
+
+    .book-details strong {
+      color: var(--title-color);
+    }
+
+    .toggle-details {
+      background: none;
+      border: none;
+      color: var(--first-color);
+      cursor: pointer;
+      font-size: var(--small-font-size);
+      margin-top: 0.5rem;
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem;
+    }
+
+    .toggle-details i {
+      transition: transform 0.3s;
+      margin-left: 5px;
+    }
+
+    .toggle-details.active i {
+      transform: rotate(180deg);
+    }
+
     @media screen and (max-width: 768px) {
       .filters__options {
         width: 100%;
@@ -272,11 +323,23 @@
                                 <span>(4.0)</span>
                             </div>
                             <button class="explore__button" data-id="<%= book._id %>">Add To Cart</button>
+                            <button class="toggle-details">
+                                More Details <i class="ri-arrow-down-s-line"></i>
+                            </button>
+                        </div>
+                        <div class="book-details">
+                            <p><strong>Description:</strong> <%= book.description || 'No description available' %></p>
+                            <p><strong>Publisher:</strong> <%= book.publisher || 'Not specified' %></p>
+                            <p><strong>ISBN:</strong> <%= book.isbn || 'Not specified' %></p>
+                           
+                            <% if (book.tags && book.tags.length > 0) { %>
+                                <p><strong>Tags:</strong> <%= book.tags.join(', ') %></p>
+                            <% } %>
                         </div>
                     </article>
                 <% }); %>
             <% } else { %>
-                <p>No books available at the moment.</p>
+                <p class="no-books">No books available at the moment.</p>
             <% } %>
          </div>
       </section>
@@ -292,29 +355,60 @@
 
    <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.querySelector('.search__input');
-        const filterSelects = document.querySelectorAll('.filter__select');
-        const exploreCards = document.querySelectorAll('.explore__card');
-        const addToCartButtons = document.querySelectorAll('.explore__button');
-
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            
-            exploreCards.forEach(card => {
-                const title = card.querySelector('.explore__title').textContent.toLowerCase();
-                const author = card.querySelector('.explore__author').textContent.toLowerCase();
+        // Toggle details dropdown
+        document.querySelectorAll('.toggle-details').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = button.closest('.explore__card');
+                const details = card.querySelector('.book-details');
                 
-                if (title.includes(searchTerm) || author.includes(searchTerm)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
+                // Close all other open dropdowns
+                document.querySelectorAll('.book-details').forEach(d => {
+                    if (d !== details && d.classList.contains('active')) {
+                        d.classList.remove('active');
+                        d.previousElementSibling.querySelector('.toggle-details').classList.remove('active');
+                    }
+                });
+                
+                // Toggle current dropdown
+                button.classList.toggle('active');
+                details.classList.toggle('active');
             });
         });
 
-        filterSelects.forEach(select => {
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.explore__card')) {
+                document.querySelectorAll('.book-details').forEach(details => {
+                    details.classList.remove('active');
+                    details.previousElementSibling.querySelector('.toggle-details').classList.remove('active');
+                });
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search__input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.explore__card').forEach(card => {
+                    const title = card.querySelector('.explore__title').textContent.toLowerCase();
+                    const author = card.querySelector('.explore__author').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter__select').forEach(select => {
             select.addEventListener('change', () => {
-                console.log('Filter/Sort changed:', select.value);
+                console.log('Filter changed:', select.value);
+                // Implement your filter logic here
             });
         });
 
@@ -344,6 +438,55 @@
             });
         });
     });
+   </script>
+   <script>
+    
+// Update the saveField function in the script section
+async function saveField(field) {
+    const input = document.getElementById(`${field}-input`);
+    const value = input.value.trim();
+    
+    if (!value) {
+        alert('Please enter a valid value');
+        return;
+    }
+
+    try {
+        const response = await fetch('/user/profile/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                field: field,  // Add field name
+                value: value   // Add value
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Server error');
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Hide the edit field
+            cancelEdit(field);
+            // Update the displayed value
+            const valueSpan = document.querySelector(`#${field}-edit`).previousElementSibling.querySelector('.info-value');
+            valueSpan.textContent = value;
+            // Show success message
+            alert('Updated successfully');
+            // Reload the page to reflect changes
+            window.location.reload();
+        } else {
+            throw new Error(data.error || 'Update failed');
+        }
+    } catch (error) {
+        console.error('Update error:', error);
+        alert('Failed to update profile. Please try again.');
+    }
+}
    </script>
 </body>
 </html>

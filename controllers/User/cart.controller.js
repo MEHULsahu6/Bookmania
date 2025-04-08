@@ -1,8 +1,11 @@
 const Cart = require('../../models/cart.model');
 const Book = require('../../models/book.model');
 const User = require('../../models/user.model');
+<<<<<<< HEAD
 const Order = require('../../models/order.model');
 
+=======
+>>>>>>> 92fe1540792ef1dd9d6bb8cbc84e4f943372fa6b
 exports.cart = async (req, res) => {
     try {
         const cart = await Cart.findOne({ user: req.user.id })

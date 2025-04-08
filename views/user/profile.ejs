@@ -154,153 +154,123 @@
 
     <script src="../../javascripts/scrollreveal.min.js"></script>
     <script src="../../javascripts/swiper-bundle.min.js"></script>
-    <script src="../../javascripts/user/profile.js"></script>
     <script src="../../javascripts/user/home.js"></script>
     <script>
-        const editProfileModal = document.getElementById('editProfileModal');
-        const closeModalBtn = document.querySelector('.close-modal');
-        const cancelBtn = document.querySelector('.cancel-btn');
-
-        closeModalBtn.addEventListener('click', () => {
-            editProfileModal.style.display = 'none';
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            editProfileModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === editProfileModal) {
-                editProfileModal.style.display = 'none';
-            }
-        });
-
-        const profileImageInput = document.getElementById('profile-image');
-        const previewImage = document.getElementById('preview-image');
-
-        profileImageInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
-
-    <!-- Add edit modals -->
-    <div class="edit-field-modal" id="phoneEditModal">
-        <div class="modal-content">
-            <!-- Update the form action paths -->
-            <form action="/profile/update-profile/phone" method="POST">
-                <h3>Edit Phone Number</h3>
-                <input type="tel" name="phoneNumber" pattern="[0-9]{10}" value="<%= userProfile.phoneNumber || '' %>" required>
-                <div class="modal-actions">
-                    <button type="button" class="cancel-btn" onclick="closeEditField('phone')">Cancel</button>
-                    <button type="submit" class="save-btn">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="edit-field-modal" id="genderEditModal">
-        <div class="modal-content">
-            <form action="/profile/update-profile/gender" method="POST">
-                <h3>Edit Gender</h3>
-                <select name="gender" required>
-                    <option value="male" <%= userProfile.gender === 'male' ? 'selected' : '' %>>Male</option>
-                    <option value="female" <%= userProfile.gender === 'female' ? 'selected' : '' %>>Female</option>
-                    <option value="other" <%= userProfile.gender === 'other' ? 'selected' : '' %>>Other</option>
-                </select>
-                <div class="modal-actions">
-                    <button type="button" class="cancel-btn" onclick="closeEditField('gender')">Cancel</button>
-                    <button type="submit" class="save-btn">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add these styles to your existing <style> section -->
-    <style>
-        .info-value-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .edit-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #666;
-            padding: 0;
-            font-size: 1rem;
-        }
-
-        .edit-btn:hover {
-            color: #333;
-        }
-
-        .edit-field-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        .edit-field-modal .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            margin: 20% auto;
-        }
-
-        .edit-field-modal input,
-        .edit-field-modal select {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-        }
-    </style>
-
-    <!-- Add this script at the end of your file -->
-    <script>
-        function openEditField(field) {
-            document.getElementById(`${field}EditModal`).style.display = 'block';
-        }
-
-        function closeEditField(field) {
-            document.getElementById(`${field}EditModal`).style.display = 'none';
-        }
-
-        // Close modals when clicking outside
-        window.addEventListener('click', (e) => {
-            const phoneModal = document.getElementById('phoneEditModal');
-            const genderModal = document.getElementById('genderEditModal');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal related code
+            const editProfileModal = document.getElementById('editProfileModal');
+            const closeModalBtn = document.querySelector('.close-modal');
             
-            if (e.target === phoneModal) {
-                phoneModal.style.display = 'none';
+            if (editProfileModal && closeModalBtn) {
+                closeModalBtn.addEventListener('click', () => {
+                    editProfileModal.style.display = 'none';
+                });
+
+                window.addEventListener('click', (e) => {
+                    if (e.target === editProfileModal) {
+                        editProfileModal.style.display = 'none';
+                    }
+                });
             }
-            if (e.target === genderModal) {
-                genderModal.style.display = 'none';
+
+            // Profile image handling
+            const profileImageInput = document.getElementById('avatar-input');
+            const profileAvatar = document.querySelector('.profile-avatar');
+
+            if (profileImageInput) {
+                profileImageInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            if (profileAvatar) {
+                                profileAvatar.src = e.target.result;
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
             }
+
+            // Field editing functions
+            window.showEditField = function(field) {
+                const editField = document.getElementById(`${field}-edit`);
+                if (editField) {
+                    editField.style.display = 'flex';
+                    const input = document.getElementById(`${field}-input`);
+                    if (input) {
+                        input.focus();
+                    }
+                }
+            };
+
+            window.cancelEdit = function(field) {
+                const editField = document.getElementById(`${field}-edit`);
+                if (editField) {
+                    editField.style.display = 'none';
+                    const input = document.getElementById(`${field}-input`);
+                    if (input) {
+                        input.value = input.defaultValue;
+                    }
+                }
+            };
+
+            window.saveField = async function(field) {
+                const input = document.getElementById(`${field}-input`);
+                if (!input) return;
+                
+                const value = input.value.trim();
+                
+                if (!value) {
+                    alert('Please enter a valid value');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/user/profile/update-field', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ field, value })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Server error');
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        const editField = document.getElementById(`${field}-edit`);
+                        if (editField) {
+                            const valueSpan = editField.previousElementSibling.querySelector('.info-value');
+                            if (valueSpan) {
+                                valueSpan.textContent = value;
+                            }
+                            editField.style.display = 'none';
+                        }
+                        alert('Updated successfully');
+                    } else {
+                        throw new Error(data.error || 'Update failed');
+                    }
+                } catch (error) {
+                    console.error('Update error:', error);
+                    alert('Failed to update profile. Please try again.');
+                }
+            };
+
+            // Initialize edit buttons
+            const editButtons = document.querySelectorAll('.edit-btn, .add-btn');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const field = this.getAttribute('data-field');
+                    if (field) {
+                        showEditField(field);
+                    }
+                });
+            });
         });
     </script>
 </body>
