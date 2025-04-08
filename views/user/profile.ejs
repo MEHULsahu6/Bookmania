@@ -145,20 +145,44 @@
             // Profile image handling
             const profileImageInput = document.getElementById('avatar-input');
             const profileAvatar = document.querySelector('.profile-avatar');
-
-            if (profileImageInput) {
-                profileImageInput.addEventListener('change', function() {
+            const uploadForm = document.querySelector('.avatar-upload-form');
+        
+            if (profileImageInput && uploadForm) {
+                profileImageInput.addEventListener('change', async function() {
                     const file = this.files[0];
                     if (file) {
+                        // Preview image before upload
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             profileAvatar.src = e.target.result;
                         };
                         reader.readAsDataURL(file);
+        
+                        // Upload image
+                        const formData = new FormData(uploadForm);
+                        try {
+                            const response = await fetch('/profile/upload-avatar', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                                profileAvatar.src = data.profilePicture;
+                                alert('Profile picture updated successfully');
+                            } else {
+                                throw new Error(data.error);
+                            }
+                        } catch (error) {
+                            console.error('Upload error:', error);
+                            alert('Failed to upload profile picture: ' + error.message);
+                            // Revert to original image on error
+                            profileAvatar.src = '<%= userProfile && userProfile.profilePicture ? userProfile.profilePicture : "/img/profile_default.avif" %>';
+                        }
                     }
                 });
             }
-
+        
             // Field editing functions
             window.showEditField = function(field) {
                 const editField = document.getElementById(`${field}-edit`);
@@ -172,12 +196,12 @@
                 }
                 input.focus();
             };
-
+        
             window.cancelEdit = function(field) {
                 const editField = document.getElementById(`${field}-edit`);
                 editField.classList.remove('active');
             };
-
+        
             window.saveField = async function(field) {
                 const input = document.getElementById(`${field}-input`);
                 const value = input.value.trim();
@@ -186,21 +210,21 @@
                     alert('Please enter a valid value');
                     return;
                 }
-
+        
                 if (field === 'phoneNumber' && !/^\d{10}$/.test(value)) {
                     alert('Please enter a valid 10-digit phone number');
                     return;
                 }
-
+        
                 try {
-                    const response = await fetch('/user/profile/update-field', {
+                    const response = await fetch('/profile/update-field', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ field, value })
                     });
-
+        
                     const data = await response.json();
                     
                     if (data.success) {
@@ -220,6 +244,6 @@
                 }
             };
         });
-    </script>
+        </script>
 </body>
 </html>

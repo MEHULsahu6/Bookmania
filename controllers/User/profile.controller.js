@@ -1,5 +1,7 @@
 const User = require('../../models/user.model');
 const UserProfile = require('../../models/userProfile.model');
+const path = require('path');
+const fs = require('fs');
 
 exports.profile = async (req, res) => {
     try {
@@ -8,20 +10,18 @@ exports.profile = async (req, res) => {
             .populate('user', 'name email createdAt');
 
         if (!userProfile) {
-            userProfile = new UserProfile({
+            const newProfile = new UserProfile({
                 user: req.user.id,
-                fullName: user.name,
-                email: user.email,
-                profilePicture: '/img/profile_default.avif',
-                memberSince: user.createdAt
+                fullName: req.user.name,
+                email: req.user.email
             });
-            await userProfile.save();
-        }
-
-        // Ensure memberSince is always populated
-        if (!userProfile.memberSince && user.createdAt) {
-            userProfile.memberSince = user.createdAt;
-            await userProfile.save();
+            await newProfile.save();
+            
+            return res.render('User/profile', { 
+                userProfile: newProfile,
+                user: req.user,
+                error: null 
+            });
         }
 
         res.render('User/profile', { 
@@ -34,53 +34,58 @@ exports.profile = async (req, res) => {
     } catch (error) {
         console.error('Profile Error:', error);
         res.status(500).render('User/profile', { 
-            userProfile: null,
-            error: 'Error loading profile'
+            userProfile: {
+                fullName: req.user.name,
+                email: req.user.email,
+                phoneNumber: '',
+                gender: '',
+                memberSince: new Date()
+            },
+            user: req.user,
+            error: 'Error loading profile' 
         });
     }
 };
 
 exports.updateField = async (req, res) => {
     try {
-        const { field, value } = req.body;  // Get field from request body instead of params
-
         if (!req.user || !req.user.id) {
-            return res.status(401).json({ success: false, error: 'Unauthorized' });
+            return res.status(401).json({ error: 'User not authenticated' });
         }
 
-        const userProfile = await UserProfile.findOne({ user: req.user.id });
+        const { field, value } = req.body;
+        if (!field || !value) {
+            return res.status(400).json({ error: 'Field and value are required' });
+        }
+
+        let userProfile = await UserProfile.findOne({ user: req.user.id });
+        
         if (!userProfile) {
-            return res.status(404).json({ success: false, error: 'Profile not found' });
+            const user = await User.findById(req.user.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            userProfile = new UserProfile({
+                user: req.user.id,
+                fullName: user.name,
+                email: user.email
+            });
         }
 
-        // Handle field updates
-        switch (field) {
-            case 'phone':
-                if (!/^\d{10}$/.test(value)) {
-                    return res.status(400).json({ success: false, error: 'Invalid phone number format' });
-                }
-                userProfile.phoneNumber = value;
-                break;
-            case 'gender':
-                if (!['male', 'female', 'other'].includes(value.toLowerCase())) {
-                    return res.status(400).json({ success: false, error: 'Invalid gender value' });
-                }
-                userProfile.gender = value.toLowerCase();
-                break;
-            default:
-                return res.status(400).json({ success: false, error: 'Invalid field' });
+        if (field === 'phoneNumber' && !/^\d{10}$/.test(value)) {
+            return res.status(400).json({ error: 'Invalid phone number' });
         }
 
+        if (field === 'gender' && !['male', 'female', 'other'].includes(value)) {
+            return res.status(400).json({ error: 'Invalid gender value' });
+        }
+
+        userProfile[field] = value;
+        userProfile.updatedAt = Date.now();
         await userProfile.save();
 
-        // Send back a clean JSON response
-        return res.json({
-            success: true,
-            message: 'Profile updated successfully',
-            field: field,
-            value: value
-        });
-
+        res.status(200).json({ success: true, message: `${field} updated successfully` });
     } catch (error) {
         console.error('Update Error:', error);
         return res.status(500).json({
@@ -90,19 +95,39 @@ exports.updateField = async (req, res) => {
     }
 };
 
-// Optional: If you need avatar upload functionality
 exports.uploadAvatar = async (req, res) => {
     try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
         if (!req.file) {
             return res.status(400).json({ success: false, error: 'No file uploaded' });
         }
 
-        const userProfile = await UserProfile.findOne({ user: req.user.id });
+        let userProfile = await UserProfile.findOne({ user: req.user.id });
+        
         if (!userProfile) {
-            return res.status(404).json({ success: false, error: 'Profile not found' });
+            const user = await User.findById(req.user.id);
+            userProfile = new UserProfile({
+                user: req.user.id,
+                fullName: user.name,
+                email: user.email
+            });
         }
 
-        userProfile.profilePicture = `/uploads/${req.file.filename}`;
+        // Delete old profile picture if it exists and isn't the default
+        if (userProfile.profilePicture && 
+            userProfile.profilePicture !== '../../img/profile_default.avif') {
+            const oldImagePath = path.join(__dirname, '../../public', userProfile.profilePicture);
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+            }
+        }
+
+        // Save new profile picture path
+        userProfile.profilePicture = `/uploads/user_profiles/${req.file.filename}`;
+        userProfile.updatedAt = Date.now();
         await userProfile.save();
 
         res.json({ 
@@ -112,9 +137,16 @@ exports.uploadAvatar = async (req, res) => {
         });
     } catch (error) {
         console.error('Avatar Upload Error:', error);
+        // Remove uploaded file if save fails
+        if (req.file) {
+            const filePath = path.join(__dirname, '../../public/uploads/user_profiles', req.file.filename);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
         res.status(500).json({ 
             success: false, 
-            error: 'Server error during avatar upload' 
+            error: error.message || 'Server error during avatar upload'
         });
     }
 };

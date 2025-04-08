@@ -6,17 +6,23 @@ const port = process.env.PORT || 3000;
 const path = require('path');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
-const fs = require('fs'); // Add fs module for file system operations
+const fs = require('fs');
 
 // Connect to MongoDB
 connectDB();
 
-// Create upload directory if it doesn't exist
-const uploadDir = path.join(__dirname, 'public/uploads/admin_profiles');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    console.log(`Created upload directory: ${uploadDir}`);
-}
+// Create upload directories if they don't exist
+const uploadDirs = [
+    path.join(__dirname, 'public/uploads/user_profiles'),
+    path.join(__dirname, 'public/uploads/admin_profiles')
+];
+
+uploadDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`Created upload directory: ${dir}`);
+    }
+});
 
 // Middleware setup
 app.use(cookieParser());
@@ -64,7 +70,7 @@ app.use('/admin/help', helpAdminRoutes);
 
 // 404 Handler
 app.use((req, res) => {
-    res.status(404).render('404'); // Assuming you have a 404.ejs
+    res.status(404).render('404');
 });
 
 // Start server

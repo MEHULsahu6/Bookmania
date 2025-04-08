@@ -98,10 +98,32 @@
       flex-direction: column;
       min-height: 400px;
       box-sizing: border-box;
+<<<<<<< HEAD
       position: relative;
       overflow: hidden;
+=======
+      position: relative; /* Add this */
+>>>>>>> js
     }
 
+    /* Add these new styles */
+    .wishlist-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      color: var(--text-color);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .wishlist-icon:hover {
+      color: var(--first-color);
+    }
+
+    .wishlist-icon.active {
+      color: #ff4444;
+    }
     .explore__card:hover {
       transform: translateY(-0.25rem);
       border-color: var(--first-color);
@@ -301,7 +323,9 @@
          <div class="explore__container container grid">
             <% if (books && books.length > 0) { %>
                 <% books.forEach(book => { %>
+                    <!-- In the books.forEach loop, update the wishlist icon -->
                     <article class="explore__card">
+                        <i class="ri-heart-<%= wishlistBooks.includes(book.id.toString()) ? 'fill active' : 'line' %> wishlist-icon" data-id="<%= book.id %>"></i>
                         <img src="<%= book.image %>" alt="<%= book.title %>" class="explore__img">
                         <div class="explore__data">
                             <h3 class="explore__title"><%= book.title %></h3>
@@ -322,6 +346,7 @@
                                 <i class="ri-star-line"></i>
                                 <span>(4.0)</span>
                             </div>
+<<<<<<< HEAD
                             <button class="explore__button" data-id="<%= book._id %>">Add To Cart</button>
                             <button class="toggle-details">
                                 More Details <i class="ri-arrow-down-s-line"></i>
@@ -335,6 +360,9 @@
                             <% if (book.tags && book.tags.length > 0) { %>
                                 <p><strong>Tags:</strong> <%= book.tags.join(', ') %></p>
                             <% } %>
+=======
+                            <button class="explore__button" data-id="<%= book.id %>">Add To Cart</button>
+>>>>>>> js
                         </div>
                     </article>
                 <% }); %>
@@ -439,6 +467,7 @@
         });
     });
    </script>
+<<<<<<< HEAD
    <script>
     
 // Update the saveField function in the script section
@@ -488,5 +517,45 @@ async function saveField(field) {
     }
 }
    </script>
+=======
+
+   <script>
+       document.addEventListener('DOMContentLoaded', () => {
+           // Add wishlist functionality
+           const wishlistIcons = document.querySelectorAll('.wishlist-icon');
+           
+           wishlistIcons.forEach(icon => {
+               icon.addEventListener('click', async () => {
+                   const bookId = icon.getAttribute('data-id');
+                   try {
+                       const response = await fetch('/wishlist/toggle', {
+                           method: 'POST',
+                           headers: {
+                               'Content-Type': 'application/json',
+                           },
+                           body: JSON.stringify({ bookId })
+                       });
+                       
+                       const data = await response.json();
+                       if (data.success) {
+                           // Toggle the icon appearance
+                           icon.classList.toggle('ri-heart-line');
+                           icon.classList.toggle('ri-heart-fill');
+                           icon.classList.toggle('active');
+                           
+                           // Show feedback message
+                           alert(data.message || 'Wishlist updated successfully!');
+                       } else {
+                           alert('Failed to update wishlist');
+                       }
+                   } catch (error) {
+                       console.error('Error:', error);
+                       alert('Error updating wishlist');
+                   }
+               });
+           });
+       });
+      </script>
+>>>>>>> js
 </body>
 </html>
