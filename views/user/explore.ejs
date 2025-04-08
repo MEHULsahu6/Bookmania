@@ -98,12 +98,9 @@
       flex-direction: column;
       min-height: 400px;
       box-sizing: border-box;
-<<<<<<< HEAD
       position: relative;
       overflow: hidden;
-=======
       position: relative; /* Add this */
->>>>>>> js
     }
 
     /* Add these new styles */
@@ -346,7 +343,6 @@
                                 <i class="ri-star-line"></i>
                                 <span>(4.0)</span>
                             </div>
-<<<<<<< HEAD
                             <button class="explore__button" data-id="<%= book._id %>">Add To Cart</button>
                             <button class="toggle-details">
                                 More Details <i class="ri-arrow-down-s-line"></i>
@@ -360,9 +356,7 @@
                             <% if (book.tags && book.tags.length > 0) { %>
                                 <p><strong>Tags:</strong> <%= book.tags.join(', ') %></p>
                             <% } %>
-=======
                             <button class="explore__button" data-id="<%= book.id %>">Add To Cart</button>
->>>>>>> js
                         </div>
                     </article>
                 <% }); %>
@@ -467,7 +461,6 @@
         });
     });
    </script>
-<<<<<<< HEAD
    <script>
     
 // Update the saveField function in the script section
