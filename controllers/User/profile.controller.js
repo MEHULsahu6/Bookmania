@@ -1,120 +1,108 @@
-const User = require('../../models/user.model');
 const UserProfile = require('../../models/userProfile.model');
+const User = require('../../models/user.model');
 
 exports.profile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
-        let userProfile = await UserProfile.findOne({ user: req.user.id })
-            .populate('user', 'name email createdAt');
-
+        const userProfile = await UserProfile.findOne({ user: req.user.id })
+            .populate('user', '-password')  // Exclude password
+            .populate('orderHistory');
+            
         if (!userProfile) {
+            // Create a new profile with basic information
+            const newProfile = new UserProfile({
+                user: req.user.id,
+                fullName: req.user.name,
+                email: req.user.email
+            });
+            await newProfile.save();
+            
+            return res.render('User/profile', { 
+                userProfile: newProfile,
+                user: req.user,
+                error: null 
+            });
+        }
+
+        res.render('User/profile', { 
+            userProfile,
+            user: userProfile.user,
+            error: null 
+        });
+    } catch (error) {
+        console.error('Profile Error:', error);
+        // Provide default values when there's an error
+        res.status(500).render('User/profile', { 
+            userProfile: {
+                fullName: req.user.name,
+                email: req.user.email,
+                phoneNumber: '',
+                gender: '',
+                memberSince: new Date()
+            },
+            user: req.user,
+            error: 'Error loading profile' 
+        });
+    }
+};
+
+exports.updatePhone = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const { phoneNumber } = req.body;
+        if (!phoneNumber || phoneNumber.length < 10) {
+            return res.status(400).json({ error: 'Invalid phone number' });
+        }
+
+        let userProfile = await UserProfile.findOne({ user: req.user.id });
+        
+        if (!userProfile) {
+            const user = await User.findById(req.user.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
             userProfile = new UserProfile({
                 user: req.user.id,
                 fullName: user.name,
                 email: user.email,
-                profilePicture: '/img/profile_default.avif',
-                memberSince: user.createdAt
+                phoneNumber
             });
-            await userProfile.save();
+        } else {
+            userProfile.phoneNumber = phoneNumber;
         }
-
-        // Ensure memberSince is always populated
-        if (!userProfile.memberSince && user.createdAt) {
-            userProfile.memberSince = user.createdAt;
-            await userProfile.save();
-        }
-
-        res.render('User/profile', { 
-            userProfile: {
-                ...userProfile.toObject(),
-                memberSince: userProfile.memberSince || user.createdAt
-            },
-            error: null
-        });
-    } catch (error) {
-        console.error('Profile Error:', error);
-        res.status(500).render('User/profile', { 
-            userProfile: null,
-            error: 'Error loading profile'
-        });
+        
+        await userProfile.save();
+        res.status(200).json({ success: true, message: 'Phone number updated successfully' });
+g    } catch (error) {
+        console.error('Update Phone Error:', error);
+        res.status(500).json({ error: 'Error updating phone number' });
     }
 };
 
-exports.updateField = async (req, res) => {
+exports.updateGender = async (req, res) => {
     try {
-        const { field, value } = req.body;  // Get field from request body instead of params
-
-        if (!req.user || !req.user.id) {
-            return res.status(401).json({ success: false, error: 'Unauthorized' });
-        }
-
-        const userProfile = await UserProfile.findOne({ user: req.user.id });
+        const { gender } = req.body;
+        let userProfile = await UserProfile.findOne({ user: req.user.id });
+        
         if (!userProfile) {
-            return res.status(404).json({ success: false, error: 'Profile not found' });
+            // Create new profile if it doesn't exist
+            userProfile = new UserProfile({
+                user: req.user.id,
+                fullName: req.user.name,
+                email: req.user.email,
+                gender
+            });
+        } else {
+            userProfile.gender = gender;
         }
-
-        // Handle field updates
-        switch (field) {
-            case 'phone':
-                if (!/^\d{10}$/.test(value)) {
-                    return res.status(400).json({ success: false, error: 'Invalid phone number format' });
-                }
-                userProfile.phoneNumber = value;
-                break;
-            case 'gender':
-                if (!['male', 'female', 'other'].includes(value.toLowerCase())) {
-                    return res.status(400).json({ success: false, error: 'Invalid gender value' });
-                }
-                userProfile.gender = value.toLowerCase();
-                break;
-            default:
-                return res.status(400).json({ success: false, error: 'Invalid field' });
-        }
-
+        
         await userProfile.save();
-
-        // Send back a clean JSON response
-        return res.json({
-            success: true,
-            message: 'Profile updated successfully',
-            field: field,
-            value: value
-        });
-
+        res.redirect('/profile');
     } catch (error) {
-        console.error('Update Error:', error);
-        return res.status(500).json({
-            success: false,
-            error: 'Server error during update'
-        });
-    }
-};
-
-// Optional: If you need avatar upload functionality
-exports.uploadAvatar = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ success: false, error: 'No file uploaded' });
-        }
-
-        const userProfile = await UserProfile.findOne({ user: req.user.id });
-        if (!userProfile) {
-            return res.status(404).json({ success: false, error: 'Profile not found' });
-        }
-
-        userProfile.profilePicture = `/uploads/${req.file.filename}`;
-        await userProfile.save();
-
-        res.json({ 
-            success: true, 
-            message: 'Avatar updated successfully',
-            profilePicture: userProfile.profilePicture 
-        });
-    } catch (error) {
-        console.error('Avatar Upload Error:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Server error during avatar upload' 
-        });
+        console.error('Update Gender Error:', error);
+        res.status(500).json({ error: 'Error updating gender' });
     }
 };

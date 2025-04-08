@@ -10,110 +10,76 @@
     <link rel="stylesheet" href="../../stylesheets/User/home.css">
     <title>User Profile | Book Mania</title>
     <style>
-        .profile-header .personal-info { margin: 1rem; }
-        .personal-info .card-body { padding: 1rem; }
-        .info-item { margin-bottom: 1.5rem; position: relative; display: flex; justify-content: space-between; align-items: center; }
-        .info-label { font-weight: bold; color: #666; }
-        .info-value-group { display: flex; align-items: center; gap: 0.5rem; }
-        .info-value { color: #333; }
-        .edit-btn { background: none; border: none; color: #007bff; cursor: pointer; padding: 0.2rem; font-size: 1rem; }
-        .edit-btn:hover { color: #0056b3; }
-        .edit-field { display: none; position: absolute; background: white; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 100; right: 0; top: 100%; gap: 0.5rem; align-items: center; }
-        .edit-field.active { display: flex; }
-        .edit-field input, .edit-field select { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; min-width: 200px; }
-        .save-btn, .cancel-btn { padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; }
-        .save-btn { background-color: #007bff; color: white; border: none; }
-        .cancel-btn { background-color: #fff; border: 1px solid #ddd; }
-        .save-btn:hover { background-color: #0056b3; }
-        .cancel-btn:hover { background-color: #f8f9fa; }
-        .alert { padding: 1rem; margin: 1rem; border-radius: 4px; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .profile-header .personal-info {
+    margin: 1rem;
+}
+
+.personal-info .card-body {
+    padding: 1rem;
+}
+
+.info-item {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #666;
+}
+
+.info-value {
+    color: #333;
+}
     </style>
 </head>
 <body>
     <%- include('partials/navbar') %>
 
     <main class="main">
-        <% if (error) { %>
-            <div class="alert alert-danger"><%= error %></div>
-        <% } %>
-
         <div class="profile-wrapper">
             <section class="profile-header">
                 <div class="profile-cover">
                     <div class="profile-avatar-container">  
-                        <img src="<%= userProfile && userProfile.profilePicture ? userProfile.profilePicture : '/img/profile_default.avif' %>" 
-                             alt="User Avatar" 
-                             class="profile-avatar"
-                             id="preview-image">
-                        <form action="/profile/upload-avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
+                        <img src="../../img/profile_default.avif" alt="User Avatar" class="profile-avatar">
+                        <form action="/upload-avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
                             <label for="avatar-input">
                                 <i class="ri-camera-line"></i>
                             </label>
-                            <input type="file" 
-                                   id="avatar-input" 
-                                   name="profileImage" 
-                                   accept="image/*" 
-                                   hidden>
+                            <input type="file" id="avatar-input" name="avatar" accept="image/*" hidden>
+                            <button type="submit" hidden></button>
                         </form>
                     </div>
                 </div>
-
+                <!-- Replace hardcoded values with dynamic data -->
                 <div class="profile-info">
-                    <h1 class="profile-name"><%= userProfile ? userProfile.fullName : 'User' %></h1>
-                    <p class="profile-email"><%= userProfile ? userProfile.email : '' %></p>
+                    <h1 class="profile-name"><%= userProfile.fullName %></h1>
+                    <p class="profile-email"><%= userProfile.email %></p>
                 </div>
-
                 <section class="personal-info card">
                     <div class="card-body">
                         <div class="info-item">
                             <span class="info-label">Mo No:</span>
-                            <div class="info-value-group">
-                                <span class="info-value"><%= userProfile && userProfile.phoneNumber ? userProfile.phoneNumber : 'Not provided' %></span>
-                                <button class="edit-btn" data-field="phoneNumber" onclick="showEditField('phoneNumber')">
+                            <div class="info-value-container">
+                                <span class="info-value"><%= userProfile.phoneNumber || 'Not provided' %></span>
+                                <button class="edit-btn" onclick="openEditField('phone')">
                                     <i class="ri-edit-line"></i>
                                 </button>
                             </div>
-                            <div class="edit-field" id="phoneNumber-edit">
-                                <input type="tel" 
-                                       id="phoneNumber-input" 
-                                       pattern="[0-9]{10}" 
-                                       value="<%= userProfile && userProfile.phoneNumber ? userProfile.phoneNumber : '' %>"
-                                       placeholder="Enter phone number">
-                                <button onclick="saveField('phoneNumber')" class="save-btn">Save</button>
-                                <button onclick="cancelEdit('phoneNumber')" class="cancel-btn">Cancel</button>
-                            </div>
                         </div>
-
                         <div class="info-item">
-                            <span class="info-label">Gender:</span>
-                            <div class="info-value-group">
-                                <span class="info-value"><%= userProfile && userProfile.gender ? userProfile.gender : 'Not specified' %></span>
-                                <button class="edit-btn" data-field="gender" onclick="showEditField('gender')">
+                            <span class="info-label">Gender: </span>
+                            <div class="info-value-container">
+                                <span class="info-value"><%= userProfile.gender || 'Not specified' %></span>
+                                <button class="edit-btn" onclick="openEditField('gender')">
                                     <i class="ri-edit-line"></i>
                                 </button>
                             </div>
-                            <div class="edit-field" id="gender-edit">
-                                <select id="gender-input">
-                                    <option value="male" <%= userProfile && userProfile.gender === 'male' ? 'selected' : '' %>>Male</option>
-                                    <option value="female" <%= userProfile && userProfile.gender === 'female' ? 'selected' : '' %>>Female</option>
-                                    <option value="other" <%= userProfile && userProfile.gender === 'other' ? 'selected' : '' %>>Other</option>
-                                </select>
-                                <button onclick="saveField('gender')" class="save-btn">Save</button>
-                                <button onclick="cancelEdit('gender')" class="cancel-btn">Cancel</button>
-                            </div>
                         </div>
-
                         <div class="info-item">
                             <span class="info-label">Joined:</span>
-                            <span class="info-value">
-                                <%= userProfile && userProfile.memberSince ? 
-                                    new Date(userProfile.memberSince).toLocaleDateString('en-US', { 
-                                        year: 'numeric', 
-                                        month: 'long', 
-                                        day: 'numeric' 
-                                    }) : 'Not available' %>
-                            </span>
+                            <span class="info-value"><%= new Date(userProfile.memberSince).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
                         </div>
                     </div>
                 </section>
@@ -126,10 +92,59 @@
                             <h2>Leave a Review</h2>
                         </div>
                         <div class="reviews-list">
-                            <p>No orders found. (Add orderHistory to schema if needed)</p>
+                            <div class="review-item">
+                                <div class="book-info">
+                                    <img src="../../img/book-1.png" alt="Book" class="book-thumbnail">
+                                    <div class="book-details">
+                                        <h3>The Mystery Unraveled</h3>
+                                        <p class="order-date">Ordered on: March 10, 2025</p>
+                                        <p class="delivery-date">Delivered on: March 15, 2025</p>
+                                    </div>
+                                </div>
+                                <form action="/submit-review" method="POST" class="review-content">
+                                    <input type="hidden" name="bookId" value="book1">
+                                    <div class="rating">
+                                        <select name="rating" required>
+                                            <option value="5">★★★★★</option>
+                                            <option value="4">★★★★☆</option>
+                                            <option value="3">★★★☆☆</option>
+                                            <option value="2">★★☆☆☆</option>
+                                            <option value="1">★☆☆☆☆</option>
+                                        </select>
+                                    </div>
+                                    <textarea name="reviewText" placeholder="Write your review..." required></textarea>
+                                    <button type="submit" class="save-btn">Submit Review</button>
+                                </form>
+                            </div>
+
+                            <div class="review-item">
+                                <div class="book-info">
+                                    <img src="../../img/book-2.png" alt="Book" class="book-thumbnail">
+                                    <div class="book-details">
+                                        <h3>Galactic Adventures</h3>
+                                        <p class="order-date">Ordered on: March 5, 2025</p>
+                                        <p class="delivery-date">Delivered on: March 12, 2025</p>
+                                    </div>
+                                </div>
+                                <form action="/submit-review" method="POST" class="review-content">
+                                    <input type="hidden" name="bookId" value="book2">
+                                    <div class="rating">
+                                        <select name="rating" required>
+                                            <option value="5">★★★★★</option>
+                                            <option value="4">★★★★☆</option>
+                                            <option value="3">★★★☆☆</option>
+                                            <option value="2">★★☆☆☆</option>
+                                            <option value="1">★☆☆☆☆</option>
+                                        </select>
+                                    </div>
+                                    <textarea name="reviewText" placeholder="Write your review..." required></textarea>
+                                    <button type="submit" class="save-btn">Submit Review</button>
+                                </form>
+                            </div>
                         </div>
                     </section>
                 </div>
+
                 <div class="profile-sidebar">
                     <!-- Sidebar content can be added here if needed -->
                 </div>
@@ -137,88 +152,199 @@
         </div>
     </main>
 
+    <div class="edit-profile-modal" id="editProfileModal">
+        <div class="modal-content">
+            <form class="edit-profile-form" action="/update-profile" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h3>Edit Profile</h3>
+                    <button type="button" class="close-modal">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-image">Profile Image</label>
+                    <div class="image-upload">
+                        <img id="preview-image" src="../../img/user-avatar.png" alt="Preview">
+                        <input type="file" id="profile-image" name="profileImage" accept="image/*">
+                        <label for="profile-image" class="upload-label">
+                            <i class="ri-camera-line"></i>
+                            Choose Image
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="profile-name">Full Name</label>
+                    <input type="text" id="profile-name" name="name" value="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" name="email" value="john.doe@email.com" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../javascripts/scrollreveal.min.js"></script>
     <script src="../../javascripts/swiper-bundle.min.js"></script>
+    <script src="../../javascripts/user/profile.js"></script>
     <script src="../../javascripts/user/home.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Profile image handling
-            const profileImageInput = document.getElementById('avatar-input');
-            const profileAvatar = document.querySelector('.profile-avatar');
+        // Modal handling
+        const editProfileModal = document.getElementById('editProfileModal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const cancelBtn = document.querySelector('.cancel-btn');
 
-            if (profileImageInput) {
-                profileImageInput.addEventListener('change', function() {
-                    const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            profileAvatar.src = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+        // Close modal
+        closeModalBtn.addEventListener('click', () => {
+            editProfileModal.style.display = 'none';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            editProfileModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === editProfileModal) {
+                editProfileModal.style.display = 'none';
             }
+        });
 
-            // Field editing functions
-            window.showEditField = function(field) {
-                const editField = document.getElementById(`${field}-edit`);
-                const infoItem = editField.closest('.info-item');
-                const currentValue = infoItem.querySelector('.info-value').textContent;
-                
-                editField.classList.add('active');
-                const input = document.getElementById(`${field}-input`);
-                if (currentValue !== 'Not provided' && currentValue !== 'Not specified') {
-                    input.value = field === 'phoneNumber' ? currentValue : input.value;
+        // Image preview
+        const profileImageInput = document.getElementById('profile-image');
+        const previewImage = document.getElementById('preview-image');
+
+        profileImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
                 }
-                input.focus();
-            };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 
-            window.cancelEdit = function(field) {
-                const editField = document.getElementById(`${field}-edit`);
-                editField.classList.remove('active');
-            };
+    <!-- Add edit modals -->
+    <div class="edit-field-modal" id="phoneEditModal">
+        <div class="modal-content">
+            <!-- Update the form action paths -->
+            <form action="/profile/update-profile/phone" method="POST">
+                <h3>Edit Phone Number</h3>
+                <input type="tel" name="phoneNumber" pattern="[0-9]{10}" value="<%= userProfile.phoneNumber || '' %>" required>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeEditField('phone')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            window.saveField = async function(field) {
-                const input = document.getElementById(`${field}-input`);
-                const value = input.value.trim();
-                
-                if (!value) {
-                    alert('Please enter a valid value');
-                    return;
-                }
+    <div class="edit-field-modal" id="genderEditModal">
+        <div class="modal-content">
+            <form action="/profile/update-profile/gender" method="POST">
+                <h3>Edit Gender</h3>
+                <select name="gender" required>
+                    <option value="male" <%= userProfile.gender === 'male' ? 'selected' : '' %>>Male</option>
+                    <option value="female" <%= userProfile.gender === 'female' ? 'selected' : '' %>>Female</option>
+                    <option value="other" <%= userProfile.gender === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeEditField('gender')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                if (field === 'phoneNumber' && !/^\d{10}$/.test(value)) {
-                    alert('Please enter a valid 10-digit phone number');
-                    return;
-                }
+    <!-- Add these styles to your existing <style> section -->
+    <style>
+        .info-value-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-                try {
-                    const response = await fetch('/user/profile/update-field', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ field, value })
-                    });
+        .edit-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            font-size: 1rem;
+        }
 
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        const editField = document.getElementById(`${field}-edit`);
-                        const infoItem = editField.closest('.info-item');
-                        const valueSpan = infoItem.querySelector('.info-value');
-                        
-                        valueSpan.textContent = value;
-                        editField.classList.remove('active');
-                        alert('Updated successfully');
-                    } else {
-                        throw new Error(data.error || 'Update failed');
-                    }
-                } catch (error) {
-                    console.error('Update error:', error);
-                    alert('Failed to update profile: ' + error.message);
-                }
-            };
+        .edit-btn:hover {
+            color: #333;
+        }
+
+        .edit-field-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .edit-field-modal .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            margin: 20% auto;
+        }
+
+        .edit-field-modal input,
+        .edit-field-modal select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+
+    <!-- Add this script at the end of your file -->
+    <script>
+        function openEditField(field) {
+            document.getElementById(`${field}EditModal`).style.display = 'block';
+        }
+
+        function closeEditField(field) {
+            document.getElementById(`${field}EditModal`).style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const phoneModal = document.getElementById('phoneEditModal');
+            const genderModal = document.getElementById('genderEditModal');
+            
+            if (e.target === phoneModal) {
+                phoneModal.style.display = 'none';
+            }
+            if (e.target === genderModal) {
+                genderModal.style.display = 'none';
+            }
         });
     </script>
 </body>
