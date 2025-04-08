@@ -42,41 +42,50 @@ exports.profile = async (req, res) => {
 
 exports.updateField = async (req, res) => {
     try {
-        const { field, value } = req.body;
+        const { field, value } = req.body;  // Get field from request body instead of params
 
         if (!req.user || !req.user.id) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
         }
 
-        const userProfile = await UserProfile.findOne({ user: req.user.id }) || new UserProfile({ user: req.user.id });
-
-        if (field === 'phoneNumber') {
-            if (!/^\d{10}$/.test(value)) {
-                return res.status(400).json({ success: false, error: 'Invalid phone number format' });
-            }
-            userProfile.phoneNumber = value;
-        } else if (field === 'gender') {
-            if (!['male', 'female', 'other'].includes(value)) {
-                return res.status(400).json({ success: false, error: 'Invalid gender value' });
-            }
-            userProfile.gender = value;
-        } else {
-            return res.status(400).json({ success: false, error: 'Invalid field' });
+        const userProfile = await UserProfile.findOne({ user: req.user.id });
+        if (!userProfile) {
+            return res.status(404).json({ success: false, error: 'Profile not found' });
         }
 
-        userProfile.updatedAt = Date.now();
+        // Handle field updates
+        switch (field) {
+            case 'phone':
+                if (!/^\d{10}$/.test(value)) {
+                    return res.status(400).json({ success: false, error: 'Invalid phone number format' });
+                }
+                userProfile.phoneNumber = value;
+                break;
+            case 'gender':
+                if (!['male', 'female', 'other'].includes(value.toLowerCase())) {
+                    return res.status(400).json({ success: false, error: 'Invalid gender value' });
+                }
+                userProfile.gender = value.toLowerCase();
+                break;
+            default:
+                return res.status(400).json({ success: false, error: 'Invalid field' });
+        }
+
         await userProfile.save();
 
-        res.json({ 
-            success: true, 
-            message: 'Field updated successfully', 
-            data: userProfile 
+        // Send back a clean JSON response
+        return res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            field: field,
+            value: value
         });
+
     } catch (error) {
         console.error('Update Error:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Server error during update' 
+        return res.status(500).json({
+            success: false,
+            error: 'Server error during update'
         });
     }
 };

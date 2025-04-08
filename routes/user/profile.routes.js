@@ -8,7 +8,8 @@ const { jwtMiddleware } = require('../../middlewares/jwtAuth');
 router.use(jwtMiddleware);
 
 router.get('/', profileController.profile);
-router.post('/update-field', profileController.updateField);
+// Update the route path to match the frontend fetch call
+router.post('/update-profile/:field', profileController.updateField);
 router.post('/upload-avatar', upload.single('profileImage'), profileController.uploadAvatar);
 
 module.exports = router;
