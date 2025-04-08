@@ -6,13 +6,11 @@
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="../../stylesheets/User/swiper-bundle.min.css">
-
     <link rel="stylesheet" href="../../stylesheets/User/wishlist.css">
     <link rel="stylesheet" href="../../stylesheets/User/home.css">  
     <title>Wishlist - Book Mania</title>
 </head>
 <body>
-    <!-- Include the navbar partial -->
     <%- include('partials/navbar') %>
 
     <main class="main">
@@ -58,75 +56,82 @@
         </section>
     </main>
 
-    <!-- Include the footer partial -->
-
-    <!--========== SCROLL UP ==========-->
     <a href="#" class="scrollup" id="scroll-up">
         <i class="ri-arrow-up-line"></i>
     </a>
+    
     <script src="../../javascripts/scrollreveal.min.js"></script>
     <script src="../../javascripts/swiper-bundle.min.js"></script>
     <script src="../../javascripts/user/home.js"></script>
-
-    <!--=============== MAIN JS ===============-->
     <script src="../../javascripts/user/wishlist.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const wishlistContent = document.getElementById('wishlistContent');
+
+        if (wishlistContent) {
+            wishlistContent.addEventListener('click', async (e) => {
+                const removeBtn = e.target.closest('.wishlist__remove');
+                if (removeBtn) {
+                    const bookId = removeBtn.dataset.id;
+                    try {
+                        const response = await fetch(`/wishlist/remove/${bookId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            const card = removeBtn.closest('.wishlist__card');
+                            card.remove();
+                            
+                            // Update explore page icons if present
+                            const exploreIcon = document.querySelector(`.wishlist-icon[data-id="${bookId}"]`);
+                            if (exploreIcon) {
+                                exploreIcon.classList.remove('ri-heart-fill', 'active');
+                                exploreIcon.classList.add('ri-heart-line');
+                            }
+                            
+                            if (!wishlistContent.children.length) {
+                                location.reload();
+                            }
+                            alert('Book removed from wishlist');
+                        } else {
+                            alert('Failed to remove item from wishlist');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error removing item from wishlist');
+                    }
+                }
+
+                const cartBtn = e.target.closest('.wishlist__cart');
+                if (cartBtn) {
+                    const bookId = cartBtn.dataset.id;
+                    try {
+                        const response = await fetch('/cart/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ bookId })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            alert('Item added to cart successfully!');
+                        } else {
+                            alert('Failed to add item to cart');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error adding item to cart');
+                    }
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const wishlistContent = document.getElementById('wishlistContent');
-
-    if (wishlistContent) {
-        // Handle remove from wishlist
-        wishlistContent.addEventListener('click', async (e) => {
-            const removeBtn = e.target.closest('.wishlist__remove');
-            if (removeBtn) {
-                const bookId = removeBtn.dataset.id;
-                try {
-                    const response = await fetch(`/wishlist/remove/${bookId}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        const card = removeBtn.closest('.wishlist__card');
-                        card.remove();
-                        
-                        // Check if wishlist is empty
-                        if (!wishlistContent.children.length) {
-                            location.reload(); // Reload to show empty state
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error removing item from wishlist');
-                }
-            }
-
-            // Handle add to cart
-            const cartBtn = e.target.closest('.wishlist__cart');
-            if (cartBtn) {
-                const bookId = cartBtn.dataset.id;
-                try {
-                    const response = await fetch('/cart/add', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ bookId })
-                    });
-                    
-                    const data = await response.json();
-                    if (data.success) {
-                        alert('Item added to cart successfully!');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error adding item to cart');
-                }
-            }
-        });
-    }
-});
-</script>

@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const wishlistController = require('../../controllers/User/wishlist.controller');
-const { jwtMiddleware } = require('../../middlewares/JWTauth');
+const { jwtMiddleware } = require('../../middlewares/jwtAuth');
 
-router.get('/', jwtMiddleware, wishlistController.wishlist);
-router.post('/toggle', jwtMiddleware, wishlistController.toggleWishlist);
-router.delete('/remove/:bookId', jwtMiddleware, wishlistController.removeFromWishlist);
+// Protect all routes with JWT middleware
+router.use(jwtMiddleware);
+
+// Wishlist routes
+router.get('/', wishlistController.getWishlist);
+router.post('/toggle', wishlistController.toggleWishlist);
+router.delete('/remove/:bookId', wishlistController.removeFromWishlist);
 
 module.exports = router;
