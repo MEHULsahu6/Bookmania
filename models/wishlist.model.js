@@ -9,11 +9,7 @@ const wishlistSchema = new mongoose.Schema({
     books: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book'
-    }],
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+    }]
+}, { timestamps: true });
 
 module.exports = mongoose.model('Wishlist', wishlistSchema);

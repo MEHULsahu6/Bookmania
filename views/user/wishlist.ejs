@@ -20,54 +20,40 @@
             <h2 class="section__title">My Wishlist</h2>
 
             <div class="wishlist__container container">
-                <!-- Empty state -->
-                <div class="wishlist__empty" id="emptyWishlist">
-                    <img src="../../img/empty-wishlist.png" alt="Empty wishlist" class="empty__img">
-                    <h3 class="empty__title">Your wishlist is empty</h3>
-                    <p class="empty__description">Browse our collection and add your favorite books!</p>
-                    <a href="/" class="button">Explore Books</a>
-                </div>
-
-                <!-- Wishlist items -->
-                <div class="wishlist__content" id="wishlistContent">
-                    <!-- Wishlist item -->
-                    <div class="wishlist__card">
-                        <img src="../../img/book-1.png" alt="Book" class="wishlist__img">
-                        <div class="wishlist__data">
-                            <h3 class="wishlist__title">The Psychology of Money</h3>
-                            <p class="wishlist__author">By Morgan Housel</p>
-                            <div class="wishlist__prices">
-                                <span class="wishlist__discount">$11.99</span>
-                                <span class="wishlist__price">$19.99</span>
-                            </div>
-                        </div>
-                        <div class="wishlist__actions">
-                            <button class="button wishlist__cart">Add to Cart</button>
-                            <button class="wishlist__remove">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                        </div>
+                <% if (!wishlist.books || wishlist.books.length === 0) { %>
+                    <div class="wishlist__empty" id="emptyWishlist">
+                        <img src="../../img/empty-wishlist.png" alt="Empty wishlist" class="empty__img">
+                        <h3 class="empty__title">Your wishlist is empty</h3>
+                        <p class="empty__description">Browse our collection and add your favorite books!</p>
+                        <a href="/explore" class="button">Explore Books</a>
                     </div>
-
-                    <!-- Repeat wishlist item for demonstration -->
-                    <div class="wishlist__card">
-                        <img src="../../img/book-2.png" alt="Book" class="wishlist__img">
-                        <div class="wishlist__data">
-                            <h3 class="wishlist__title">Atomic Habits</h3>
-                            <p class="wishlist__author">By James Clear</p>
-                            <div class="wishlist__prices">
-                                <span class="wishlist__discount">$13.99</span>
-                                <span class="wishlist__price">$24.99</span>
+                <% } else { %>
+                    <div class="wishlist__content" id="wishlistContent">
+                        <% wishlist.books.forEach(book => { %>
+                            <div class="wishlist__card" data-id="<%= book.id %>">
+                                <img src="<%= book.image %>" alt="<%= book.title %>" class="wishlist__img">
+                                <div class="wishlist__data">
+                                    <h3 class="wishlist__title"><%= book.title %></h3>
+                                    <p class="wishlist__author">By <%= book.author %></p>
+                                    <div class="wishlist__prices">
+                                        <% if (book.discountPrice) { %>
+                                            <span class="wishlist__discount">$<%= book.discountPrice.toFixed(2) %></span>
+                                            <span class="wishlist__price">$<%= book.price.toFixed(2) %></span>
+                                        <% } else { %>
+                                            <span class="wishlist__discount">$<%= book.price.toFixed(2) %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="wishlist__actions">
+                                    <button class="button wishlist__cart" data-id="<%= book.id %>">Add to Cart</button>
+                                    <button class="wishlist__remove" data-id="<%= book.id %>">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="wishlist__actions">
-                            <button class="button wishlist__cart">Add to Cart</button>
-                            <button class="wishlist__remove">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                        </div>
+                        <% }); %>
                     </div>
-                </div>
+                <% } %>
             </div>
         </section>
     </main>
@@ -86,3 +72,61 @@
     <script src="../../javascripts/user/wishlist.js"></script>
 </body>
 </html>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const wishlistContent = document.getElementById('wishlistContent');
+
+    if (wishlistContent) {
+        // Handle remove from wishlist
+        wishlistContent.addEventListener('click', async (e) => {
+            const removeBtn = e.target.closest('.wishlist__remove');
+            if (removeBtn) {
+                const bookId = removeBtn.dataset.id;
+                try {
+                    const response = await fetch(`/wishlist/remove/${bookId}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        const card = removeBtn.closest('.wishlist__card');
+                        card.remove();
+                        
+                        // Check if wishlist is empty
+                        if (!wishlistContent.children.length) {
+                            location.reload(); // Reload to show empty state
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error removing item from wishlist');
+                }
+            }
+
+            // Handle add to cart
+            const cartBtn = e.target.closest('.wishlist__cart');
+            if (cartBtn) {
+                const bookId = cartBtn.dataset.id;
+                try {
+                    const response = await fetch('/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ bookId })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Item added to cart successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error adding item to cart');
+                }
+            }
+        });
+    }
+});
+</script>
