@@ -1,38 +1,63 @@
 const Cart = require('../../models/cart.model');
 const Book = require('../../models/book.model');
 const User = require('../../models/user.model');
-<<<<<<< HEAD
 const Order = require('../../models/order.model');
 
-=======
->>>>>>> 92fe1540792ef1dd9d6bb8cbc84e4f943372fa6b
 exports.cart = async (req, res) => {
     try {
+        if (!req.user || !req.user.id) {
+            return res.redirect('/login');
+        }
+
         const cart = await Cart.findOne({ user: req.user.id })
-            .populate('items.book');
+            .populate({
+                path: 'items.book',
+                select: 'title price image'
+            });
         const user = await User.findById(req.user.id).select('addresses');
-        res.render('User/cart', { cart, user });
+        
+        res.render('User/cart', { 
+            cart: cart || { items: [] }, 
+            user,
+            error: null 
+        });
     } catch (error) {
         console.error('Error loading cart:', error);
-        res.status(500).render('User/cart', { error: 'Error loading cart' });
+        res.status(500).render('User/cart', { 
+            cart: { items: [] }, 
+            user: null,
+            error: 'Error loading cart' 
+        });
     }
 };
 
 exports.addToCart = async (req, res) => {
     try {
-        const { bookId } = req.body;
-        const userId = req.user.id;
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ success: false, message: 'Please login first' });
+        }
 
-        let cart = await Cart.findOne({ user: userId });
+        const { bookId, quantity = 1 } = req.body;
+        if (!bookId) {
+            return res.status(400).json({ success: false, message: 'Book ID is required' });
+        }
+
+        // Verify book exists
+        const book = await Book.findById(bookId);
+        if (!book) {
+            return res.status(404).json({ success: false, message: 'Book not found' });
+        }
+
+        let cart = await Cart.findOne({ user: req.user.id });
         if (!cart) {
-            cart = new Cart({ user: userId, items: [] });
+            cart = new Cart({ user: req.user.id, items: [] });
         }
 
         const existingItem = cart.items.find(item => item.book.toString() === bookId);
         if (existingItem) {
-            existingItem.quantity += 1;
+            existingItem.quantity += parseInt(quantity);
         } else {
-            cart.items.push({ book: bookId, quantity: 1 });
+            cart.items.push({ book: bookId, quantity: parseInt(quantity) });
         }
 
         await cart.save();
@@ -94,38 +119,45 @@ exports.removeFromCart = async (req, res) => {
 
 exports.placeOrder = async (req, res) => {
     try {
-        const { addressId, paymentMethod } = req.body;
-        const userId = req.user.id;
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ success: false, message: 'Please login first' });
+        }
 
-        // Get cart items with populated book details
-        const cart = await Cart.findOne({ user: userId }).populate('items.book');
+        const { addressId, paymentMethod } = req.body;
+        if (!addressId || !paymentMethod) {
+            return res.status(400).json({ success: false, message: 'Address and payment method are required' });
+        }
+
+        const cart = await Cart.findOne({ user: req.user.id }).populate('items.book');
         if (!cart || !cart.items.length) {
             return res.status(400).json({ success: false, message: 'Cart is empty' });
         }
 
-        // Get user details
-        const user = await User.findById(userId);
-        const selectedAddress = user.addresses.find(addr => addr.id.toString() === addressId);
-
+        const user = await User.findById(req.user.id);
+        const selectedAddress = user.addresses.find(addr => addr._id.toString() === addressId);
         if (!selectedAddress) {
             return res.status(400).json({ success: false, message: 'Invalid address' });
         }
 
-        // Create order items with proper price from populated book
-        const books = cart.items.map(item => ({
-            book: item.book.id,
-            quantity: item.quantity,
-            price: item.book.price || 0 // Ensure price exists
+        // Validate all books exist and have valid prices
+        const books = await Promise.all(cart.items.map(async item => {
+            const book = await Book.findById(item.book._id);
+            if (!book || !book.price) {
+                throw new Error(`Invalid book or price for book ID: ${item.book._id}`);
+            }
+            return {
+                book: book._id,
+                quantity: item.quantity,
+                price: book.price
+            };
         }));
 
-        // Calculate total amount
         const totalAmount = books.reduce((total, item) => total + (item.price * item.quantity), 0);
 
-        // Create new order with all required fields
         const order = new Order({
-            user: userId,
-            books: books,
-            totalAmount: totalAmount,
+            user: req.user.id,
+            books,
+            totalAmount,
             customerInfo: {
                 name: selectedAddress.fullName,
                 email: user.email,
@@ -137,20 +169,25 @@ exports.placeOrder = async (req, res) => {
                     phone: selectedAddress.phone
                 }
             },
-            paymentMethod: paymentMethod
+            paymentMethod,
+            status: 'pending'
         });
 
-        // Save the order
         const savedOrder = await order.save();
-
-        // Clear cart after successful order placement
         cart.items = [];
         await cart.save();
 
-        res.json({ success: true, orderId: savedOrder.orderId });
+        res.json({ 
+            success: true, 
+            orderId: savedOrder._id,
+            message: 'Order placed successfully'
+        });
     } catch (error) {
-        console.error('Place order error:', error.message); // Log the specific error message
-        res.status(500).json({ success: false, message: 'Error placing order: ' + error.message });
+        console.error('Place order error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error placing order: ' + (error.message || 'Unknown error')
+        });
     }
 };
 

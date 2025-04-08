@@ -12,75 +12,32 @@
     <style>
         .profile-header .personal-info { margin: 1rem; }
         .personal-info .card-body { padding: 1rem; }
-        .info-item { margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .info-item { margin-bottom: 1.5rem; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .info-label { font-weight: bold; color: #666; }
         .info-value-group { display: flex; align-items: center; gap: 0.5rem; }
         .info-value { color: #333; }
-        .edit-btn, .add-btn {
-            background: none;
-            border: none;
-            color: #007bff;
-            cursor: pointer;
-            padding: 0.2rem;
-            font-size: 1rem;
-        }
-        .edit-btn:hover, .add-btn:hover { color: #0056b3; }
-        .edit-field {
-            display: none;
-            margin-top: 0.5rem;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        
-        .edit-field.active {
-            display: flex;
-        }
-        
-        .info-item {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        
-        .edit-field input,
-        .edit-field select {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            min-width: 200px;
-        }
-        
-        .save-btn,
-        .cancel-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .save-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-        }
-        
-        .cancel-btn {
-            background-color: #fff;
-            border: 1px solid #ddd;
-        }
-        
-        .save-btn:hover {
-            background-color: #0056b3;
-        }
-        
-        .cancel-btn:hover {
-            background-color: #f8f9fa;
-        }
+        .edit-btn { background: none; border: none; color: #007bff; cursor: pointer; padding: 0.2rem; font-size: 1rem; }
+        .edit-btn:hover { color: #0056b3; }
+        .edit-field { display: none; position: absolute; background: white; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 100; right: 0; top: 100%; gap: 0.5rem; align-items: center; }
+        .edit-field.active { display: flex; }
+        .edit-field input, .edit-field select { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; min-width: 200px; }
+        .save-btn, .cancel-btn { padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; }
+        .save-btn { background-color: #007bff; color: white; border: none; }
+        .cancel-btn { background-color: #fff; border: 1px solid #ddd; }
+        .save-btn:hover { background-color: #0056b3; }
+        .cancel-btn:hover { background-color: #f8f9fa; }
+        .alert { padding: 1rem; margin: 1rem; border-radius: 4px; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
     <%- include('partials/navbar') %>
 
     <main class="main">
+        <% if (error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
         <div class="profile-wrapper">
             <section class="profile-header">
                 <div class="profile-cover">
@@ -101,34 +58,62 @@
                         </form>
                     </div>
                 </div>
-                <!-- Replace hardcoded values with dynamic data -->
+
                 <div class="profile-info">
-                    <h1 class="profile-name"><%= userProfile.fullName %></h1>
-                    <p class="profile-email"><%= userProfile.email %></p>
+                    <h1 class="profile-name"><%= userProfile ? userProfile.fullName : 'User' %></h1>
+                    <p class="profile-email"><%= userProfile ? userProfile.email : '' %></p>
                 </div>
+
                 <section class="personal-info card">
                     <div class="card-body">
                         <div class="info-item">
                             <span class="info-label">Mo No:</span>
-                            <div class="info-value-container">
-                                <span class="info-value"><%= userProfile.phoneNumber || 'Not provided' %></span>
-                                <button class="edit-btn" onclick="openEditField('phone')">
+                            <div class="info-value-group">
+                                <span class="info-value"><%= userProfile && userProfile.phoneNumber ? userProfile.phoneNumber : 'Not provided' %></span>
+                                <button class="edit-btn" data-field="phoneNumber" onclick="showEditField('phoneNumber')">
                                     <i class="ri-edit-line"></i>
                                 </button>
                             </div>
+                            <div class="edit-field" id="phoneNumber-edit">
+                                <input type="tel" 
+                                       id="phoneNumber-input" 
+                                       pattern="[0-9]{10}" 
+                                       value="<%= userProfile && userProfile.phoneNumber ? userProfile.phoneNumber : '' %>"
+                                       placeholder="Enter phone number">
+                                <button onclick="saveField('phoneNumber')" class="save-btn">Save</button>
+                                <button onclick="cancelEdit('phoneNumber')" class="cancel-btn">Cancel</button>
+                            </div>
                         </div>
+
                         <div class="info-item">
-                            <span class="info-label">Gender: </span>
-                            <div class="info-value-container">
-                                <span class="info-value"><%= userProfile.gender || 'Not specified' %></span>
-                                <button class="edit-btn" onclick="openEditField('gender')">
+                            <span class="info-label">Gender:</span>
+                            <div class="info-value-group">
+                                <span class="info-value"><%= userProfile && userProfile.gender ? userProfile.gender : 'Not specified' %></span>
+                                <button class="edit-btn" data-field="gender" onclick="showEditField('gender')">
                                     <i class="ri-edit-line"></i>
                                 </button>
                             </div>
+                            <div class="edit-field" id="gender-edit">
+                                <select id="gender-input">
+                                    <option value="male" <%= userProfile && userProfile.gender === 'male' ? 'selected' : '' %>>Male</option>
+                                    <option value="female" <%= userProfile && userProfile.gender === 'female' ? 'selected' : '' %>>Female</option>
+                                    <option value="other" <%= userProfile && userProfile.gender === 'other' ? 'selected' : '' %>>Other</option>
+                                </select>
+                                <button onclick="saveField('gender')" class="save-btn">Save</button>
+                                <button onclick="cancelEdit('gender')" class="cancel-btn">Cancel</button>
+                            </div>
                         </div>
+
                         <div class="info-item">
                             <span class="info-label">Joined:</span>
-                            <span class="info-value"><%= new Date(userProfile.memberSince).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                            <span class="info-value">
+                                <%= userProfile && userProfile.memberSince ? 
+                                    new Date(userProfile.memberSince).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    }) : 'Not available' %>
+                            </span>
                         </div>
                     </div>
                 </section>
@@ -157,22 +142,6 @@
     <script src="../../javascripts/user/home.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Modal related code
-            const editProfileModal = document.getElementById('editProfileModal');
-            const closeModalBtn = document.querySelector('.close-modal');
-            
-            if (editProfileModal && closeModalBtn) {
-                closeModalBtn.addEventListener('click', () => {
-                    editProfileModal.style.display = 'none';
-                });
-
-                window.addEventListener('click', (e) => {
-                    if (e.target === editProfileModal) {
-                        editProfileModal.style.display = 'none';
-                    }
-                });
-            }
-
             // Profile image handling
             const profileImageInput = document.getElementById('avatar-input');
             const profileAvatar = document.querySelector('.profile-avatar');
@@ -183,9 +152,7 @@
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = function(e) {
-                            if (profileAvatar) {
-                                profileAvatar.src = e.target.result;
-                            }
+                            profileAvatar.src = e.target.result;
                         };
                         reader.readAsDataURL(file);
                     }
@@ -195,30 +162,24 @@
             // Field editing functions
             window.showEditField = function(field) {
                 const editField = document.getElementById(`${field}-edit`);
-                if (editField) {
-                    editField.style.display = 'flex';
-                    const input = document.getElementById(`${field}-input`);
-                    if (input) {
-                        input.focus();
-                    }
+                const infoItem = editField.closest('.info-item');
+                const currentValue = infoItem.querySelector('.info-value').textContent;
+                
+                editField.classList.add('active');
+                const input = document.getElementById(`${field}-input`);
+                if (currentValue !== 'Not provided' && currentValue !== 'Not specified') {
+                    input.value = field === 'phoneNumber' ? currentValue : input.value;
                 }
+                input.focus();
             };
 
             window.cancelEdit = function(field) {
                 const editField = document.getElementById(`${field}-edit`);
-                if (editField) {
-                    editField.style.display = 'none';
-                    const input = document.getElementById(`${field}-input`);
-                    if (input) {
-                        input.value = input.defaultValue;
-                    }
-                }
+                editField.classList.remove('active');
             };
 
             window.saveField = async function(field) {
                 const input = document.getElementById(`${field}-input`);
-                if (!input) return;
-                
                 const value = input.value.trim();
                 
                 if (!value) {
@@ -226,51 +187,38 @@
                     return;
                 }
 
+                if (field === 'phoneNumber' && !/^\d{10}$/.test(value)) {
+                    alert('Please enter a valid 10-digit phone number');
+                    return;
+                }
+
                 try {
                     const response = await fetch('/user/profile/update-field', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ field, value })
                     });
-
-                    if (!response.ok) {
-                        throw new Error('Server error');
-                    }
 
                     const data = await response.json();
                     
                     if (data.success) {
                         const editField = document.getElementById(`${field}-edit`);
-                        if (editField) {
-                            const valueSpan = editField.previousElementSibling.querySelector('.info-value');
-                            if (valueSpan) {
-                                valueSpan.textContent = value;
-                            }
-                            editField.style.display = 'none';
-                        }
+                        const infoItem = editField.closest('.info-item');
+                        const valueSpan = infoItem.querySelector('.info-value');
+                        
+                        valueSpan.textContent = value;
+                        editField.classList.remove('active');
                         alert('Updated successfully');
                     } else {
                         throw new Error(data.error || 'Update failed');
                     }
                 } catch (error) {
                     console.error('Update error:', error);
-                    alert('Failed to update profile. Please try again.');
+                    alert('Failed to update profile: ' + error.message);
                 }
             };
-
-            // Initialize edit buttons
-            const editButtons = document.querySelectorAll('.edit-btn, .add-btn');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const field = this.getAttribute('data-field');
-                    if (field) {
-                        showEditField(field);
-                    }
-                });
-            });
         });
     </script>
 </body>
