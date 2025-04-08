@@ -439,7 +439,7 @@
             <div class="cart__items">
                <% if (cart && cart.items && cart.items.length > 0) { %>
                   <% cart.items.forEach(item => { %>
-                     <div class="cart__item" data-id="<%= item.book._id %>">
+                     <div class="cart__item" data-id="<%= item.book.id %>">
                         <img src="<%= item.book.image %>" alt="<%= item.book.title %>" class="cart__item-img">
                         <div class="cart__item-details">
                            <h3 class="cart__item-title"><%= item.book.title %></h3>
@@ -507,7 +507,11 @@
            <% if (user && user.addresses && user.addresses.length > 0) { %>
                <% user.addresses.forEach((address, index) => { %>
                    <div class="address-card <%= address.isDefault ? 'selected' : '' %>">
-                       <input type="radio" name="address" id="address<%= index %>" <%= address.isDefault ? 'checked' : '' %>>
+                       <input type="radio" 
+                              name="address" 
+                              id="address<%= index %>" 
+                              value="<%= address.id %>" 
+                              <%= address.isDefault ? 'checked' : '' %>>
                        <label for="address<%= index %>">
                            <h4><%= address.fullName %></h4>
                            <p><%= address.street %></p>
@@ -561,39 +565,21 @@
          <div class="payment__container">
             <div class="payment-methods">
                <div class="payment-method">
-                  <input type="radio" name="payment" id="card" checked>
+                  <input type="radio" name="payment" id="card" value="card">
                   <label for="card">
                      <i class="ri-bank-card-line"></i>
                      <span>Credit/Debit Card</span>
                   </label>
-                  <div class="payment-form active" id="card-form">
-                     <div class="form-group">
-                        <input type="text" placeholder="Card Number" required>
-                     </div>
-                     <div class="form-row">
-                        <div class="form-group">
-                           <input type="text" placeholder="MM/YY" required>
-                        </div>
-                        <div class="form-group">
-                           <input type="text" placeholder="CVV" required>
-                        </div>
-                     </div>
-                  </div>
                </div>
                <div class="payment-method">
-                  <input type="radio" name="payment" id="upi">
+                  <input type="radio" name="payment" id="upi" value="upi">
                   <label for="upi">
                      <i class="ri-smartphone-line"></i>
                      <span>UPI</span>
                   </label>
-                  <div class="payment-form" id="upi-form">
-                     <div class="form-group">
-                        <input type="text" placeholder="UPI ID" required>
-                     </div>
-                  </div>
                </div>
                <div class="payment-method">
-                  <input type="radio" name="payment" id="cod">
+                  <input type="radio" name="payment" id="cod" value="cod">
                   <label for="cod">
                      <i class="ri-money-dollar-box-line"></i>
                      <span>Cash on Delivery</span>
@@ -607,6 +593,8 @@
          </div>
       </section>
    </main>
+   </body> 
+   
    <script>
       function showSection(sectionId) {
          document.querySelectorAll('.cart-section, .address-section, .payment-section').forEach(section => {
@@ -657,8 +645,49 @@
          });
       });
 
-      function placeOrder() {
-         alert('Order placed successfully!');
+      // Add this function in your script section
+      async function placeOrder() {
+          const selectedAddressRadio = document.querySelector('input[name="address"]:checked');
+          const selectedPayment = document.querySelector('input[name="payment"]:checked');
+      
+          if (!selectedAddressRadio) {
+              alert('Please select a delivery address');
+              return;
+          }
+      
+          if (!selectedPayment) {
+              alert('Please select a payment method');
+              return;
+          }
+      
+          try {
+              const response = await fetch('/cart/place-order', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      addressId: selectedAddressRadio.value,
+                      paymentMethod: selectedPayment.value // Make sure this matches the enum values in order model
+                  })
+              });
+      
+              const result = await response.json();
+              if (result.success) {
+                  alert(`Order placed successfully! Order ID: ${result.orderId}`);
+                  // Change the redirect URL to the admin orders page
+                  window.location.href = '/cart';
+              } else {
+                  alert(result.message || 'Error placing order');
+                  // Stay on the cart page if there's an error
+                  window.location.href = '/cart';
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert('Error placing order');
+              // Stay on the cart page if there's an error
+              window.location.href = '/cart';
+          }
       }
 
       function updateSummary() {
@@ -680,8 +709,6 @@
       document.addEventListener('DOMContentLoaded', updateSummary);
    </script>
    <script>
-      // ... existing JavaScript ...
-  
       document.getElementById('addressForm').addEventListener('submit', async function(e) {
           e.preventDefault();
           
@@ -711,7 +738,54 @@
           }
       });
   
-      // ... rest of your existing JavaScript ...
-  </script>
+      // Add this new function
+      async function removeFromCart(bookId) {
+          try {
+              const response = await fetch(`/cart/remove/${bookId}`, {
+                  method: 'DELETE',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              });
+  
+              const result = await response.json();
+              if (result.success) {
+                  // Remove the item from DOM
+                  const cartItem = document.querySelector(`.cart__item[data-id="${bookId}"]`);
+                  cartItem.remove();
+                  
+                  // Update the cart summary
+                  updateSummary();
+                  
+                  // If cart is empty, show empty cart message
+                  const cartItems = document.querySelectorAll('.cart__item');
+                  if (cartItems.length === 0) {
+                      const cartItemsContainer = document.querySelector('.cart__items');
+                      cartItemsContainer.innerHTML = `
+                          <div class="cart-empty">
+                              <i class="ri-shopping-cart-line"></i>
+                              <p>Your cart is empty</p>
+                          </div>
+                      `;
+                      
+                  }
+              } else {
+                  alert(result.message || 'Error removing item from cart');
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert('Error removing item from cart');
+          }
+      }
+  
+      // Add click event listeners for remove buttons
+      document.querySelectorAll('.cart__item-remove').forEach(button => {
+          button.addEventListener('click', function() {
+              const cartItem = this.closest('.cart__item');
+              const bookId = cartItem.dataset.id;
+              removeFromCart(bookId);
+          });
+      });
+   </script>
 </body>
 </html>

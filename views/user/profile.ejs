@@ -85,93 +85,51 @@
             <section class="profile-header">
                 <div class="profile-cover">
                     <div class="profile-avatar-container">  
-                        <img src="<%= userProfile && userProfile.profilePicture ? userProfile.profilePicture : '../../img/profile_default.avif' %>" alt="User Avatar" class="profile-avatar">
-                        <form action="/upload-avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
+                        <img src="<%= userProfile && userProfile.profilePicture ? userProfile.profilePicture : '/img/profile_default.avif' %>" 
+                             alt="User Avatar" 
+                             class="profile-avatar"
+                             id="preview-image">
+                        <form action="/profile/upload-avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
                             <label for="avatar-input">
                                 <i class="ri-camera-line"></i>
                             </label>
-                            <input type="file" id="avatar-input" name="avatar" accept="image/*" hidden>
-                            <button type="submit" hidden></button>
+                            <input type="file" 
+                                   id="avatar-input" 
+                                   name="profileImage" 
+                                   accept="image/*" 
+                                   hidden>
                         </form>
                     </div>
                 </div>
+                <!-- Replace hardcoded values with dynamic data -->
                 <div class="profile-info">
-                    <h1 class="profile-name"><%= userProfile && userProfile.user && userProfile.user.name ? userProfile.user.name : 'Unknown User' %></h1>
-                    <p class="profile-email"><%= userProfile && userProfile.user && userProfile.user.email ? userProfile.user.email : 'No email' %></p>
+                    <h1 class="profile-name"><%= userProfile.fullName %></h1>
+                    <p class="profile-email"><%= userProfile.email %></p>
                 </div>
                 <section class="personal-info card">
-                    <div class="card-header">
-                        <h2>Personal Info</h2>
-                    </div>
                     <div class="card-body">
                         <div class="info-item">
                             <span class="info-label">Mo No:</span>
-                            <% if (userProfile && userProfile.phoneNumber) { %>
-                                <div class="info-value-group">
-                                    <span class="info-value"><%= userProfile.phoneNumber %></span>
-                                    <button class="edit-btn" data-field="phone" onclick="showEditField('phone')">
-                                        <i class="ri-edit-line"></i>
-                                    </button>
-                                </div>
-                                <div class="edit-field" id="phone-edit">
-                                    <input type="tel" value="<%= userProfile.phoneNumber %>" id="phone-input">
-                                    <button class="save-btn" onclick="saveField('phone')">Save</button>
-                                    <button class="cancel-btn" onclick="cancelEdit('phone')">Cancel</button>
-                                </div>
-                            <% } else { %>
-                                <div class="info-value-group">
-                                    <span class="info-value">Not provided</span>
-                                    <button class="add-btn" onclick="showEditField('phone')">Add</button>
-                                </div>
-                                <div class="edit-field" id="phone-edit">
-                                    <input type="tel" placeholder="Enter phone number" id="phone-input">
-                                    <button class="save-btn" onclick="saveField('phone')">Save</button>
-                                    <button class="cancel-btn" onclick="cancelEdit('phone')">Cancel</button>
-                                </div>
-                            <% } %>
+                            <div class="info-value-container">
+                                <span class="info-value"><%= userProfile.phoneNumber || 'Not provided' %></span>
+                                <button class="edit-btn" onclick="openEditField('phone')">
+                                    <i class="ri-edit-line"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Gender:</span>
-                            <% if (userProfile && userProfile.gender) { %>
-                                <div class="info-value-group">
-                                    <span class="info-value"><%= userProfile.gender %></span>
-                                    <button class="edit-btn" data-field="gender" onclick="showEditField('gender')">
-                                        <i class="ri-edit-line"></i>
-                                    </button>
-                                </div>
-                                <div class="edit-field" id="gender-edit">
-                                    <select id="gender-input">
-                                        <option value="male" <%= userProfile.gender === 'male' ? 'selected' : '' %>>Male</option>
-                                        <option value="female" <%= userProfile.gender === 'female' ? 'selected' : '' %>>Female</option>
-                                        <option value="other" <%= userProfile.gender === 'other' ? 'selected' : '' %>>Other</option>
-                                    </select>
-                                    <button class="save-btn" onclick="saveField('gender')">Save</button>
-                                    <button class="cancel-btn" onclick="cancelEdit('gender')">Cancel</button>
-                                </div>
-                            <% } else { %>
-                                <div class="info-value-group">
-                                    <span class="info-value">Not specified</span>
-                                    <button class="add-btn" onclick="showEditField('gender')">Add</button>
-                                </div>
-                                <div class="edit-field" id="gender-edit">
-                                    <select id="gender-input">
-                                        <option value="">Select gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                    <button class="save-btn" onclick="saveField('gender')">Save</button>
-                                    <button class="cancel-btn" onclick="cancelEdit('gender')">Cancel</button>
-                                </div>
-                            <% } %>
+                            <span class="info-label">Gender: </span>
+                            <div class="info-value-container">
+                                <span class="info-value"><%= userProfile.gender || 'Not specified' %></span>
+                                <button class="edit-btn" onclick="openEditField('gender')">
+                                    <i class="ri-edit-line"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Joined:</span>
-                            <span class="info-value"><%= userProfile && userProfile.user && userProfile.user.createdAt ? new Date(userProfile.user.createdAt).toLocaleDateString() : 'Unknown' %></span>
+                            <span class="info-value"><%= new Date(userProfile.memberSince).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
                         </div>
-                        <% if (error) { %>
-                            <p style="color: red;"><%= error %></p>
-                        <% } %>
                     </div>
                 </section>
             </section>
@@ -230,72 +188,120 @@
                 reader.readAsDataURL(file);
             }
         });
+    </script>
 
-        // Update the showEditField and saveField functions in your script section
-        function showEditField(field) {
-            const editField = document.getElementById(`${field}-edit`);
-            if (editField) {
-                editField.style.display = 'flex';
-                const input = document.getElementById(`${field}-input`);
-                if (input) {
-                    input.focus();
-                }
-            }
+    <!-- Add edit modals -->
+    <div class="edit-field-modal" id="phoneEditModal">
+        <div class="modal-content">
+            <!-- Update the form action paths -->
+            <form action="/profile/update-profile/phone" method="POST">
+                <h3>Edit Phone Number</h3>
+                <input type="tel" name="phoneNumber" pattern="[0-9]{10}" value="<%= userProfile.phoneNumber || '' %>" required>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeEditField('phone')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="edit-field-modal" id="genderEditModal">
+        <div class="modal-content">
+            <form action="/profile/update-profile/gender" method="POST">
+                <h3>Edit Gender</h3>
+                <select name="gender" required>
+                    <option value="male" <%= userProfile.gender === 'male' ? 'selected' : '' %>>Male</option>
+                    <option value="female" <%= userProfile.gender === 'female' ? 'selected' : '' %>>Female</option>
+                    <option value="other" <%= userProfile.gender === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeEditField('gender')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add these styles to your existing <style> section -->
+    <style>
+        .info-value-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        function cancelEdit(field) {
-            const editField = document.getElementById(`${field}-edit`);
-            if (editField) {
-                editField.style.display = 'none';
-                const input = document.getElementById(`${field}-input`);
-                if (input) {
-                    input.value = input.defaultValue;
-                }
-            }
+        .edit-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            font-size: 1rem;
         }
 
-        async function saveField(field) {
-            const input = document.getElementById(`${field}-input`);
-            const value = input.value.trim();
+        .edit-btn:hover {
+            color: #333;
+        }
+
+        .edit-field-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .edit-field-modal .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            margin: 20% auto;
+        }
+
+        .edit-field-modal input,
+        .edit-field-modal select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+
+    <!-- Add this script at the end of your file -->
+    <script>
+        function openEditField(field) {
+            document.getElementById(`${field}EditModal`).style.display = 'block';
+        }
+
+        function closeEditField(field) {
+            document.getElementById(`${field}EditModal`).style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const phoneModal = document.getElementById('phoneEditModal');
+            const genderModal = document.getElementById('genderEditModal');
             
-            if (!value) {
-                alert('Please enter a valid value');
-                return;
+            if (e.target === phoneModal) {
+                phoneModal.style.display = 'none';
             }
-
-            try {
-                const response = await fetch('/user/profile/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        [field === 'phone' ? 'phoneNumber' : field]: value
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Server error');
-                }
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Hide the edit field
-                    cancelEdit(field);
-                    // Update the displayed value
-                    const valueSpan = document.querySelector(`#${field}-edit`).previousElementSibling.querySelector('.info-value');
-                    valueSpan.textContent = value;
-                    // Show success message
-                    alert('Updated successfully');
-                } else {
-                    throw new Error(data.error || 'Update failed');
-                }
-            } catch (error) {
-                console.error('Update error:', error);
-                alert('Failed to update profile. Please try again.');
+            if (e.target === genderModal) {
+                genderModal.style.display = 'none';
             }
-        }
+        });
     </script>
 </body>
 </html>

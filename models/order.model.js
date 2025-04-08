@@ -8,8 +8,8 @@ const orderSchema = new mongoose.Schema({
     },
     orderId: {
         type: String,
-        required: true,
         unique: true
+        // Removed required: true since it's generated in pre-save
     },
     books: [{
         book: {
@@ -19,16 +19,19 @@ const orderSchema = new mongoose.Schema({
         },
         quantity: {
             type: Number,
-            required: true
+            required: true,
+            min: 1
         },
         price: {
             type: Number,
-            required: true
+            required: true,
+            min: 0
         }
     }],
     totalAmount: {
         type: Number,
-        required: true
+        required: true,
+        min: 0
     },
     status: {
         type: String,
@@ -36,8 +39,20 @@ const orderSchema = new mongoose.Schema({
         default: 'pending'
     },
     customerInfo: {
-        name: String,
-        email: String
+        name: { type: String, required: true },
+        email: { type: String, required: true },
+        address: {
+            street: { type: String, required: true },
+            city: { type: String, required: true },
+            state: { type: String, required: true },
+            zipCode: { type: String, required: true },
+            phone: { type: String, required: true }
+        }
+    },
+    paymentMethod: {
+        type: String,
+        enum: ['card', 'upi', 'cod'],
+        required: true
     },
     orderDate: {
         type: Date,

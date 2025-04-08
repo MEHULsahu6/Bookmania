@@ -3,83 +3,97 @@ const UserProfile = require('../../models/userProfile.model');
 
 exports.profile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
-        let userProfile = await UserProfile.findOne({ user: req.user.id }).populate({
-            path: 'user',
-            select: 'name email createdAt'
-        });
+        // First get the user data
+        const user = await User.findById(req.user.id).select('-password');
+        
+        // Find or create user profile
+        let userProfile = await UserProfile.findOne({ user: req.user.id });
 
         if (!userProfile) {
-            userProfile = new UserProfile({ user: user._id });
+            // Create a new profile if it doesn't exist
+            userProfile = new UserProfile({
+                user: req.user.id,
+                fullName: user.name,
+                email: user.email,
+                phoneNumber: null,
+                gender: null,
+                profilePicture: '/img/profile_default.avif'
+            });
             await userProfile.save();
-            await userProfile.populate('user');
         }
 
-        res.render('User/profile', { userProfile, error: null });
+        // Render with safe fallback values
+        res.render('User/profile', { 
+            userProfile: {
+                ...userProfile.toObject(),
+                user: user,
+                memberSince: user.createdAt
+            },
+            error: null 
+        });
     } catch (error) {
         console.error('Profile Error:', error);
-        res.status(500).render('User/profile', { userProfile: null, error: 'Error loading profile' });
+        res.status(500).render('User/profile', { 
+            userProfile: {
+                fullName: req.user?.name || 'User',
+                email: req.user?.email || '',
+                phoneNumber: null,
+                gender: null,
+                profilePicture: '/img/profile_default.avif',
+                user: req.user,
+                memberSince: new Date()
+            },
+            error: 'Error loading profile' 
+        });
     }
 };
 
-exports.updateField = async (req, res) => {
+exports.updatePhone = async (req, res) => {
     try {
-        const { field, value } = req.body;
-        console.log('Received update:', { field, value });
-
-        if (!req.user || !req.user.id) {
-            return res.status(401).json({ success: false, error: 'Unauthorized' });
-        }
-
-        const userProfile = await UserProfile.findOne({ user: req.user.id }) || new UserProfile({ user: req.user.id });
-
-        if (field === 'phoneNumber') {
-            userProfile.phoneNumber = value;
-        } else if (field === 'gender') {
-            if (['male', 'female', 'other'].includes(value)) {
-                userProfile.gender = value;
-            } else {
-                return res.status(400).json({ success: false, error: 'Invalid gender value' });
-            }
-        } else {
-            return res.status(400).json({ success: false, error: 'Invalid field' });
-        }
-
-        await userProfile.save();
-        console.log('Profile updated:', userProfile);
-
-        res.json({ success: true, message: 'Field updated successfully', data: userProfile });
-    } catch (error) {
-        console.error('Update Error:', error);
-        res.status(500).json({ success: false, error: 'Server error during update' });
-    }
-};
-
-exports.updateProfile = async (req, res) => {
-    try {
-        const updates = req.body;
+        const { phoneNumber } = req.body;
         let userProfile = await UserProfile.findOne({ user: req.user.id });
         
         if (!userProfile) {
+            // Create new profile if it doesn't exist
             userProfile = new UserProfile({
                 user: req.user.id,
-                ...updates
+                fullName: req.user.name,
+                email: req.user.email,
+                phoneNumber
             });
         } else {
-            Object.assign(userProfile, updates);
+            userProfile.phoneNumber = phoneNumber;
         }
-
-        await userProfile.save();
         
-        res.json({
-            success: true,
-            message: 'Profile updated successfully'
-        });
+        await userProfile.save();
+        res.redirect('/profile');
     } catch (error) {
-        console.error('Profile update error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to update profile'
-        });
+        console.error('Update Phone Error:', error);
+        res.status(500).json({ error: 'Error updating phone number' });
+    }
+};
+
+exports.updateGender = async (req, res) => {
+    try {
+        const { gender } = req.body;
+        let userProfile = await UserProfile.findOne({ user: req.user.id });
+        
+        if (!userProfile) {
+            // Create new profile if it doesn't exist
+            userProfile = new UserProfile({
+                user: req.user.id,
+                fullName: req.user.name,
+                email: req.user.email,
+                gender
+            });
+        } else {
+            userProfile.gender = gender;
+        }
+        
+        await userProfile.save();
+        res.redirect('/profile');
+    } catch (error) {
+        console.error('Update Gender Error:', error);
+        res.status(500).json({ error: 'Error updating gender' });
     }
 };
