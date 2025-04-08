@@ -8,7 +8,19 @@ exports.profile = async (req, res) => {
             .populate('orderHistory');
             
         if (!userProfile) {
-            return res.status(404).render('User/profile', { error: 'Profile not found' });
+            // Create a new profile with basic information
+            const newProfile = new UserProfile({
+                user: req.user.id,
+                fullName: req.user.name,
+                email: req.user.email
+            });
+            await newProfile.save();
+            
+            return res.render('User/profile', { 
+                userProfile: newProfile,
+                user: req.user,
+                error: null 
+            });
         }
 
         res.render('User/profile', { 
@@ -18,21 +30,44 @@ exports.profile = async (req, res) => {
         });
     } catch (error) {
         console.error('Profile Error:', error);
-        res.status(500).render('User/profile', { error: 'Error loading profile' });
+        // Provide default values when there's an error
+        res.status(500).render('User/profile', { 
+            userProfile: {
+                fullName: req.user.name,
+                email: req.user.email,
+                phoneNumber: '',
+                gender: '',
+                memberSince: new Date()
+            },
+            user: req.user,
+            error: 'Error loading profile' 
+        });
     }
 };
 
 exports.updatePhone = async (req, res) => {
     try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
         const { phoneNumber } = req.body;
+        if (!phoneNumber || phoneNumber.length < 10) {
+            return res.status(400).json({ error: 'Invalid phone number' });
+        }
+
         let userProfile = await UserProfile.findOne({ user: req.user.id });
         
         if (!userProfile) {
-            // Create new profile if it doesn't exist
+            const user = await User.findById(req.user.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
             userProfile = new UserProfile({
                 user: req.user.id,
-                fullName: req.user.name,
-                email: req.user.email,
+                fullName: user.name,
+                email: user.email,
                 phoneNumber
             });
         } else {
@@ -40,7 +75,7 @@ exports.updatePhone = async (req, res) => {
         }
         
         await userProfile.save();
-        res.redirect('/profile');
+        res.status(200).json({ success: true, message: 'Phone number updated successfully' });
     } catch (error) {
         console.error('Update Phone Error:', error);
         res.status(500).json({ error: 'Error updating phone number' });
