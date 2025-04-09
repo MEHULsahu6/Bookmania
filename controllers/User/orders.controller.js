@@ -2,7 +2,7 @@ const Order = require('../../models/order.model');
 
 const getUserOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ user: req.user._id })
+        const orders = await Order.find({ user: req.user.id })
             .populate('books.book', 'title image price')
             .sort({ orderDate: -1 });
 
@@ -17,7 +17,7 @@ const getOrderDetails = async (req, res) => {
     try {
         const order = await Order.findOne({
             orderId: req.params.orderId,
-            user: req.user._id
+            user: req.user.id
         }).populate('books.book', 'title image price description');
 
         if (!order) {
