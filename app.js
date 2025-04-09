@@ -51,6 +51,9 @@ const reviewsAdminRoutes = require('./routes/admin/reviews.routes');
 const historyAdminRoutes = require('./routes/admin/history.routes');
 const helpAdminRoutes = require('./routes/admin/help.routes');
 
+// Import user routes
+const ordersRoutes = require('./routes/user/orders.routes');  // Add this line
+
 // Use USER routes
 app.use('/', homeRoutes);
 app.use('/', authRoutes);
@@ -58,6 +61,7 @@ app.use('/profile', profileRoutes);
 app.use('/explore', exploreRoutes);
 app.use('/cart', cartRoutes);
 app.use('/wishlist', wishlistRoutes);
+app.use('/orders', ordersRoutes);  // Add this line
 
 // Use Admin routes
 app.use('/admin/dashboard', dashboardAdminRoutes);
