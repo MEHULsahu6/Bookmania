@@ -76,7 +76,7 @@ exports.updatePhone = async (req, res) => {
         
         await userProfile.save();
         res.status(200).json({ success: true, message: 'Phone number updated successfully' });
-    } catch (error) {
+g    } catch (error) {
         console.error('Update Phone Error:', error);
         res.status(500).json({ error: 'Error updating phone number' });
     }
