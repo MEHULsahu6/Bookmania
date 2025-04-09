@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const { upload } = require('../../config/multer.config');
 const profileController = require('../../controllers/User/profile.controller');
-const { jwtMiddleware } = require('../../middlewares/JWTauth');
+const { jwtMiddleware } = require('../../middlewares/jwtAuth');
 
-router.get('/', jwtMiddleware, profileController.profile);
-// Add these new routes
-router.post('/update-profile/phone', jwtMiddleware, profileController.updatePhone);
-router.post('/update-profile/gender', jwtMiddleware, profileController.updateGender);
+router.use(jwtMiddleware);
+
+router.get('/', profileController.profile);
+// Update the route path to match the frontend fetch call
+router.post('/update-profile/:field', profileController.updateField);
+router.post('/upload-avatar', upload.single('profileImage'), profileController.uploadAvatar);
 
 module.exports = router;

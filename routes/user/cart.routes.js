@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cartController = require('../../controllers/User/cart.controller');
-const { jwtMiddleware } = require('../../middlewares/JWTauth');
+const  {jwtMiddleware } = require('../../middlewares/jwtAuth'); // Fix the path
 
 router.get('/', jwtMiddleware, cartController.cart);
 router.post('/add', jwtMiddleware, cartController.addToCart);
