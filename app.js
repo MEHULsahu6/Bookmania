@@ -7,6 +7,8 @@ const path = require('path');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
+const events = require('events');
+events.EventEmitter.defaultMaxListeners = 15; // Increase the default limit
 
 // Connect to MongoDB
 connectDB();
@@ -81,3 +83,31 @@ app.use((req, res) => {
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
 });
+
+// Add after require('dotenv').config();
+if (!process.env.JWT_SECRET) {
+    console.error('JWT_SECRET is not defined in environment variables');
+    process.exit(1);
+}
+
+// Add after cookieParser middleware
+const csrf = require('csurf');
+app.use(csrf({ cookie: true }));
+
+// Add CSRF token to all responses
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
+// Add after express initialization
+const rateLimit = require('express-rate-limit');
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 attempts
+    message: 'Too many login attempts, please try again later'
+});
+
+// Apply to auth routes
+app.use('/login', loginLimiter);

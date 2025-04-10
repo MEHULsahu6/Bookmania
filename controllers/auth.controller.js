@@ -1,6 +1,7 @@
 const User = require('../models/user.model'); // Capitalized User
-const { generateToken } = require('../middlewares/JWTauth');
+const { generateToken } = require('../middlewares/jwtAuth');
 const bcrypt = require('bcrypt');
+const sanitize = require('sanitize-html');
 
 exports.login = (req, res) => {
     res.render('login', { error: null }); // Initialize error as null
@@ -36,10 +37,13 @@ exports.loginPost = async (req, res) => {
 
         const token = generateToken(payload);
         
+        // Update cookie options
         res.cookie('token', token, { 
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 1000 // 1 hour to match token expiration
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 1000,
+            path: '/'
         });
 
         if (findUser.role === "admin") {
@@ -59,6 +63,14 @@ exports.loginPost = async (req, res) => {
 exports.signupPost = async (req, res) => {
     try {
         const { fullname, email, password, role } = req.body;
+
+        // Validate password first
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).render('signup', { 
+                error: 'Password must be at least 8 characters long and contain both letters and numbers' 
+            });
+        }
 
         if (!fullname || !email || !password || !role) {
             return res.status(400).render('signup', { error: 'All fields are required' });
@@ -121,3 +133,7 @@ exports.logout = (req, res) => {
     res.clearCookie('token');
     res.redirect('/login'); // Redirect to login instead of home
 };
+
+// Remove everything below this line
+// The password validation is already handled in signupPost
+// The session regeneration should be part of the loginPost function if needed

@@ -146,10 +146,47 @@ const getBookById = async (req, res) => {
     }
 };
 
+// Add after existing imports
+const searchBooks = async (req, res) => {
+    try {
+        const { query, category, minPrice, maxPrice, sort } = req.query;
+        const filter = { admin: req.user.id };
+
+        if (query) {
+            filter.$or = [
+                { title: { $regex: query, $options: 'i' } },
+                { author: { $regex: query, $options: 'i' } }
+            ];
+        }
+
+        if (category) {
+            filter.tags = category;
+        }
+
+        if (minPrice || maxPrice) {
+            filter.price = {};
+            if (minPrice) filter.price.$gte = parseFloat(minPrice);
+            if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+        }
+
+        let sortOption = {};
+        if (sort === 'price_asc') sortOption.price = 1;
+        if (sort === 'price_desc') sortOption.price = -1;
+        if (sort === 'newest') sortOption.createdAt = -1;
+
+        const books = await Book.find(filter).sort(sortOption);
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({ message: 'Error searching books', error });
+    }
+};
+
+// Add to module.exports
 module.exports = {
     getBooks,
     createBook,
     updateBook,
     deleteBook,
-    getBookById
+    getBookById,
+    searchBooks
 };

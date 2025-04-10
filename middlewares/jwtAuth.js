@@ -1,19 +1,47 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user.model');
 
-const jwtMiddleware = (req, res, next) => {
+const jwtMiddleware = async (req, res, next) => {
     try {
         const token = req.cookies.token;
         if (!token) {
-            return res.status(401).redirect('/login');
+            return res.redirect('/login');
         }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        const user = await User.findById(decoded.id);
+        
+        if (!user) {
+            res.clearCookie('token');
+            return res.redirect('/login');
+        }
+
+        req.user = user;
         next();
-    } catch (err) {
-        console.error('JWT Error:', err.message);
-        res.clearCookie('token'); // Clear invalid token
-        return res.status(401).redirect('/login');
-    }   
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            res.clearCookie('token');
+            return res.redirect('/login?expired=true');
+        }
+        res.clearCookie('token');
+        return res.redirect('/login');
+    }
+};
+
+const roleCheck = (roles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).render('error', { 
+                message: 'Authentication required'
+            });
+        }
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).render('error', { 
+                message: 'Access forbidden'
+            });
+        }
+        next();
+    };
 };
 
 const generateToken = (user) => {
@@ -22,5 +50,6 @@ const generateToken = (user) => {
 
 module.exports = {
     jwtMiddleware,
+    roleCheck,
     generateToken 
 };
