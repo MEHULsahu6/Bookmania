@@ -10,7 +10,7 @@ const getUserOrders = async (req, res) => {
         // Get existing reviews for these orders
         const reviews = await Review.find({
             user: req.user.id,
-            order: { $in: orders.map(order => order._id) }
+            order: { $in: orders.map(order => order.id) }
         });
 
         // Create review mapping
@@ -33,18 +33,24 @@ const getUserOrders = async (req, res) => {
 const getOrderDetails = async (req, res) => {
     try {
         const order = await Order.findOne({
-            _id: req.params.orderId,
+            orderId: req.params.orderId,
             user: req.user.id
-        }).populate('books.book', 'title image price description');
+        })
+        .populate('books.book', 'title image price description')
+        .populate('shippingAddress');  // Add this line to populate shipping address
 
         if (!order) {
-            return res.status(404).render('404');
+            return res.status(404).render('error', { 
+                message: 'Order not found' 
+            });
         }
 
         res.render('user/order-details', { order });
     } catch (error) {
         console.error('Error fetching order details:', error);
-        res.status(500).render('error', { message: 'Error fetching order details' });
+        res.render('error', { 
+            message: 'Error fetching order details' 
+        });
     }
 };
 

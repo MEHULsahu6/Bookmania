@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
-    <!-- Fix CSS paths -->
-    <link rel="stylesheet" href="/stylesheets/User/orders.css">
     <link rel="stylesheet" href="/stylesheets/User/home.css">
+    <link rel="stylesheet" href="/stylesheets/User/order-details.css">
     <title>Order Details - Book Mania</title>
 </head>
 <body>
@@ -15,46 +14,62 @@
 
     <main class="main">
         <section class="order-details section">
-            <div class="container">
-                <h2 class="section__title">Order Details</h2>
-                
-                <div class="order-info">
-                    <div class="order-header">
-                        <div>
-                            <h3>Order #<%= order.orderId %></h3>
-                            <p>Placed on <%= new Date(order.orderDate).toLocaleDateString() %></p>
-                        </div>
-                        <span class="status-badge <%= order.status %>">
-                            <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+            <h2 class="section__title">Order Details</h2>
+
+            <div class="order-details__container container">
+                <div class="order__header">
+                    <div class="order__info">
+                        <h3>Order #<%= order.orderId %></h3>
+                        <span class="order__date">
+                            Ordered on <%= new Date(order.orderDate).toLocaleDateString() %>
                         </span>
                     </div>
+                    <span class="order__status <%= order.status %>">
+                        <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                    </span>
+                </div>
 
-                    <div class="order-items">
-                        <h3>Items Ordered</h3>
+                <div class="order__content">
+                    <div class="order__items">
+                        <h4>Order Items</h4>
                         <% order.books.forEach(item => { %>
-                            <div class="order-item">
+                            <div class="order__item">
                                 <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
-                                <div class="item-details">
-                                    <h4><%= item.book.title %></h4>
-                                    <p class="price">$<%= item.price.toFixed(2) %> x <%= item.quantity %></p>
+                                <div class="item__details">
+                                    <h5><%= item.book.title %></h5>
+                                    <p class="item__price">$<%= item.price.toFixed(2) %> x <%= item.quantity %></p>
+                                    <p class="item__description"><%= item.book.description %></p>
                                 </div>
                             </div>
                         <% }); %>
                     </div>
 
-                    <div class="shipping-info">
-                        <h3>Shipping Information</h3>
-                        <p><%= order.customerInfo.name %></p>
-                        <p><%= order.customerInfo.address.street %></p>
-                        <p><%= order.customerInfo.address.city %>, <%= order.customerInfo.address.state %></p>
-                        <p><%= order.customerInfo.address.zipCode %></p>
-                        <p>Phone: <%= order.customerInfo.address.phone %></p>
+                    <div class="order__summary">
+                        <h4>Order Summary</h4>
+                        <div class="summary__item">
+                            <span>Subtotal:</span>
+                            <span>$<%= order.totalAmount.toFixed(2) %></span>
+                        </div>
+                        <div class="summary__item">
+                            <span>Shipping:</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="summary__total">
+                            <span>Total:</span>
+                            <span>$<%= order.totalAmount.toFixed(2) %></span>
+                        </div>
                     </div>
 
-                    <div class="payment-info">
-                        <h3>Payment Information</h3>
-                        <p>Payment Method: <%= order.paymentMethod.toUpperCase() %></p>
-                        <p>Total Amount: $<%= order.totalAmount.toFixed(2) %></p>
+                    <div class="shipping__address">
+                        <h4>Shipping Address</h4>
+                        <% if (order.shippingAddress) { %>
+                            <p><%= order.shippingAddress.fullName %></p>
+                            <p><%= order.shippingAddress.street %></p>
+                            <p><%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> <%= order.shippingAddress.zipCode %></p>
+                            <p>Phone: <%= order.shippingAddress.phone %></p>
+                        <% } else { %>
+                            <p>No shipping address available</p>
+                        <% } %>
                     </div>
                 </div>
             </div>

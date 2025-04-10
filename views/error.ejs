@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="/stylesheets/User/home.css">
+    <title>Error - Book Mania</title>
+</head>
+<body>
+    <%- include('user/partials/navbar') %>
+
+    <main class="main">
+        <section class="error section">
+            <div class="error__container container">
+                <i class="ri-error-warning-line"></i>
+                <h2>Oops! Something went wrong</h2>
+                <p><%= message || 'An unexpected error occurred' %></p>
+                <a href="javascript:history.back()" class="button">Go Back</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="/javascripts/user/home.js"></script>
+</body>
+</html>
