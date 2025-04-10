@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="/stylesheets/User/home.css">
     <link rel="stylesheet" href="/stylesheets/User/orders.css">
-    <title>My Orders - Book Mania</title>
 </head>
 <body>
     <%- include('partials/navbar') %>
@@ -47,6 +46,18 @@
                                             <div class="product__details">
                                                 <h4 class="product__title"><%= item.book.title %></h4>
                                                 <p class="product__price">$<%= item.price.toFixed(2) %> x <%= item.quantity %></p>
+                                            
+                                                <% const reviewKey = `${order._id}-${item.book._id}`; %>
+                                                <% if (!reviewMap[reviewKey]) { %>
+                                                    <button class="review-btn" 
+                                                            onclick="openReviewModal('<%= order._id %>', '<%= item.book._id %>', '<%= item.book.title %>')">
+                                                        Write Review
+                                                    </button>
+                                                <% } else { %>
+                                                    <div class="review-status <%= reviewMap[reviewKey].status %>">
+                                                        Review <%= reviewMap[reviewKey].status %>
+                                                    </div>
+                                                <% } %>
                                             </div>
                                         </div>
                                     <% }); %>
@@ -72,3 +83,76 @@
     <script src="/javascripts/user/home.js"></script>
 </body>
 </html>
+
+<!-- Review Modal -->
+<div id="reviewModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Write a Review</h2>
+        <form id="reviewForm">
+            <input type="hidden" id="orderId" name="orderId">
+            <input type="hidden" id="bookId" name="bookId">
+            
+            <div class="rating-input">
+                <span>Rating:</span>
+                <div class="stars">
+                    <% for(let i = 5; i >= 1; i--) { %>
+                        <input type="radio" id="star<%= i %>" name="rating" value="<%= i %>">
+                        <label for="star<%= i %>"></label>
+                    <% } %>
+                </div>
+            </div>
+            
+            <div class="comment-input">
+                <label for="comment">Your Review:</label>
+                <textarea id="comment" name="comment" required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-review">Submit Review</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openReviewModal(orderId, bookId, bookTitle) {
+    const modal = document.getElementById('reviewModal');
+    document.getElementById('orderId').value = orderId;
+    document.getElementById('bookId').value = bookId;
+    modal.style.display = 'block';
+}
+
+document.querySelector('.close').onclick = function() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+
+document.getElementById('reviewForm').onsubmit = async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        orderId: document.getElementById('orderId').value,
+        bookId: document.getElementById('bookId').value,
+        rating: document.querySelector('input[name="rating"]:checked').value,
+        comment: document.getElementById('comment').value
+    };
+
+    try {
+        const response = await fetch('/orders/review', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Review submitted successfully!');
+            location.reload();
+        } else {
+            alert('Error submitting review: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error submitting review');
+    }
+};
+</script>

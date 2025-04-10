@@ -11,6 +11,11 @@ const reviewSchema = new mongoose.Schema({
         ref: 'Book',
         required: true
     },
+    order: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+        required: true
+    },
     rating: {
         type: Number,
         required: true,
@@ -24,7 +29,7 @@ const reviewSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
-        default: 'approved'
+        default: 'pending'
     },
     createdAt: {
         type: Date,
@@ -32,8 +37,9 @@ const reviewSchema = new mongoose.Schema({
     }
 });
 
-// Index for faster book-based queries
+// Index for faster queries
 reviewSchema.index({ book: 1, status: 1 });
+reviewSchema.index({ order: 1, book: 1 });
 
 // Static method to calculate book rating
 reviewSchema.statics.calculateBookRating = async function(bookId) {
