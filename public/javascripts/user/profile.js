@@ -38,3 +38,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+function openReviewModal(bookId, bookTitle) {
+    const modal = document.getElementById('reviewModal');
+    document.getElementById('bookId').value = bookId;
+    modal.style.display = 'block';
+}
+
+document.querySelector('.close').onclick = function() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+
+document.getElementById('reviewForm').onsubmit = async function(e) {
+    e.preventDefault();
+    
+    const bookId = document.getElementById('bookId').value;
+    const rating = document.querySelector('input[name="rating"]:checked').value;
+    const comment = document.getElementById('comment').value;
+
+    try {
+        const response = await fetch('/review/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bookId, rating, comment })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Review submitted successfully!');
+            location.reload();
+        } else {
+            alert(data.message || 'Error submitting review');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error submitting review');
+    }
+};

@@ -2,6 +2,8 @@ const User = require('../../models/user.model');
 const UserProfile = require('../../models/userProfile.model');
 const path = require('path');
 const fs = require('fs');
+const Order = require('../../models/order.model');
+const Review = require('../../models/review.model');
 
 exports.profile = async (req, res) => {
     try {
@@ -24,25 +26,32 @@ exports.profile = async (req, res) => {
             });
         }
 
+        // Get shipped orders with books
+        const shippedOrders = await Order.find({
+            user: req.user.id,
+            status: 'shipped'
+        }).populate('books.book');
+
+        // Get existing reviews
+        const existingReviews = await Review.find({
+            user: req.user.id
+        }).select('book rating');
+
+        const reviewedBooks = new Set(existingReviews.map(review => review.book.toString()));
+
         res.render('User/profile', { 
-            userProfile: {
-                ...userProfile.toObject(),
-                memberSince: userProfile.memberSince || user.createdAt
-            },
+            userProfile,
+            shippedOrders,
+            reviewedBooks,
             error: null
         });
     } catch (error) {
         console.error('Profile Error:', error);
         res.status(500).render('User/profile', { 
-            userProfile: {
-                fullName: req.user.name,
-                email: req.user.email,
-                phoneNumber: '',
-                gender: '',
-                memberSince: new Date()
-            },
-            user: req.user,
-            error: 'Error loading profile' 
+            userProfile: null,
+            shippedOrders: [],
+            reviewedBooks: new Set(),
+            error: 'Error loading profile'
         });
     }
 };

@@ -245,5 +245,50 @@
             };
         });
         </script>
+
+        <section class="reviews-section">
+            <h2>Books to Review</h2>
+            <div class="review-books-grid">
+                <% shippedOrders.forEach(order => { %>
+                    <% order.books.forEach(item => { %>
+                        <% if (!reviewedBooks.has(item.book._id.toString())) { %>
+                            <div class="review-book-card">
+                                <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
+                                <h3><%= item.book.title %></h3>
+                                <button class="write-review-btn" 
+                                        onclick="openReviewModal('<%= item.book._id %>', '<%= item.book.title %>')">
+                                    Write Review
+                                </button>
+                            </div>
+                        <% } %>
+                    <% }); %>
+                <% }); %>
+            </div>
+        </section>
+
+        <!-- Review Modal -->
+        <div id="reviewModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Write a Review</h2>
+                <form id="reviewForm">
+                    <input type="hidden" id="bookId" name="bookId">
+                    <div class="rating-input">
+                        <span>Rating:</span>
+                        <div class="stars">
+                            <% for(let i = 5; i >= 1; i--) { %>
+                                <input type="radio" id="star<%= i %>" name="rating" value="<%= i %>">
+                                <label for="star<%= i %>"><i class="ri-star-fill"></i></label>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="comment-input">
+                        <label for="comment">Your Review:</label>
+                        <textarea id="comment" name="comment" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-review">Submit Review</button>
+                </form>
+            </div>
+        </div>
 </body>
 </html>

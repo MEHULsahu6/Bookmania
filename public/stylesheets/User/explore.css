@@ -1,0 +1,19 @@
+.book-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.rating-stars {
+    color: #ffd700;
+}
+
+.rating-count {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.ri-star-fill, .ri-star-line {
+    font-size: 1.2rem;
+}

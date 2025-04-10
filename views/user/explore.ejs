@@ -334,6 +334,15 @@
                                 <% } %>
                             </div>
                             <div class="explore__stars">
+                                <!-- Inside your book card -->
+                                <div class="book-rating">
+                                    <div class="rating-stars">
+                                        <% for(let i = 1; i <= 5; i++) { %>
+                                            <i class="ri-star-<%= i <= book.reviews.averageRating ? 'fill' : 'line' %>"></i>
+                                        <% } %>
+                                    </div>
+                                    <span class="rating-count">(<%= book.reviews.totalReviews %> reviews)</span>
+                                </div>
                                 <i class="ri-star-fill"></i>
                                 <i class="ri-star-fill"></i>
                                 <i class="ri-star-fill"></i>
