@@ -72,7 +72,11 @@
                                             <td>
                                                 <div class="product-preview">
                                                     <% order.books.forEach(item => { %>
-                                                        <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
+                                                        <% if (item.book && item.book.image) { %>
+                                                            <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
+                                                        <% } else { %>
+                                                            <img src="/img/default-book.png" alt="Book image not available">
+                                                        <% } %>
                                                     <% }); %>
                                                 </div>
                                             </td>

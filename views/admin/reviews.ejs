@@ -61,9 +61,13 @@
 
                                     <div class="review-content">
                                         <div class="book-info">
-                                            <img src="<%= review.book.image %>" alt="<%= review.book.title %>">
+                                            <% if (review.book && review.book.image) { %>
+                                                <img src="<%= review.book.image %>" alt="<%= review.book.title %>">
+                                            <% } else { %>
+                                                <img src="/img/default-book.png" alt="Book image not available">
+                                            <% } %>
                                             <div>
-                                                <h5><%= review.book.title %></h5>
+                                                <h5><%= review.book ? review.book.title : 'Book Not Available' %></h5>
                                                 <div class="rating">
                                                     <% for(let i = 0; i < review.rating; i++) { %>
                                                         <i class="ri-star-fill"></i>
