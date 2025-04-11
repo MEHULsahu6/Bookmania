@@ -87,6 +87,7 @@
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 2rem;
       padding: 1rem;
+      align-items: start; /* Add this to prevent stretching */
     }
 
     .explore__card {
@@ -97,10 +98,33 @@
       transition: transform .3s, border-color .3s;
       display: flex;
       flex-direction: column;
-      min-height: 400px;
+      height: fit-content; /* Change from min-height to height */
       box-sizing: border-box;
       position: relative;
+      overflow: visible; /* Change from hidden to visible */
+    }
+
+    .book-details {
+      max-height: 0;
       overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background-color: var(--white-color);
+      margin: 0 -1.5rem;
+      padding: 0 1.5rem;
+      position: absolute; /* Add this */
+      left: 0; /* Add this */
+      right: 0; /* Add this */
+      top: 100%; /* Add this */
+      z-index: 10; /* Add this */
+      border-radius: 0 0 1rem 1rem; /* Add this */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add this */
+    }
+
+    .book-details.active {
+      max-height: 500px;
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--border-color);
+      border-top: none;
     }
 
     .wishlist-icon {
@@ -333,22 +357,13 @@
                                     <span class="explore__discount">$<%= book.price.toFixed(2) %></span>
                                 <% } %>
                             </div>
-                            <div class="explore__stars">
-                                <!-- Inside your book card -->
-                                <div class="book-rating">
-                                    <div class="rating-stars">
-                                        <% for(let i = 1; i <= 5; i++) { %>
-                                            <i class="ri-star-<%= i <= book.reviews.averageRating ? 'fill' : 'line' %>"></i>
-                                        <% } %>
-                                    </div>
-                                    <span class="rating-count">(<%= book.reviews.totalReviews %> reviews)</span>
+                            <div class="book-rating">
+                                <div class="rating-stars">
+                                    <% for(let i = 1; i <= 5; i++) { %>
+                                        <i class="ri-star-<%= i <= book.reviews.averageRating ? 'fill' : 'line' %>"></i>
+                                    <% } %>
                                 </div>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-line"></i>
-                                <span>(4.0)</span>
+                                <span class="rating-count">(<%= book.reviews.totalReviews %> reviews)</span>
                             </div>
                             <button class="explore__button" data-id="<%= book.id %>">Add To Cart</button>
                             <button class="toggle-details">
@@ -390,13 +405,15 @@
                 const card = button.closest('.explore__card');
                 const details = card.querySelector('.book-details');
                 
-                document.querySelectorAll('.book-details').forEach(d => {
-                    if (d !== details && d.classList.contains('active')) {
+                // Close all other open details first
+                if (!details.classList.contains('active')) {
+                    document.querySelectorAll('.book-details.active').forEach(d => {
                         d.classList.remove('active');
                         d.previousElementSibling.querySelector('.toggle-details').classList.remove('active');
-                    }
-                });
+                    });
+                }
                 
+                // Toggle the clicked details
                 button.classList.toggle('active');
                 details.classList.toggle('active');
             });
