@@ -56,53 +56,47 @@
                             </thead>
                             <!-- Replace the sample order row with this dynamic content -->
                             <tbody>
-                                <% if (orders && orders.length > 0) { %>
-                                    <% orders.forEach(order => { %>
-                                        <tr>
-                                            <td><input type="checkbox" class="order-select"></td>
-                                            <td><%= order.orderId %></td>
-                                            <td>
-                                                <div class="customer-info">
-                                                    <div>
-                                                        <h4><%= order.customerInfo.name %></h4>
-                                                        <span><%= order.customerInfo.email %></span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="product-preview">
-                                                    <% order.books.forEach(item => { %>
-                                                        <% if (item.book && item.book.image) { %>
-                                                            <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
-                                                        <% } else { %>
-                                                            <img src="/img/default-book.png" alt="Book image not available">
-                                                        <% } %>
-                                                    <% }); %>
-                                                </div>
-                                            </td>
-                                            <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
-                                            <td>$<%= order.totalAmount.toFixed(2) %></td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <select class="status-select" onchange="updateOrderStatus('<%= order.orderId %>', this.value)">
-                                                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                                                        <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
-                                                        <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                                                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                                                        <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                                    </select>
-                                                    <button class="delete-btn" title="Delete Order">
-                                                        <i class="ri-delete-bin-line"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                <% } else { %>
+                                <% orders.forEach(order => { %>
                                     <tr>
-                                        <td colspan="7" class="no-orders">No orders found</td>
+                                        <td><input type="checkbox" class="order-select"></td>
+                                        <td><%= order.orderId %></td>
+                                        <td>
+                                            <div class="customer-info">
+                                                <div>
+                                                    <h4><%= order.customerInfo.name %></h4>
+                                                    <span><%= order.customerInfo.email %></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="product-preview">
+                                                <% order.books.forEach(item => { %>
+                                                    <% if (item.book && item.book.image) { %>
+                                                        <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
+                                                    <% } else { %>
+                                                        <img src="/img/default-book.png" alt="Book image not available">
+                                                    <% } %>
+                                                <% }); %>
+                                            </div>
+                                        </td>
+                                        <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                                        <td>$<%= order.totalAmount.toFixed(2) %></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <select class="status-select" onchange="updateOrderStatus('<%= order.orderId %>', this.value)">
+                                                    <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                                    <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                                                    <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                                    <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                                    <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                </select>
+                                                <button class="delete-btn" title="Delete Order">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
-                                <% } %>
+                                <% }); %>
                             </tbody>
                             
                             <!-- Add this script at the bottom of the file -->

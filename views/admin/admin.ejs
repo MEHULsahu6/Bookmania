@@ -6,127 +6,106 @@
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
     <link rel="stylesheet" href="../../stylesheets/Admin/admin.css">
-    <title>Admin Panel - Book Mania</title>
+    <title>Admin Dashboard</title>
 </head>
 <body>
     <%- include('./components/navbar') %>
     <%- include('./components/sidebar') %>
 
-    <!-- =============== MAIN =============== -->
     <main class="main">
         <div class="main__container container">
-            <!-- Welcome Admin Section -->
-            <section class="welcome-admin section">
-                <div class="welcome-card">
-                    <div class="welcome-content">
-                        <h1>Welcome Back, Admin!</h1>
-                        <p>Here's your daily overview of the bookstore</p>
-                    </div>
-                    <div class="welcome-stats">
-                        <div class="stat">
-                            <i class="ri-time-line"></i>
-                            <span>Last login: Today, 9:30 AM</span>
-                        </div>
-                       
-                    </div>
-                </div>
-            </section>
-
-            <!-- Dashboard Section (existing) -->
-            <section class="dashboard section" id="dashboard">
-                <h2 class="section__title">Dashboard</h2>
-                <div class="dashboard__container grid">
-                    <div class="dashboard__card">
-                        <i class="ri-shopping-bag-line"></i>
-                        <h3>Total Orders</h3>
-                        <span>254</span>
-                    </div>
-
-                    <div class="dashboard__card">
-                        <i class="ri-book-open-line"></i>
+            <!-- Statistics Cards -->
+            <section class="stats section">
+                <h2 class="section__title">Dashboard Overview</h2>
+                <div class="stats__container grid">
+                    <div class="stats__card">
+                        <i class="ri-book-line"></i>
                         <h3>Total Books</h3>
-                        <span>1,200</span>
+                        <p><%= stats.totalBooks %></p>
                     </div>
-
-                    <div class="dashboard__card">
+                    <div class="stats__card">
+                        <i class="ri-shopping-cart-line"></i>
+                        <h3>Total Orders</h3>
+                        <p><%= stats.totalOrders %></p>
+                    </div>
+                    <div class="stats__card">
+                        <i class="ri-time-line"></i>
+                        <h3>Pending Orders</h3>
+                        <p><%= stats.pendingOrders %></p>
+                    </div>
+                    <div class="stats__card">
                         <i class="ri-user-line"></i>
                         <h3>Total Users</h3>
-                        <span>5,420</span>
+                        <p><%= stats.totalUsers %></p>
                     </div>
-
-                    <div class="dashboard__card">
+                    <div class="stats__card">
+                        <i class="ri-message-3-line"></i>
+                        <h3>Pending Reviews</h3>
+                        <p><%= stats.pendingReviews %></p>
+                    </div>
+                    <div class="stats__card">
                         <i class="ri-money-dollar-circle-line"></i>
-                        <h3>Revenue</h3>
-                        <span>$52,400</span>
+                        <h3>Total Revenue</h3>
+                        <p>$<%= stats.totalRevenue.toFixed(2) %></p>
                     </div>
                 </div>
             </section>
 
-            <!-- User Reviews Section -->
-            <section class="user-reviews section">
-                <h2 class="section__title">Recent Book Reviews</h2>
-                <div class="reviews-container">
-                    <div class="review-card">
-                        <div class="review-header">
-                            <img src="../../img/user-avatar.png" alt="User" class="review-avatar">
-                            <div class="review-user-info">
-                                <h3>John Doe</h3>
-                                <span class="review-date">2 days ago</span>
-                            </div>
-                            <div class="review-rating">
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-half-fill"></i>
-                            </div>
-                        </div>
-                        <div class="review-book">
-                            <img src="../../img/book-1.png" alt="Book" class="book-thumbnail">
-                            <div class="book-info">
-                                <h4>The Great Gatsby</h4>
-                                <span class="book-author">F. Scott Fitzgerald</span>
-                            </div>
-                        </div>
-                        <p class="review-text">
-                            Amazing book! The storytelling is masterful and the characters are unforgettable.
-                            Highly recommend this classic to everyone.
-                        </p>
-                    </div>
+            <!-- Recent Orders -->
+            <section class="recent-orders section">
+                <h2 class="section__title">Recent Orders</h2>
+                <div class="table__container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% recentOrders.forEach(order => { %>
+                                <tr>
+                                    <td><%= order._id %></td>
+                                    <td><%= order.user.name %></td>
+                                    <td>$<%= order.totalAmount.toFixed(2) %></td>
+                                    <td><span class="status <%= order.status %>"><%= order.status %></span></td>
+                                    <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-                    <div class="review-card">
-                        <div class="review-header">
-                            <img src="../../img/user-avatar.png" alt="User" class="review-avatar">
-                            <div class="review-user-info">
-                                <h3>Jane Smith</h3>
-                                <span class="review-date">1 week ago</span>
+            <!-- Recent Reviews -->
+            <section class="recent-reviews section">
+                <h2 class="section__title">Recent Reviews</h2>
+                <div class="reviews__container">
+                    <% recentReviews.forEach(review => { %>
+                        <div class="review__card">
+                            <div class="review__header">
+                                <h4><%= review.user.name %></h4>
+                                <span class="review__date">
+                                    <%= new Date(review.createdAt).toLocaleDateString() %>
+                                </span>
                             </div>
-                            <div class="review-rating">
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-line"></i>
+                            <p class="review__book">Book: <%= review.book.title %></p>
+                            <div class="review__rating">
+                                <% for(let i = 0; i < review.rating; i++) { %>
+                                    <i class="ri-star-fill"></i>
+                                <% } %>
                             </div>
+                            <p class="review__comment"><%= review.comment %></p>
                         </div>
-                        <div class="review-book">
-                            <img src="../../img/book-2.png" alt="Book" class="book-thumbnail">
-                            <div class="book-info">
-                                <h4>1984</h4>
-                                <span class="book-author">George Orwell</span>
-                            </div>
-                        </div>
-                        <p class="review-text">
-                            A thought-provoking dystopian novel that remains relevant today.
-                            The writing style is engaging and the plot is gripping.
-                        </p>
-                    </div>
+                    <% }) %>
                 </div>
             </section>
         </div>
     </main>
 
-    <!--=============== MAIN JS ===============-->
     <script src="../../javascripts/admin.js"></script>
 </body>
 </html>
