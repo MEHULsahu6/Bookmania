@@ -9,7 +9,6 @@
    <link rel="stylesheet" href="../../stylesheets/User/explore.css">
    <title>Explore Books - Book Mania</title>
    <style>
-    /* Your existing CSS remains unchanged */
     @import url("https://fonts.googleapis.com/css2?family=Montagu+Slab:wght@500&family=Montserrat:wght@400;500;600&display=swap");
 
     :root {
@@ -87,7 +86,7 @@
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 2rem;
       padding: 1rem;
-      align-items: start; /* Add this to prevent stretching */
+      align-items: start;
     }
 
     .explore__card {
@@ -95,54 +94,11 @@
       padding: 1.5rem;
       border: 2px solid var(--border-color);
       border-radius: 1rem;
-      transition: transform .3s, border-color .3s;
+      transition: all .3s;
       display: flex;
       flex-direction: column;
-      height: fit-content; /* Change from min-height to height */
-      box-sizing: border-box;
+      min-height: 400px;
       position: relative;
-      overflow: visible; /* Change from hidden to visible */
-    }
-
-    .book-details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-      background-color: var(--white-color);
-      margin: 0 -1.5rem;
-      padding: 0 1.5rem;
-      position: absolute; /* Add this */
-      left: 0; /* Add this */
-      right: 0; /* Add this */
-      top: 100%; /* Add this */
-      z-index: 10; /* Add this */
-      border-radius: 0 0 1rem 1rem; /* Add this */
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add this */
-    }
-
-    .book-details.active {
-      max-height: 500px;
-      padding: 1rem 1.5rem;
-      border: 2px solid var(--border-color);
-      border-top: none;
-    }
-
-    .wishlist-icon {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      color: var(--text-color);
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .wishlist-icon:hover {
-      color: var(--first-color);
-    }
-
-    .wishlist-icon.active {
-      color: #ff4444;
     }
 
     .explore__card:hover {
@@ -243,52 +199,112 @@
       margin: 1rem 0;
     }
 
-    .book-details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-      background-color: var(--white-color);
-      margin: 0 -1.5rem -1.5rem;
-      padding: 0 1.5rem;
-    }
-
-    .book-details.active {
-      max-height: 500px;
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--border-color);
-    }
-
-    .book-details p {
-      margin: 0.5rem 0;
-      font-size: var(--small-font-size);
+    .wishlist-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       color: var(--text-color);
-      text-align: left;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s;
     }
 
-    .book-details strong {
-      color: var(--title-color);
+    .wishlist-icon:hover {
+      color: var(--first-color);
     }
 
-    .toggle-details {
+    .wishlist-icon.active {
+      color: #ff4444;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: var(--white-color);
+      max-width: 500px;
+      width: 90%;
+      border-radius: 1rem;
+      padding: 2rem;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       background: none;
       border: none;
+      font-size: 1.5rem;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .modal-close:hover {
+      color: var(--first-color);
+    }
+
+    .modal-content h3 {
+      font-size: var(--h2-font-size);
+      color: var(--title-color);
+      margin-bottom: 1rem;
+    }
+
+    .modal-content p {
+      margin: 0.75rem 0;
+      font-size: var(--normal-font-size);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .modal-content strong {
+      color: var(--title-color);
+      font-weight: 600;
+    }
+
+    /* Toggle details button */
+    .toggle-details {
+      background: none;
+      border: 1px solid var(--border-color);
       color: var(--first-color);
       cursor: pointer;
-      font-size: var(--small-font-size);
-      margin-top: 0.5rem;
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 0.5rem;
+      font-size: var(--normal-font-size);
+      font-family: var(--body-font);
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
-    .toggle-details i {
-      transition: transform 0.3s;
-      margin-left: 5px;
-    }
-
-    .toggle-details.active i {
-      transform: rotate(180deg);
+    .toggle-details:hover {
+      background-color: hsl(230, 62%, 95%);
+      border-color: var(--first-color);
     }
 
     @media screen and (max-width: 768px) {
@@ -300,6 +316,14 @@
       }
       .explore__container {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+      .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+      }
+      .toggle-details {
+        font-size: var(--small-font-size);
+        padding: 0.5rem;
       }
     }
    </style>
@@ -366,18 +390,7 @@
                                 <span class="rating-count">(<%= book.reviews.totalReviews %> reviews)</span>
                             </div>
                             <button class="explore__button" data-id="<%= book.id %>">Add To Cart</button>
-                            <button class="toggle-details">
-                                More Details <i class="ri-arrow-down-s-line"></i>
-                            </button>
-                        </div>
-                        <div class="book-details">
-                            <p><strong>Description:</strong> <%= book.description || 'No description available' %></p>
-                            <p><strong>Publisher:</strong> <%= book.publisher || 'Not specified' %></p>
-                            <p><strong>ISBN:</strong> <%= book.isbn || 'Not specified' %></p>
-                            <% if (book.tags && book.tags.length > 0) { %>
-                                <p><strong>Tags:</strong> <%= book.tags.join(', ') %></p>
-                            <% } %>
-                            <button class="explore__button" data-id="<%= book.id %>">Add To Cart</button>
+                            <button class="toggle-details" data-book-id="<%= book.id %>">More Details</button>
                         </div>
                     </article>
                 <% }); %>
@@ -387,6 +400,18 @@
          </div>
       </section>
    </main>
+
+   <!-- Modal container -->
+   <div class="modal-overlay">
+      <div class="modal-content">
+         <button class="modal-close"><i class="ri-close-line"></i></button>
+         <h3 class="modal-title"></h3>
+         <p class="modal-description"></p>
+         <p class="modal-publisher"></p>
+         <p class="modal-isbn"></p>
+         <p class="modal-tags"></p>
+      </div>
+   </div>
 
    <a href="#" class="scrollup" id="scroll-up">
       <i class="ri-arrow-up-line"></i>
@@ -398,34 +423,51 @@
 
    <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Toggle details dropdown
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const modalContent = document.querySelector('.modal-content');
+        const modalClose = document.querySelector('.modal-close');
+
+        // Toggle modal
         document.querySelectorAll('.toggle-details').forEach(button => {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
+                const bookId = button.getAttribute('data-book-id');
                 const card = button.closest('.explore__card');
-                const details = card.querySelector('.book-details');
                 
-                // Close all other open details first
-                if (!details.classList.contains('active')) {
-                    document.querySelectorAll('.book-details.active').forEach(d => {
-                        d.classList.remove('active');
-                        d.previousElementSibling.querySelector('.toggle-details').classList.remove('active');
-                    });
+                // Get book details using booksData instead
+                const title = card.querySelector('.explore__title').textContent;
+                const book = booksData.find(b => b.id == bookId);
+                
+                if (book) {
+                    modalContent.querySelector('.modal-title').textContent = title;
+                    modalContent.querySelector('.modal-description').innerHTML = `<strong>Description:</strong> ${book.description || 'No description available'}`;
+                    modalContent.querySelector('.modal-publisher').innerHTML = `<strong>Publisher:</strong> ${book.publisher || 'Not specified'}`;
+                    modalContent.querySelector('.modal-isbn').innerHTML = `<strong>ISBN:</strong> ${book.isbn || 'Not specified'}`;
+                    modalContent.querySelector('.modal-tags').innerHTML = book.tags && book.tags.length > 0 
+                        ? `<strong>Tags:</strong> ${book.tags.join(', ')}` 
+                        : '';
+                    
+                    modalOverlay.classList.add('active');
                 }
-                
-                // Toggle the clicked details
-                button.classList.toggle('active');
-                details.classList.toggle('active');
             });
         });
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.explore__card')) {
-                document.querySelectorAll('.book-details').forEach(details => {
-                    details.classList.remove('active');
-                    details.previousElementSibling.querySelector('.toggle-details').classList.remove('active');
-                });
+        // Close modal
+        modalClose.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                modalOverlay.classList.remove('active');
             }
         });
 
@@ -460,6 +502,12 @@
         addToCartButtons.forEach(button => {
             button.addEventListener('click', async () => {
                 const bookId = button.getAttribute('data-id');
+                if (!bookId) {
+                    console.error('Book ID is missing');
+                    alert('Error: Book ID is missing');
+                    return;
+                }
+
                 try {
                     const response = await fetch('/cart/add', {
                         method: 'POST',
@@ -468,16 +516,21 @@
                         },
                         body: JSON.stringify({ bookId })
                     });
-                    
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
                     const data = await response.json();
                     if (data.success) {
                         alert('Item added to cart successfully!');
                     } else {
-                        alert('Failed to add item to cart');
+                        console.warn('Add to cart failed:', data.message || 'Unknown error');
+                        alert(`Failed to add item to cart: ${data.message || 'Please try again'}`);
                     }
                 } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error adding item to cart');
+                    console.error('Error adding to cart:', error.message);
+                    alert('Error adding item to cart. Please check your connection and try again.');
                 }
             });
         });
