@@ -434,9 +434,9 @@
                 const bookId = button.getAttribute('data-book-id');
                 const card = button.closest('.explore__card');
                 
-                // Get book details using booksData instead
+                // Get book details
                 const title = card.querySelector('.explore__title').textContent;
-                const book = booksData.find(b => b.id == bookId);
+                const book = <%- JSON.stringify(books) %>.find(b => b.id == bookId);
                 
                 if (book) {
                     modalContent.querySelector('.modal-title').textContent = title;
