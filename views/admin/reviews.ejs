@@ -16,141 +16,63 @@
     <main class="main">
         <div class="main__container container">
             <section class="reviews section">
-                <h2 class="section__title">Reviews Management</h2>
-
-                <div class="reviews__container">
+                <div class="reviews__header">
+                    <h2 class="section__title">Book Reviews</h2>
                     <div class="reviews__filters">
                         <div class="search-box">
                             <i class="ri-search-line"></i>
-                            <input type="text" placeholder="Search reviews...">
+                            <input type="text" id="searchReviews" placeholder="Search reviews...">
                         </div>
-                        <div class="filter-group">
-                            <select class="filter-rating">
-                                <option value="all">All Ratings</option>
-                                <option value="5">5 Stars</option>
-                                <option value="4">4 Stars</option>
-                                <option value="3">3 Stars</option>
-                                <option value="2">2 Stars</option>
-                                <option value="1">1 Star</option>
-                            </select>
-                            <select class="filter-status">
-                                <option value="all">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="approved">Approved</option>
-                                <option value="rejected">Rejected</option>
-                            </select>
-                        </div>
+                        <select id="ratingFilter">
+                            <option value="">All Ratings</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
                     </div>
+                </div>
 
-                    <div class="reviews__list">
-                        <% if (reviews && reviews.length > 0) { %>
-                            <% reviews.forEach(review => { %>
-                                <div class="review-card">
-                                    <div class="review-header">
-                                        <div class="user-info">
-                                            <img src="<%= review.user.profilePicture || '../../img/default-avatar.png' %>" alt="User">
-                                            <div>
-                                                <h4><%= review.user.name %></h4>
-                                                <span>Posted on <%= new Date(review.createdAt).toLocaleDateString() %></span>
-                                            </div>
-                                        </div>
-                                        <span class="review-status <%= review.status %>">
-                                            <%= review.status.charAt(0).toUpperCase() + review.status.slice(1) %>
-                                        </span>
+                <div class="reviews__container">
+                    <% if (reviews && reviews.length > 0) { %>
+                        <% reviews.forEach(review => { %>
+                            <div class="review__card">
+                                <div class="review__header">
+                                    <div class="book__info">
+                                        <img src="<%= review.book.image %>" alt="<%= review.book.title %>">
+                                        <h3><%= review.book.title %></h3>
                                     </div>
-
-                                    <div class="review-content">
-                                        <div class="book-info">
-                                            <% if (review.book && review.book.image) { %>
-                                                <img src="<%= review.book.image %>" alt="<%= review.book.title %>">
-                                            <% } else { %>
-                                                <img src="/img/default-book.png" alt="Book image not available">
-                                            <% } %>
-                                            <div>
-                                                <h5><%= review.book ? review.book.title : 'Book Not Available' %></h5>
-                                                <div class="rating">
-                                                    <% for(let i = 0; i < review.rating; i++) { %>
-                                                        <i class="ri-star-fill"></i>
-                                                    <% } %>
-                                                    <% for(let i = review.rating; i < 5; i++) { %>
-                                                        <i class="ri-star-line"></i>
-                                                    <% } %>
-                                                    <span><%= review.rating %>.0</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="review-text"><%= review.comment %></p>
-                                    </div>
-
-                                    <div class="review-actions">
-                                        <% if (review.status === 'pending') { %>
-                                            <button class="approve-btn" onclick="updateReviewStatus('<%= review._id %>', 'approved')">
-                                                <i class="ri-check-line"></i> Approve
-                                            </button>
-                                            <button class="reject-btn" onclick="updateReviewStatus('<%= review._id %>', 'rejected')">
-                                                <i class="ri-close-line"></i> Reject
-                                            </button>
+                                    <div class="rating">
+                                        <% for(let i = 1; i <= 5; i++) { %>
+                                            <i class="ri-star-<%= i <= review.rating ? 'fill' : 'line' %>"></i>
                                         <% } %>
-                                        <button class="delete-btn" onclick="deleteReview('<%= review._id %>')">
-                                            <i class="ri-delete-bin-line"></i> Delete
-                                        </button>
                                     </div>
                                 </div>
-                            <% }); %>
-                        <% } else { %>
-                            <div class="no-reviews">
-                                <i class="ri-file-list-3-line"></i>
-                                <h3>No Reviews Found</h3>
-                                <p>There are no reviews to display at the moment.</p>
+                                <div class="review__content">
+                                    <p><%= review.comment %></p>
+                                </div>
+                                <div class="review__footer">
+                                    <div class="reviewer">
+                                        <i class="ri-user-line"></i>
+                                        <span><%= review.user.name %></span>
+                                    </div>
+                                    <div class="review__date">
+                                        <%= new Date(review.createdAt).toLocaleDateString() %>
+                                    </div>
+                                </div>
                             </div>
-                        <% } %>
-                    </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="no-reviews">
+                            <i class="ri-chat-3-line"></i>
+                            <p>No reviews found</p>
+                        </div>
+                    <% } %>
                 </div>
             </section>
         </div>
     </main>
-
-    <script>
-    async function updateReviewStatus(reviewId, status) {
-        try {
-            const response = await fetch('/admin/reviews/update-status', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ reviewId, status })
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error updating review status');
-            }
-        } catch (error) {
-            alert('Error updating review status');
-        }
-    }
-
-    async function deleteReview(reviewId) {
-        if (!confirm('Are you sure you want to delete this review?')) return;
-
-        try {
-            const response = await fetch(`/admin/reviews/${reviewId}`, {
-                method: 'DELETE'
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error deleting review');
-            }
-        } catch (error) {
-            alert('Error deleting review');
-        }
-    }
-    </script>
 
     <script src="../../javascripts/admin.js"></script>
 </body>
