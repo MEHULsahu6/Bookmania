@@ -4,8 +4,19 @@ const Review = require('../../models/review.model');
 const getUserOrders = async (req, res) => {
     try {
         const orders = await Order.find({ user: req.user.id })
-            .populate('books.book', 'title image price')
+            .populate({
+                path: 'books.book',
+                select: 'title image price',
+                match: { _id: { $ne: null } }
+            })
             .sort({ orderDate: -1 });
+
+        // Filter out any null book references and clean up the orders data
+        const cleanedOrders = orders.map(order => {
+            const cleanOrder = order.toObject();
+            cleanOrder.books = cleanOrder.books.filter(item => item.book != null);
+            return cleanOrder;
+        });
 
         // Get existing reviews for these orders
         const reviews = await Review.find({
@@ -19,7 +30,10 @@ const getUserOrders = async (req, res) => {
             return acc;
         }, {});
 
-        res.render('user/orders', { orders, reviewMap });
+        res.render('user/orders', { 
+            orders: cleanedOrders, 
+            reviewMap 
+        });
     } catch (error) {
         console.error('Error fetching user orders:', error);
         res.render('user/orders', { 
