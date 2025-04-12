@@ -47,20 +47,21 @@ const updateOrderStatus = async (req, res) => {
         const adminBookIds = adminBooks.map(book => book._id);
 
         const order = await Order.findOne({
-            _id: orderId,
+            orderId: orderId,  // Changed from _id to orderId
             'books.book': { $in: adminBookIds }
         });
 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found or unauthorized' });
+            return res.status(404).json({ success: false, message: 'Order not found or unauthorized' });
         }
 
         order.status = status;
         await order.save();
 
-        res.json({ message: 'Order status updated successfully' });
+        res.json({ success: true, message: 'Order status updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating order status', error });
+        console.error('Error updating order status:', error);
+        res.status(500).json({ success: false, message: 'Error updating order status' });
     }
 };
 

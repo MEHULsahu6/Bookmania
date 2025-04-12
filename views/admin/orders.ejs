@@ -114,6 +114,8 @@
                                     const result = await response.json();
                                     if (result.success) {
                                         alert('Order status updated successfully');
+                                        // Optionally refresh the page to show updated status
+                                        location.reload();
                                     } else {
                                         alert(result.message || 'Error updating order status');
                                     }
