@@ -16,8 +16,8 @@ const userProfileSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        enum: ['male', 'female', 'other'],
-        default: ''
+        enum: ['male', 'female', 'other', null],  // Allow null value
+        default: null  // Change default from empty string to null
     },
     updatedAt: {
         type: Date,
