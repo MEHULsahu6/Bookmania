@@ -66,3 +66,40 @@ exports.updateOrderStatus = async (req, res) => {
         res.redirect('/admin/orders');
     }
 };
+
+exports.deleteOrder = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const adminId = req.user.id;
+
+        // Get admin's books
+        const adminBooks = await Book.find({ admin: adminId }).select('_id');
+        const adminBookIds = adminBooks.map(book => book._id);
+
+        // Find and delete order containing admin's books
+        const order = await Order.findOne({
+            orderId: orderId,
+            'books.book': { $in: adminBookIds }
+        });
+
+        if (!order) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Order not found or unauthorized' 
+            });
+        }
+
+        await order.deleteOne();
+
+        res.json({ 
+            success: true, 
+            message: 'Order deleted successfully' 
+        });
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error deleting order' 
+        });
+    }
+};

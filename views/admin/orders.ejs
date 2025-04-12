@@ -57,7 +57,7 @@
                             <!-- Replace the sample order row with this dynamic content -->
                             <tbody>
                                 <% orders.forEach(order => { %>
-                                    <tr>
+                                    <tr data-order-id="<%= order.orderId %>">
                                         <td><input type="checkbox" class="order-select"></td>
                                         <td><%= order.orderId %></td>
                                         <td>
@@ -90,7 +90,7 @@
                                                     <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
                                                     <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
                                                 </select>
-                                                <button class="delete-btn" title="Delete Order">
+                                                <button class="delete-btn" onclick="deleteOrder('<%= order.orderId %>')" title="Delete Order">
                                                     <i class="ri-delete-bin-line"></i>
                                                 </button>
                                             </div>
@@ -122,6 +122,37 @@
                                 } catch (error) {
                                     console.error('Error:', error);
                                     alert('Error updating order status');
+                                }
+                            }
+                            
+                            async function deleteOrder(orderId) {
+                                if (!confirm('Are you sure you want to delete this order?')) {
+                                    return;
+                                }
+
+                                try {
+                                    const response = await fetch(`/admin/orders/delete/${orderId}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+
+                                    const result = await response.json();
+                                    
+                                    if (result.success) {
+                                        // Remove the order row from the table
+                                        const orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+                                        if (orderRow) {
+                                            orderRow.remove();
+                                        }
+                                        alert('Order deleted successfully');
+                                    } else {
+                                        alert(result.message || 'Error deleting order');
+                                    }
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                    alert('Error deleting order');
                                 }
                             }
                             </script>
