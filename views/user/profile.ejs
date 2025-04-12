@@ -119,21 +119,7 @@
                 </section>
             </section>
 
-            <div class="profile-content">
-                <div class="profile-main">
-                    <section class="ordered-books-reviews card">
-                        <div class="card-header">
-                            <h2>Leave a Review</h2>
-                        </div>
-                        <div class="reviews-list">
-                            <p>No orders found. (Add orderHistory to schema if needed)</p>
-                        </div>
-                    </section>
-                </div>
-                <div class="profile-sidebar">
-                    <!-- Sidebar content can be added here if needed -->
-                </div>
-            </div>
+            
         </div>
     </main>
 
@@ -246,25 +232,7 @@
         });
         </script>
 
-        <section class="reviews-section">
-            <h2>Books to Review</h2>
-            <div class="review-books-grid">
-                <% shippedOrders.forEach(order => { %>
-                    <% order.books.forEach(item => { %>
-                        <% if (!reviewedBooks.has(item.book._id.toString())) { %>
-                            <div class="review-book-card">
-                                <img src="<%= item.book.image %>" alt="<%= item.book.title %>">
-                                <h3><%= item.book.title %></h3>
-                                <button class="write-review-btn" 
-                                        onclick="openReviewModal('<%= item.book._id %>', '<%= item.book.title %>')">
-                                    Write Review
-                                </button>
-                            </div>
-                        <% } %>
-                    <% }); %>
-                <% }); %>
-            </div>
-        </section>
+        
 
         <!-- Review Modal -->
         <div id="reviewModal" class="modal">
