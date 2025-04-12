@@ -47,11 +47,11 @@ const getUserOrders = async (req, res) => {
 const getOrderDetails = async (req, res) => {
     try {
         const order = await Order.findOne({
-            orderId: req.params.orderId,
+            orderId: req.params.orderId,  // Using orderId instead of _id
             user: req.user.id
         })
         .populate('books.book', 'title image price description')
-        .populate('shippingAddress');  // Add this line to populate shipping address
+        // Removed the shippingAddress populate since it's not in schema
 
         if (!order) {
             return res.status(404).render('error', { 
@@ -61,9 +61,9 @@ const getOrderDetails = async (req, res) => {
 
         res.render('user/order-details', { order });
     } catch (error) {
-        console.error('Error fetching order details:', error);
+        console.error('Detailed error:', error);
         res.render('error', { 
-            message: 'Error fetching order details' 
+            message: 'Error fetching order details: ' + error.message 
         });
     }
 };
