@@ -1,7 +1,7 @@
 const Order = require('../../models/order.model');
 const Book = require('../../models/book.model');
 
-const getOrders = async (req, res) => {
+exports.getOrders = async (req, res) => {
     try {
         const adminId = req.user.id;
         
@@ -37,7 +37,8 @@ const getOrders = async (req, res) => {
     }
 };
 
-const updateOrderStatus = async (req, res) => {
+// In updateOrderStatus function
+exports.updateOrderStatus = async (req, res) => {
     try {
         const { orderId, status } = req.body;
         const adminId = req.user.id;
@@ -58,14 +59,10 @@ const updateOrderStatus = async (req, res) => {
         order.status = status;
         await order.save();
 
-        res.json({ success: true, message: 'Order status updated successfully' });
+        req.flash('success_msg', 'Order status updated successfully');
+        res.redirect('/admin/orders');
     } catch (error) {
-        console.error('Error updating order status:', error);
-        res.status(500).json({ success: false, message: 'Error updating order status' });
+        req.flash('error_msg', 'Failed to update order status');
+        res.redirect('/admin/orders');
     }
-};
-
-module.exports = {
-    getOrders,
-    updateOrderStatus
 };

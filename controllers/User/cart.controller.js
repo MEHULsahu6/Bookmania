@@ -31,6 +31,7 @@ exports.cart = async (req, res) => {
     }
 };
 
+// In addToCart function
 exports.addToCart = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
@@ -61,9 +62,10 @@ exports.addToCart = async (req, res) => {
         }
 
         await cart.save();
+        req.flash('success_msg', 'Item added to cart successfully');
         res.json({ success: true, message: 'Item added to cart' });
     } catch (error) {
-        console.error('Add to cart error:', error);
+        req.flash('error_msg', 'Failed to add item to cart');
         res.status(500).json({ success: false, message: 'Error adding item to cart' });
     }
 };
@@ -117,6 +119,7 @@ exports.removeFromCart = async (req, res) => {
     }
 };
 
+// In placeOrder function
 exports.placeOrder = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {

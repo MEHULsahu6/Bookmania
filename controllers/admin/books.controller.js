@@ -1,58 +1,44 @@
 const Book = require('../../models/book.model');
-const path = require('path');
-const fs = require('fs');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
-// Get all books for the current admin
 const getBooks = async (req, res) => {
     try {
-        const adminId =req.user.id; // Assuming JWT middleware adds admin profile ID to req.user
-        console.log(adminId);
+        const adminId = req.user.id;
         const books = await Book.find({ admin: adminId });
         res.render('admin/books', { books });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching books', error });
+        console.error('Error fetching books:', error);
+        res.status(500).render('admin/books', { 
+            books: [],
+            error: 'Error fetching books'
+        });
     }
 };
 
-// Create a new book
 const createBook = async (req, res) => {
     try {
-        const adminId =req.user.id;
-        const { title, author, description, price, discountPrice, isbn, publisher, tags, stock } = req.body;
-        
-        let imagePath = '';
-        if (req.file) {
-            imagePath = `/uploads/books/${req.file.filename}`;
-        }
+        const { title, author, price, description, category } = req.body;
+        const coverImage = req.file ? `/uploads/books/${req.file.filename}` : null;
 
         const book = new Book({
-            admin: adminId,
             title,
             author,
-            description,
             price,
-            discountPrice: discountPrice || null,
-            isbn: isbn || null,
-            publisher: publisher || null,
-            tags,
-            stock,
-            image: imagePath
+            description,
+            category,
+            image: coverImage,
+            admin: req.user.id
         });
 
-        try {
-            await book.save();
-            res.redirect('/admin/books');
-        } catch (error) {
-            if (error.code === 11000) { // Duplicate key error
-                return res.status(400).json({ 
-                    message: 'A book with this title already exists for this admin' 
-                });
-            }
-            throw error;
-        }
+        await book.save();
+        req.flash('success_msg', 'Book added successfully');
+        res.redirect('/admin/books');
     } catch (error) {
-        res.status(500).json({ message: 'Error creating book', error });
+        console.error('Error creating book:', error);
+        req.flash('error_msg', 'Failed to add book');
+        res.redirect('/admin/books');
     }
 };
 
@@ -92,6 +78,7 @@ const updateBook = async (req, res) => {
                 { new: true }
             );
             if (!updatedBook) return res.status(404).json({ message: 'Book not found' });
+            req.flash('success_msg', 'Book updated successfully');
             res.redirect('/admin/books');
         } catch (error) {
             if (error.code === 11000) {
@@ -130,8 +117,11 @@ const deleteBook = async (req, res) => {
 
         await Book.deleteOne({ _id: bookId, admin: adminId });
         res.status(200).json({ message: 'Book deleted successfully' });
+        req.flash('success_msg', 'Book deleted successfully');
+        res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting book', error: error.message });
+        req.flash('error_msg', 'Failed to delete book');
+        res.status(500).json({ success: false });
     }
 };
 

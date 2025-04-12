@@ -56,6 +56,7 @@ exports.profile = async (req, res) => {
     }
 };
 
+// In updateField function
 exports.updateField = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
@@ -95,15 +96,15 @@ exports.updateField = async (req, res) => {
         await userProfile.save();
 
         res.status(200).json({ success: true, message: `${field} updated successfully` });
+        req.flash('success_msg', 'Profile updated successfully');
+        res.json({ success: true });
     } catch (error) {
-        console.error('Update Error:', error);
-        return res.status(500).json({
-            success: false,
-            error: 'Server error during update'
-        });
+        req.flash('error_msg', 'Failed to update profile');
+        res.status(500).json({ success: false });
     }
 };
 
+// In uploadAvatar function
 exports.uploadAvatar = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
@@ -144,18 +145,10 @@ exports.uploadAvatar = async (req, res) => {
             message: 'Avatar updated successfully',
             profilePicture: userProfile.profilePicture 
         });
+        req.flash('success_msg', 'Profile picture updated successfully');
+        res.redirect('/profile');
     } catch (error) {
-        console.error('Avatar Upload Error:', error);
-        // Remove uploaded file if save fails
-        if (req.file) {
-            const filePath = path.join(__dirname, '../../public/uploads/user_profiles', req.file.filename);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        }
-        res.status(500).json({ 
-            success: false, 
-            error: error.message || 'Server error during avatar upload'
-        });
+        req.flash('error_msg', 'Failed to update profile picture');
+        res.redirect('/profile');
     }
 };
