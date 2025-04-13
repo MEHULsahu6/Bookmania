@@ -9,6 +9,9 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const fs = require('fs');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 
 // Connect to MongoDB
 connectDB();
@@ -100,3 +103,15 @@ app.use((req, res) => {
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
 });
+
+
+// Security middleware
+app.use(helmet());
+app.use(compression());
+
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use('/api', limiter);

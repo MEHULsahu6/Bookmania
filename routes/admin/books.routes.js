@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const { body } = require('express-validator');
+const validate = require('../../middlewares/validation.middleware');
 const booksController = require('../../controllers/admin/books.controller');
 const { jwtMiddleware } = require('../../middlewares/JWTauth');
 const multer = require('multer');
@@ -22,7 +24,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/', jwtMiddleware, booksController.getBooks);
-router.post('/create', jwtMiddleware, upload.single('cover'), booksController.createBook);
+
+// Validation rules
+const bookValidation = [
+    body('title').trim().notEmpty().withMessage('Title is required'),
+    body('price').isNumeric().withMessage('Price must be a number'),
+    validate
+];
+
+router.post('/create', 
+    jwtMiddleware, 
+    upload.single('cover'),
+    bookValidation,
+    booksController.createBook
+);
 router.post('/update/:id', jwtMiddleware, upload.single('cover'), booksController.updateBook);
 
 router.delete('/delete/:id', jwtMiddleware, booksController.deleteBook);
