@@ -1,5 +1,5 @@
 const User = require('../models/user.model'); // Capitalized User
-const { generateToken } = require('../middlewares/JWTauth');
+const { generateToken } = require('../middlewares/jwtAuth');
 const bcrypt = require('bcrypt');
 
 exports.login = (req, res) => {
