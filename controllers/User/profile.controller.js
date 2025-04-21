@@ -95,12 +95,12 @@ exports.updateField = async (req, res) => {
         userProfile.updatedAt = Date.now();
         await userProfile.save();
 
-        res.status(200).json({ success: true, message: `${field} updated successfully` });
+        // Remove the duplicate response
         req.flash('success_msg', 'Profile updated successfully');
-        res.json({ success: true });
+        return res.json({ success: true });  // Use return and send only one response
     } catch (error) {
         req.flash('error_msg', 'Failed to update profile');
-        res.status(500).json({ success: false });
+        return res.status(500).json({ success: false });  // Use return here as well
     }
 };
 
