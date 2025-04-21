@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const booksController = require('../../controllers/admin/books.controller');
-const { jwtMiddleware } = require('../../middlewares/JWTauth');
+const { jwtMiddleware } = require('../../middlewares/jwtAuth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
