@@ -5,8 +5,7 @@ exports.profile = async (req, res) => {
     try {
         const userProfile = await UserProfile.findOne({ user: req.user.id })
             .populate('user', '-password')  // Exclude password
-            .populate('orderHistory');
-            
+                       
         if (!userProfile) {
             // Create a new profile with basic information
             const newProfile = new UserProfile({
