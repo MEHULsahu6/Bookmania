@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ordersController = require('../../controllers/user/orders.controller');
+const ordersController = require('../../controllers/User/orders.controller');
 const { jwtMiddleware } = require('../../middlewares/jwtAuth');
 
 router.get('/', jwtMiddleware, ordersController.getUserOrders);
