@@ -26,31 +26,14 @@ exports.profile = async (req, res) => {
             });
         }
 
-        // Get shipped orders with books
-        const shippedOrders = await Order.find({
-            user: req.user.id,
-            status: 'shipped'
-        }).populate('books.book');
-
-        // Get existing reviews
-        const existingReviews = await Review.find({
-            user: req.user.id
-        }).select('book rating');
-
-        const reviewedBooks = new Set(existingReviews.map(review => review.book.toString()));
-
         res.render('User/profile', { 
             userProfile,
-            shippedOrders,
-            reviewedBooks,
             error: null
         });
     } catch (error) {
         console.error('Profile Error:', error);
         res.status(500).render('User/profile', { 
             userProfile: null,
-            shippedOrders: [],
-            reviewedBooks: new Set(),
             error: 'Error loading profile'
         });
     }
