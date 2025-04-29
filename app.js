@@ -12,6 +12,7 @@ const fs = require('fs');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const MongoStore = require('connect-mongo');
 
 // Connect to MongoDB
 connectDB();
@@ -40,6 +41,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI, // or whatever env var you're using
+        collectionName: 'sessions'
+    }),
     cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 app.use(flash());
