@@ -100,9 +100,9 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(port, () => {
-    console.log(`Server started on: http://localhost:${port}`);
-});
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server started on port ${PORT}`);
+  });
 
 
 // Security middleware
