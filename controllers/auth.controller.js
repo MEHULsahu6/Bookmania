@@ -1,6 +1,6 @@
 const User = require('../models/user.model'); // Capitalized User
-const { generateToken } = require('../middlewares/JWTauth');
-const bcrypt = require('bcrypt');
+const { generateToken } = require('../middlewares/jwtAuth');
+const bcrypt = require('bcryptjs');
 
 exports.login = (req, res) => {
     res.render('login', { error: null }); // Initialize error as null
